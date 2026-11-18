@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="480" viewBox="0 0 1600 480" role="img" aria-labelledby="title desc">
+  <title id="title">大肥鱼 DAFEIYU · DSH Digital Companion</title>
+  <desc id="desc">深蓝色背景与青绿色波纹。让对话，有声音，也有陪伴。Live2D、语音和屏幕交互。</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2=".7"><stop stop-color="#0e192a"/><stop offset=".6" stop-color="#112938"/><stop offset="1" stop-color="#173a42"/></linearGradient>
+    <radialGradient id="halo"><stop stop-color="#6dc7c2" stop-opacity=".2"/><stop offset="1" stop-color="#6dc7c2" stop-opacity="0"/></radialGradient>
+    <linearGradient id="fish" x2="1" y2="1"><stop stop-color="#b1e4de"/><stop offset="1" stop-color="#59a9ca"/></linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#c2e2ec" stroke-opacity=".055"/></pattern>
+  </defs>
+  <rect width="1600" height="480" rx="24" fill="url(#bg)"/>
+  <rect width="1600" height="480" rx="24" fill="url(#grid)"/>
+  <circle cx="1240" cy="220" r="370" fill="url(#halo)"/>
+  <g fill="none" stroke="#7fcacb">
+    <circle cx="1240" cy="224" r="137" stroke-opacity=".22"/>
+    <circle cx="1240" cy="224" r="174" stroke-opacity=".13"/>
+    <circle cx="1240" cy="224" r="213" stroke-opacity=".08"/>
+    <path d="M920 280C1000 280 1007 168 1090 168S1204 305 1290 305s120-122 230-122" stroke-opacity=".17" stroke-width="2"/>
+    <path d="M897 300c122 0 120-130 213-130s112 163 214 163 118-135 220-135" stroke-opacity=".09"/>
+  </g>
+  <g font-family="Segoe UI, Microsoft YaHei, PingFang SC, sans-serif">
+    <circle cx="84" cy="68" r="5" fill="#8ed3c7"/>
+    <text x="104" y="74" font-size="15" font-weight="600" letter-spacing="4" fill="#b2cdcf">DAFEIYU / DIGITAL COMPANION</text>
+    <text x="76" y="230" font-size="114" font-weight="700" letter-spacing="14" fill="#f1f3ed">大肥鱼</text>
+    <text x="81" y="290" font-size="31" font-weight="400" letter-spacing="2" fill="#b6d6d7">让对话，有声音，也有陪伴。</text>
+    <path d="M82 335H842" stroke="#aacfd4" stroke-opacity=".18"/>
+    <g fill="#a1bfc7" font-size="14" letter-spacing="2">
+      <text x="82" y="373">DSH NATIVE</text><text x="271" y="373">LIVE2D</text><text x="411" y="373">VOICE</text><text x="547" y="373">SCREEN</text>
+    </g>
+    <g fill="#76b8bb"><circle cx="236" cy="368" r="2"/><circle cx="376" cy="368" r="2"/><circle cx="512" cy="368" r="2"/></g>
+    <text x="82" y="438" font-family="Consolas, monospace" font-size="12" letter-spacing="2" fill="#6d929e">POWERED BY DEEPSEEK HARNESS · MADE FOR COMPANIONSHIP</text>
+    <text x="1240" y="417" text-anchor="middle" font-size="12" letter-spacing="4" fill="#8ebbc0">LISTEN / RESPOND / STAY</text>
+  </g>
+  <g transform="translate(1150 134)">
+    <rect width="180" height="180" rx="52" fill="#193e4c" stroke="#8bd0cf" stroke-opacity=".3"/>
+    <path d="M30 90c25-42 70-48 101-20l17-14v68l-17-14c-31 28-76 22-101-20Z" fill="url(#fish)"/>
+    <circle cx="69" cy="82" r="6" fill="#173544"/>
+    <path d="M46 108c22 21 48 22 72 5" fill="none" stroke="#193e4c" stroke-opacity=".15" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <path d="M1530 45h26v26M70 410v25h25" fill="none" stroke="#9fcacb" stroke-opacity=".25"/>
+</svg>
