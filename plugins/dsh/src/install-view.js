@@ -62,7 +62,20 @@ export async function mountInstallView(host, {onReady, fetch: fetchImpl = global
     const link = el('a', label, links); link.href = href; link.target = '_blank'; link.rel = 'noopener noreferrer';
     el('span', '　', links);
   }
-  const archive = field(form, '本地角色 ZIP 路径（可选，仅支持项目 DeepSeek / 大肥鱼皮套结构）');
+  const avatarSources = el('section', null, form);
+  el('strong', '获取大肥鱼 Live2D 素材', avatarSources);
+  const avatarLinks = el('p', null, avatarSources, 'note');
+  for (const [label, href] of [
+    ['作者原发布页', 'https://www.bilibili.com/video/BV1KmxY66EZ3/'],
+    ['完整素材仓库（社区）', 'https://github.com/YJackie-Li/DeepSeek-chan'],
+    ['固定版本 ZIP 下载', 'https://github.com/YJackie-Li/DeepSeek-chan/archive/824e03aa38c18c9eb2a9ee1344e3c8bed6671b1f.zip'],
+    ['使用须知', 'https://github.com/YJackie-Li/DeepSeek-chan/blob/824e03aa38c18c9eb2a9ee1344e3c8bed6671b1f/README.md'],
+  ]) {
+    const link = el('a', label, avatarLinks); link.href = href; link.target = '_blank'; link.rel = 'noopener noreferrer';
+    el('span', '　', avatarLinks);
+  }
+  el('p', '原画及拆分：神宫凉子 · Live2D 建模：霓虹猫_NeonNeko。社区仓库未核实为作者本人维护。请先阅读使用须知，再下载 ZIP；不用解压，填写下面的本地路径。原配布包也可直接导入，不会自动下载角色。', avatarSources, 'note');
+  const archive = field(form, '本地角色 ZIP 路径（可选，支持原配布包 / 上述素材仓库 ZIP）');
   const advanced = el('details', null, form); el('summary', '高级选项', advanced);
   el('p', '仅填写你有权下载和使用的角色资源。远端角色须提供 SHA256 校验值。', advanced, 'note');
   const url = field(advanced, '授权角色下载地址（可选）');

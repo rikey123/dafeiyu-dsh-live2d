@@ -15,7 +15,17 @@ installation operations governed by each upstream model's license.
 DeepSeek-chan illustration/separation: 神宫凉子. Live2D rigging: 霓虹猫_NeonNeko.
 The supplied character's notice prohibits unauthorized redistribution of the
 complete model. It is **not included**. Users import their lawfully obtained
-archive into their external installation home. See `docs/DEEPSEEK_SKIN.md`.
+archive into their external installation home. Direct acquisition references:
+
+- Author's original release: https://www.bilibili.com/video/BV1KmxY66EZ3/
+- Public community asset repository: https://github.com/YJackie-Li/DeepSeek-chan
+- Referenced revision: `824e03aa38c18c9eb2a9ee1344e3c8bed6671b1f` (checked 2026-11-18).
+
+The GitHub maintainer's identity has not been verified as the model author.
+Its README retains the restriction against unauthorized rehosting of the full
+model; public availability is not treated as a redistribution license. Version
+0.3.1 accepts its repository ZIP as well as the original distribution archive,
+and preserves the full supplied usage notice. See `docs/DEEPSEEK_SKIN.md`.
 
 The first-run installer can alternatively download a user-authorized archive
 from a supplied HTTPS location after SHA-256 verification. It supplies no default

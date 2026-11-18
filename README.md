@@ -131,10 +131,10 @@
 
 ### 1 · 下载并添加插件
 
-从 [Releases](https://github.com/rikey123/dafeiyu-dsh-live2d/releases/latest) 下载 `dafeiyu-dsh-live2d-0.3.0.tgz`，按实际下载位置执行：
+从 [Releases](https://github.com/rikey123/dafeiyu-dsh-live2d/releases/latest) 下载 `dafeiyu-dsh-live2d-0.3.1.tgz`，按实际下载位置执行：
 
 ```powershell
-dsh plugin --profile web add "E:/Downloads/dafeiyu-dsh-live2d-0.3.0.tgz"
+dsh plugin --profile web add "E:/Downloads/dafeiyu-dsh-live2d-0.3.1.tgz"
 ```
 
 ### 2 · 打开大肥鱼，选一个资源目录
@@ -149,6 +149,19 @@ dsh plugin --profile web add "E:/Downloads/dafeiyu-dsh-live2d-0.3.0.tgz"
 安装器自动准备经校验的 uv、Python 3.12、两套隔离依赖与基础 ASR / VAD 模型。支持显示进度与失败重试，TTS 和声纹模型按需勾选。目录由 DSH 插件存储记住，下次无需重复设置。
 
 ### 3 · 导入形象，选择声音
+
+#### 🐟 大肥鱼 Live2D 素材，直接从这里获取
+
+| 入口 | 用途 |
+| --- | --- |
+| **[作者原发布页 · 神宫凉子](https://www.bilibili.com/video/BV1KmxY66EZ3/)** | 作者的视频简介提供工房 / 群公告获取方式；[作者主页](https://space.bilibili.com/13737731)。 |
+| **[完整素材仓库 · YJackie-Li/DeepSeek-chan](https://github.com/YJackie-Li/DeepSeek-chan)** | 包含模型、贴图、物理、表情和动作；[固定版本 ZIP 直接下载](https://github.com/YJackie-Li/DeepSeek-chan/archive/824e03aa38c18c9eb2a9ee1344e3c8bed6671b1f.zip)，无需 Git。 |
+| [素材使用须知](https://github.com/YJackie-Li/DeepSeek-chan/blob/824e03aa38c18c9eb2a9ee1344e3c8bed6671b1f/README.md) | 下载、使用前阅读；公开仓库不等于素材可任意转售或再分发。 |
+
+**下载 ZIP 后不用解压**，在安装向导的「本地角色 ZIP 路径」选择它即可；v0.3.1 同时支持原配布包和上面的 GitHub ZIP，自动注册原有表情、动作并保留使用须知。[详细步骤](docs/DEEPSEEK_SKIN.md)
+
+> 素材仓库为社区公开存放，尚未核实仓库维护者就是模型作者，因此不标作“作者官方仓库”。该仓库的使用须知仍禁止擅自重新上传完整模型：本项目直接引用来源，不复制模型进自己的仓库或 Release；也不静默下载第三方角色。
+
 
 - **形象**：确认 Cubism Core 官方许可，导入有权使用的角色 ZIP；也支持用户授权的 HTTPS 地址与 SHA-256。
 - **声音**：在设置中选择本地 GPU / CPU 或 TTS API，按模式补齐模型或密钥。
@@ -180,7 +193,7 @@ node <插件目录>/bin/cli.mjs install --home "E:/DafeiyuCompanion" --source ch
 | [安装 / 升级 / 卸载](docs/DSH_RELEASE.md) | [屏幕与主动陪伴](docs/COMPANION_PRESENCE.md) | [协议约定](docs/PROTOCOL.md) |
 | [DSH 原生集成](docs/DSH_PLUGIN.md) | [System One 判断](docs/SYSTEMONE.md) | [功能矩阵](docs/DSH_FEATURE_PARITY.md) |
 | [语音与音色模式](docs/TTS_MODES.md) | [实时近似口型](docs/REALTIME_LIPSYNC.md) | [第三方与素材声明](THIRD_PARTY_NOTICES.md) |
-| [完整聊天能力](docs/DSH_NATIVE_CONVERSATION.md) | [屏幕工具与请求](docs/SCREEN_COMPANION.md) | [发行验收记录](https://github.com/rikey123/dafeiyu-dsh-live2d/releases/download/v0.3.0/VALIDATION.json) |
+| [完整聊天能力](docs/DSH_NATIVE_CONVERSATION.md) | [屏幕工具与请求](docs/SCREEN_COMPANION.md) | [发行验收记录](https://github.com/rikey123/dafeiyu-dsh-live2d/releases/download/v0.3.1/VALIDATION.json) |
 
 <details>
 <summary><b>本地开发与构建</b></summary>
@@ -190,7 +203,7 @@ npm --prefix web ci --no-audit
 npm --prefix web test
 npm run test:release
 npm run test:plugin
-npm run release -- --out "E:/DafeiyuReleases/0.3.0"
+npm run release -- --out "E:/DafeiyuReleases/0.3.1"
 ```
 
 构建保留原前端，按白名单收集发行代码与第三方许可证，输出 `.tgz`、`SHA256SUMS` 和审计报告。GitHub Actions 在 Windows 上执行测试、打包与审计，**只生成 artifact，不自动发布 npm 或公开 Release**。
@@ -202,7 +215,7 @@ npm run release -- --out "E:/DafeiyuReleases/0.3.0"
 - **DeepSeek Harness** 提供模型、Agent、工具、子智能体、原生会话、人格与记忆能力。
 - **Live2D / PixiJS / AIRI / wLipSync / Pipecat** 等上游项目提供渲染、动作、口型与语音交互基础；具体来源、改动和许可见[第三方声明](THIRD_PARTY_NOTICES.md)及各模块文档。
 - **蓝色大肥鱼人格**来自 `YUsaltyfish/dsh-onebot-qq`，保留完整上游文本、来源与 MIT 许可证。[来源信息](personas/blue-whale/source.json)
-- **DeepSeek-chan（大肥鱼）角色**：原画及拆分 **神宫凉子**，Live2D 建模 **霓虹猫_NeonNeko**，来源为神宫凉子免费配布模型。截图展示不构成模型再分发授权；请自行从作者处合法获取资源。[角色说明](docs/DEEPSEEK_SKIN.md)
+- **DeepSeek-chan（大肥鱼）角色**：原画及拆分 **神宫凉子**，Live2D 建模 **霓虹猫_NeonNeko**，来源为神宫凉子免费配布模型。截图展示不构成模型再分发授权；可直接访问[作者原发布页](https://www.bilibili.com/video/BV1KmxY66EZ3/)或[素材仓库](https://github.com/YJackie-Li/DeepSeek-chan)，无需自行搜索。[角色说明](docs/DEEPSEEK_SKIN.md)
 
 应用代码许可证尚待所有者确定，当前为 **`UNLICENSED`**，公开可见不等于已授予开源使用许可。第三方代码、人设、角色与 Cubism Core 分别遵循各自条款。本项目并非 DeepSeek 官方数字人产品。
 

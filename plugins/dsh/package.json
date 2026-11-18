@@ -1,6 +1,6 @@
 {
   "name": "@dafeiyu/dsh-live2d",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "大肥鱼实时数字人：DSH 原生会话、语音和 Live2D 面板",
   "private": false,
   "type": "module",

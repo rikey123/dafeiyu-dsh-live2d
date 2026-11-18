@@ -3,14 +3,14 @@
 本项目的发行物是官方 `dsh.bundle` 格式的 **npm `.tgz` 插件包**，不是 `.dshb`。
 包内包含原前端的预编译文件、Node 插件及完整语音后端代码；不需要原开发目录、Git、前端构建工具或预先创建的 Python 环境。
 
-当前发行版 **0.3.0** 声明 **Windows x64 + Node.js ≥22 + DSH 0.2.2-rc.1**。这不是对其他 DSH 版本或操作系统的兼容承诺。Python 3.12 和依赖通过 uv 安装，无需预装 Python 或 uv。
+当前发行版 **0.3.1** 声明 **Windows x64 + Node.js ≥22 + DSH 0.2.2-rc.1**。这不是对其他 DSH 版本或操作系统的兼容承诺。Python 3.12 和依赖通过 uv 安装，无需预装 Python 或 uv。
 
 ## 安装发行包
 
 推荐流程：
 
 ```powershell
-dsh plugin --profile web add "E:/Downloads/dafeiyu-dsh-live2d-0.3.0.tgz"
+dsh plugin --profile web add "E:/Downloads/dafeiyu-dsh-live2d-0.3.1.tgz"
 dsh web
 ```
 
@@ -19,7 +19,7 @@ dsh web
 1. 选择资源目录，建议 `E:/DafeiyuCompanion`。未选择目录时不向默认系统盘下载。安装向导记录目录到 DSH 的 `dafeiyu_installation` storage domain；只存目录和跳过素材偏好，不存聊天/记忆，也不修改 npm 包目录。
 2. 点击「开始安装」，自动拉取固定版本、双重 SHA256 校验的官方 uv 0.13.7 Windows x64 归档与可执行文件，随后准备 managed Python 3.12、两套独立环境、基础 SenseVoice ASR 与 Silero VAD。可选中国镜像（Python 清华源 / Hugging Face 镜像）或官方源；部分可选 TTS 上游准备脚本仍有自己的镜像配置，并非所有权重都会切换到同一来源。
 3. 按需勾选声纹、流式 ASR 或本地 TTS，不默认拉取大型 TTS。下载期间不执行推理，不调用付费 API，也不自动开麦或共享屏幕。面板切换不取消后台安装；停止插件会取消其拥有的安装进程树。
-4. Core 下载先确认 Live2D 官方许可。角色可填写合法取得的本地 ZIP，或提供有权使用的 HTTPS 下载地址、发布者公布的 SHA256 并确认授权；当前角色导入器支持本项目 DeepSeek/大肥鱼皮套结构，不是任意 Live2D ZIP。没有默认角色下载地址，也未重新托管原模型。缺角色/Core 时可暂时进入原设置界面，稍后用随包 CLI 补充素材，缺素材不等于数字人已经显示正常。
+4. Core 下载先确认 Live2D 官方许可。角色可填写合法取得的本地 ZIP，或提供有权使用的 HTTPS 下载地址、发布者公布的 SHA256 并确认授权；安装向导已直接提供[作者原发布页](https://www.bilibili.com/video/BV1KmxY66EZ3/)与[完整素材仓库](https://github.com/YJackie-Li/DeepSeek-chan)，无需自行搜索。v0.3.1 同时支持原配布 ZIP 和 GitHub 素材仓库 ZIP，不是任意 Live2D ZIP；使用须知原样保留。本项目不重新托管或静默下载原角色，详见[素材直达与导入](DEEPSEEK_SKIN.md)。缺角色/Core 时可暂时进入原设置界面，稍后用随包 CLI 补充素材，缺素材不等于数字人已经显示正常。
 5. 安装完成自动进入原应用；原前端样式、输入框和功能不变。TTS/System One 密钥仍由用户在原设置里配置；DSH 继续负责模型、Agent、会话、工具、人格和记忆。
 
 若已显式设置插件 `homeDir` 或 `DAFEIYU_HOME`，首次打开面板会检查并补齐基础环境；插件配置 `autoInstall:false` 可禁止这种自动补齐，仍可手动点击安装。`homeDir` 优先于环境变量，再优先于向导保存的目录。已就绪的安装不重新下载。改变目录需关闭插件后修改配置并重新安装环境，不移动现有 Windows venv。
@@ -47,7 +47,7 @@ uv/角色下载器在 Node 22.21+ / 24.5+ 可使用 `HTTPS_PROXY` / `HTTP_PROXY`
 1. 下载发行包并对照 `SHA256SUMS` 校验哈希。安装到你要使用的 DSH profile：
 
    ```powershell
-   dsh plugin --profile web add "E:/Downloads/dafeiyu-dsh-live2d-0.3.0.tgz"
+   dsh plugin --profile web add "E:/Downloads/dafeiyu-dsh-live2d-0.3.1.tgz"
    ```
 
    名称不同的 profile 替换 `web`。安装由 DSH 自己记录 bundle，不用修改 DSH 安装源码或手工插入绝对路径 patch。不要同时保留旧源码版插件的 managed block，否则会注册两份插件；旧版可用原 `scripts/dsh_plugin.ps1 -Action Uninstall` 移除，只移除它自己管理的块。
@@ -66,7 +66,7 @@ uv/角色下载器在 Node 22.21+ / 24.5+ 可使用 `HTTPS_PROXY` / `HTTP_PROXY`
 
    `sensevoice`、`speaker`、`streaming-asr` 的准备命令也会下载并校验固定版本的 Silero VAD，放在 `<home>/public/vad`；普通 ASR 人声过滤与声纹都需要它，不依赖旧开发机的 `web/public`。
 
-3. 原角色和 Cubism Core 的许可独立，不放进发行包。导入自行合法取得的本地文件：
+3. 原角色和 Cubism Core 的许可独立，不放进发行包。[角色来源、固定版本 ZIP 和导入教程](DEEPSEEK_SKIN.md)均有直接入口；导入合法取得的本地文件：
 
    ```powershell
    node $cli avatar --home "E:/DafeiyuCompanion" --archive "E:/Assets/DeepSeek免费公皮.zip"
@@ -145,7 +145,7 @@ DSH profile/node_modules/@dafeiyu/dsh-live2d/   # 可替换的插件代码
 ```powershell
 npm --prefix web ci --no-audit
 npm run test:release
-npm run release -- --out "E:/DafeiyuReleases/0.3.0"
+npm run release -- --out "E:/DafeiyuReleases/0.3.1"
 ```
 
 构建脚本重新编译 DSH 前端，只从白名单收集运行代码、依赖清单、人格和第三方声明，再实际执行 `npm pack`，生成 `.tgz`、`SHA256SUMS` 和 `release-report.json`。没有构建输入时直接失败，不把空壳包称为发行版。`--skip-build` 仅适合已经构建且确认版本一致的开发流程。
@@ -177,3 +177,12 @@ GitHub Actions 的 tag/workflow_dispatch 构建上传包和哈希作为 artifact
 - 不读取生产密钥或聊天数据库，不采集真实屏幕/麦克风，不启动 GPU 或付费调用，也未替换现有生产实例。角色/Core/大型可选 TTS 不在本次真实下载验收中；角色未重新托管，包未公开发布。
 
 正常失败会释放安装锁，可原命令重试。若强制杀死安装器导致 `<home>/.runtime/setup.lock` 遗留，必须先确认该目录的安装进程已结束，再手工移除这个锁文件后重试；不要删除用户环境或绕过正在进行的安装。
+
+
+### 0.3.1 素材直达与 ZIP 兼容验证（2026-11-18）
+
+- 新增作者原发布页、完整素材仓库、固定版本 ZIP 和使用须知直接入口；仓库维护者未核实为原作者，不标作官方，不重新托管完整模型。
+- 原前端 207 项、插件及发行工具 130 项、角色导入专项 13 项通过。主应用 6 个编译文件与原版本逐字节相同，人格原文哈希未变；仅首次安装门添加来源链接。
+- 真实下载固定提交 `824e03aa38c18c9eb2a9ee1344e3c8bed6671b1f` 的 GitHub ZIP（49,738,232 字节），导入 23 个表情、8 个动作组；另验证原始配布 ZIP，原 model3 与完整使用须知均保留。
+- 隔离浏览器加载实际导入的 GitHub 素材，moc3、5 张纹理、物理和待机动作均为 200，角色画面正常，安装门 4 个素材入口可见，390px 小屏无水平溢出，无页面脚本异常。
+- 本轮没有重跑真实 DSH 宿主、麦克风、GPU 推理或付费 API 验收；离线界面和资源加载不作为这些能力的新可用性证明。未修改、停止或启动生产语音实例。

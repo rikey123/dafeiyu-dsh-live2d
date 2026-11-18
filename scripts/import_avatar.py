@@ -56,10 +56,15 @@ def main() -> None:
         names = [entry.filename for entry in entries]
         if len(names) != len(set(names)):
             raise ValueError("duplicate archive entry names")
-        models = [entry for entry in entries if entry.filename.endswith("/DeepSeek/大肥鱼.model3.json")]
+        # Both the author's DeepSeek/ folder and a GitHub repository ZIP
+        # contain the same named model. Only its enclosing directory differs.
+        models = [entry for entry in entries if PurePosixPath(entry.filename).name == "大肥鱼.model3.json"]
         if len(models) != 1:
-            raise ValueError("expected exactly one DeepSeek/大肥鱼.model3.json")
+            raise ValueError("expected exactly one 大肥鱼.model3.json")
         original = models[0]
+        safe_relative(original.filename)
+        if original.is_dir() or stat.S_ISLNK(original.external_attr >> 16):
+            raise ValueError("invalid model manifest member")
         if original.file_size > 1024 * 1024:
             raise ValueError("model manifest exceeds size limit")
         prefix = original.filename[: -len("大肥鱼.model3.json")]
@@ -87,12 +92,24 @@ def main() -> None:
             infos.append((local, entry))
         if len(infos) > MAX_FILES or sum(entry.file_size for _, entry in infos) > MAX_TOTAL_BYTES:
             raise ValueError("model resources exceed extraction limits")
-        for local, entry in infos:
-            write_local(root, safe_relative(local), archive.read(entry))
         notices = [entry for entry in entries if entry.filename.endswith("DeepSeek免费 Live2D 模型使用须知.txt")]
+        if not notices:
+            notices = [entry for entry in entries if entry.filename == prefix + "使用须知.txt"]
+        if not notices:
+            notices = [entry for entry in entries if entry.filename == prefix + "README.md"]
         if len(notices) != 1 or notices[0].file_size > 1024 * 1024:
             raise ValueError("model usage notice missing or unexpectedly large")
-        write_local(root, PurePosixPath("使用须知.txt"), archive.read(notices[0]))
+        notice = notices[0]
+        safe_relative(notice.filename)
+        if notice.is_dir() or stat.S_ISLNK(notice.external_attr >> 16):
+            raise ValueError("invalid model usage notice member")
+        notice_bytes = archive.read(notice)
+        if notice.filename.endswith("README.md"):
+            # A repository README is accepted only when it actually carries the
+            # model's usage notice, not an unrelated project introduction.
+            notice_text = notice_bytes.decode("utf-8-sig")
+            if "使用须知" not in notice_text or "DeepSeek-chan" not in notice_text:
+                raise ValueError("repository README does not contain the model usage notice")
         references["Expressions"] = [
             {"Name": PurePosixPath(p).name[:-len(".exp3.json")], "File": p}
             for p in expression_paths
@@ -105,10 +122,14 @@ def main() -> None:
                 raise ValueError(f"duplicate motion group: {group}")
             references["Motions"][group] = [{"File": motion}]
         model["Dafeiyu"] = {"Profile": "deepseek"}
-        write_local(root, PurePosixPath("avatar.model3.json"), json.dumps(model, ensure_ascii=False, indent=2).encode("utf-8"))
         cdi = json.loads(archive.read(prefix + references["DisplayInfo"]).decode("utf-8-sig"))
         parameters = [p.get("Id", "") for p in cdi.get("Parameters", [])]
         interesting = [p for p in parameters if any(part in p.lower() for part in ("mouth", "eye", "angle", "body", "breath"))]
+        # Complete format/notice validation before changing existing assets.
+        for local, entry in infos:
+            write_local(root, safe_relative(local), archive.read(entry))
+        write_local(root, PurePosixPath("使用须知.txt"), notice_bytes)
+        write_local(root, PurePosixPath("avatar.model3.json"), json.dumps(model, ensure_ascii=False, indent=2).encode("utf-8"))
         print(json.dumps({"output": str(root), "expressions": len(expression_paths), "motion_groups": list(references["Motions"]), "parameter_ids": interesting, "license": "使用须知.txt"}, ensure_ascii=False, indent=2))
 
 

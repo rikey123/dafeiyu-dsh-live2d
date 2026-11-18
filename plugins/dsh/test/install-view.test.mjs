@@ -68,3 +68,26 @@ test('failed status polling retries and reaches ready', async()=>{
   assert.ok(find(host,n=>n.textContent.includes('自动重试')));
   await new Promise(resolve=>setTimeout(resolve,1600)); assert.equal(ready,1); assert.equal(calls,2); view.dispose();
 });
+
+test('character sources are direct links, but never trigger automatic downloads', async()=>{
+  const host=makeHost(), requests=[];
+  const view=await mountInstallView(host,{fetch:async(path, options)=>{requests.push([path,options]);return response(base);}});
+  const hrefs=[
+    'https://www.bilibili.com/video/BV1KmxY66EZ3/',
+    'https://github.com/YJackie-Li/DeepSeek-chan',
+    'https://github.com/YJackie-Li/DeepSeek-chan/archive/824e03aa38c18c9eb2a9ee1344e3c8bed6671b1f.zip',
+    'https://github.com/YJackie-Li/DeepSeek-chan/blob/824e03aa38c18c9eb2a9ee1344e3c8bed6671b1f/README.md',
+  ];
+  for(const href of hrefs){
+    const link=find(host,n=>n.tag==='a'&&n.href===href);
+    assert.ok(link);assert.equal(link.target,'_blank');assert.equal(link.rel,'noopener noreferrer');
+  }
+  assert.ok(find(host,n=>n.textContent.includes('社区仓库未核实为作者本人维护')));
+  assert.ok(find(host,n=>n.textContent.includes('神宫凉子')));
+  assert.deepEqual(requests.map(([path])=>path),['/dafeiyu/install']);
+  find(host,n=>n.tag==='form').dispatch('submit');await flush();
+  const body=JSON.parse(requests[1][1].body);
+  assert.equal(body.avatarUrl,undefined);assert.equal(body.avatarSha256,undefined);
+  assert.equal(body.acceptAvatarLicense,false);
+  view.dispose();
+});
