@@ -1,0 +1,60 @@
+{
+  "name": "@dafeiyu/dsh-live2d",
+  "version": "0.3.0",
+  "description": "大肥鱼实时数字人：DSH 原生会话、语音和 Live2D 面板",
+  "private": false,
+  "type": "module",
+  "main": "./src/index.mjs",
+  "exports": {
+    ".": "./src/index.mjs",
+    "./client": "./src/client.js",
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml"
+  },
+  "files": [
+    "src",
+    "app",
+    "bin",
+    "cordis.patch.yml",
+    "icon.svg",
+    "README.md",
+    "docs",
+    "THIRD_PARTY_NOTICES.md",
+    "LICENSE*"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "dsh": {
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar",
+        "@deepseek-ai/dsh-api-session-controller",
+        "@deepseek-ai/dsh-client-ui-conversation",
+        "@deepseek-ai/dsh-client-ui-chat"
+      ],
+      "platform": "web"
+    },
+    "bundle": {
+      "patch": "./cordis.patch.yml",
+      "platforms": [
+        "win32"
+      ]
+    },
+    "manifestVersion": 1
+  },
+  "bin": {
+    "dafeiyu": "./bin/cli.mjs"
+  },
+  "icon": "./icon.svg",
+  "license": "UNLICENSED",
+  "publishConfig": { "access": "public" },
+  "engines": {
+    "dsh": "0.2.2-rc.1",
+    "node": ">=22"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "~4.1.0"
+  }
+}

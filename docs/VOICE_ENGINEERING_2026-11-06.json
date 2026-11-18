@@ -1,0 +1,210 @@
+{
+  "date": "2026-11-06",
+  "priority": "Engineering mechanisms first; CPU latency reported separately, not an implementation veto.",
+  "reference_scope": {
+    "repositories": 46,
+    "capabilities": 99,
+    "additional_findings": 59
+  },
+  "local_vits_mfa_adapter": {
+    "tts_provider": "actual local sherpa VITS CPU service 8766",
+    "alignment_sidecar": "real WSL MFA 3.3.9",
+    "audio_sha256": "7b26fc175a46cd25581ff1a8fa2756b8b1934c1fcef0f40a4ca1ca23f1dfa2dc",
+    "duration_s": 1.328,
+    "elapsed_s": 26.93305885599989,
+    "phone_count": 23,
+    "frame_count": 7,
+    "max_frame_bytes": 6400,
+    "first_phone": {
+      "text": "ɲ",
+      "start_s": 0.03,
+      "end_s": 0.07,
+      "unit": "phoneme"
+    }
+  },
+  "local_vits_mfa_browser": {
+    "passed": true,
+    "method": "Real isolated TTS and MFA; Edge official worklet and Cubism; muted system output",
+    "status": {
+      "cosyvoice": {
+        "ready": false,
+        "detail": "未连接"
+      },
+      "mfa": {
+        "ready": true,
+        "device": "CPU",
+        "detail": "prepared; inference not probed",
+        "busy": false
+      }
+    },
+    "epoch": "eff70bf3-ef94-4fad-a5b3-ad9c6be881cc",
+    "audio_sha256": "3625415a5bb47214fb342aadf606f1364b56b8fe2f228aa18930a4070b63d483",
+    "samples": 40320,
+    "stopLabel": true,
+    "cancelReleasedMs": 3085,
+    "noCancelledAudio": true,
+    "confirmedHistory": "你好呀，我们慢慢聊。",
+    "nextEpoch": "613981e6-cba3-470f-b92d-5a905afde4d1",
+    "errors": []
+  },
+  "cosy_worker_cpu": {
+    "cold_ready_s": 53.937,
+    "first_session_total_s": 80.359,
+    "first_audio_duration_s": 4.28,
+    "warm_ready_s": 0.016,
+    "cold_rebuild_after_cancel_s": 36.281,
+    "cancel_worker_exited": true,
+    "rebuild_completed": true,
+    "method": "Agent actual WSL CPU model two-text-fragment WebSocket test; warm reuse then cancellation/rebuild; separate from browser measurements."
+  },
+  "lifecycle": {
+    "wsl_wrapper_descendant_cleanup": true,
+    "includes_child_separate_session": true,
+    "script": "scripts/check_wsl_voice_lifecycle.py"
+  },
+  "verification": {
+    "earlier_backend_and_adapter_suite": {
+      "passed": 82,
+      "seconds": 131.58
+    },
+    "latest_cancellation_flow_suite": {
+      "passed": 19,
+      "seconds": 6.07
+    },
+    "frontend": {
+      "passed": 47,
+      "production_build": true
+    },
+    "framework_final": {
+      "passed": 89,
+      "seconds": 132.12,
+      "environment": ".venv-voice",
+      "scope": "tests and Pipecat/Cosy/alignment adapters/MFA health"
+    },
+    "native_speech": {
+      "passed": 37,
+      "seconds": 1.77,
+      "environment": ".venv",
+      "scope": "speech excluding gateway-only adapter modules; includes short-window isolation/regression"
+    }
+  },
+  "remaining": [
+    "Production native AEC device/render-reference routing and browser-AEC mode switch remain unimplemented; actual speaker/microphone echo and double-talk unmeasured.",
+    "Owner short-command production gate remains >=2 seconds. Offline short-window tool implemented; synthetic tiny sample shows unresolved false rejections. Independent human-labelled FAR/FRR is required before changing this gate.",
+    "Online speaker tracking/cross-window identity association/overlap source extraction remain unimplemented; measured offline clustering quality failed.",
+    "Mandarin approximate viseme accuracy, cloning similarity, voice quality and long human conversations need labelled/human evaluation.",
+    "No GPU or NPU inference acceptance in these results."
+  ],
+  "cosy_mfa_browser": {
+    "passed": true,
+    "method": "Real isolated TTS and MFA; Edge official worklet and Cubism; muted system output",
+    "status": {
+      "cosyvoice": {
+        "ready": true,
+        "configured": true,
+        "device": "cpu",
+        "device_requested": "cpu",
+        "detail": "模型已在隔离进程中加载。",
+        "busy": false
+      },
+      "mfa": {
+        "ready": true,
+        "device": "CPU",
+        "detail": "prepared; inference not probed",
+        "busy": false
+      }
+    },
+    "epoch": "a59274c4-2dfb-40c2-8fea-8087a8c7aa17",
+    "audio_sha256": "524a541f38c13904282ceff7dddf68b1ca17c13fccf78fb49cdfc75c83ac6ec2",
+    "samples": 73920,
+    "stopLabel": true,
+    "cancelReleasedMs": 80,
+    "noCancelledAudio": true,
+    "promptTurnOrder": true,
+    "confirmedHistory": "你好呀，我们慢慢聊。",
+    "nextEpoch": "558282fe-ba2c-44eb-8209-8f7b82c1a506",
+    "errors": [],
+    "llm": "Controlled local SSE provider with repeated identical reply; no cloud inference measured by this test."
+  },
+  "conversation_history": {
+    "canonical_confirmed_store": true,
+    "cancelled_turn_has_no_assistant": true,
+    "repeated_identical_reply_correct_turn": true,
+    "next_llm_prompt_order_verified": true
+  },
+  "production_restart": {
+    "gateway": "http://127.0.0.1:8765",
+    "loopback_only": true,
+    "supervisor_owns_optional_services": true,
+    "qa_gateways_stopped": true,
+    "native_speech_actual_device": "CPU",
+    "cosyvoice_lazy_load": true,
+    "mfa_runtime_prepared": true,
+    "primary_browser": {
+      "engine": "pipecat",
+      "version": "1.15.0",
+      "normal_autoplay_handshake": true,
+      "missing_key_error": false,
+      "cloud_called": false,
+      "errors": []
+    }
+  },
+  "owner_short_window": {
+    "mode": "offline_experimental_short_window",
+    "provenance": "Synthetic VITS enrollment and independent text tests; Kokoro alternative voice, seeded noise/silence. Plumbing only; not human accuracy.",
+    "production_gate_changed": false,
+    "threshold": 0.65,
+    "window_crop": "prefix from each independent test recording; not independent trials across windows",
+    "limitations": "Exploratory only; synthetic samples do not establish human FAR/FRR, replay resistance, or production readiness. Short-window scores are not identity authentication.",
+    "summary": [
+      {
+        "window_s": 0.5,
+        "owner_trials": 2,
+        "other_speech_trials": 1,
+        "nonspeech_trials": 2,
+        "false_accepts": 0,
+        "far": 0.0,
+        "effective_owner_rejections": 2,
+        "effective_frr": 1.0,
+        "nonspeech_false_accepts": 0,
+        "uncertain": 3
+      },
+      {
+        "window_s": 1.0,
+        "owner_trials": 2,
+        "other_speech_trials": 1,
+        "nonspeech_trials": 2,
+        "false_accepts": 0,
+        "far": 0.0,
+        "effective_owner_rejections": 1,
+        "effective_frr": 0.5,
+        "nonspeech_false_accepts": 0,
+        "uncertain": 3
+      },
+      {
+        "window_s": 1.5,
+        "owner_trials": 2,
+        "other_speech_trials": 1,
+        "nonspeech_trials": 2,
+        "false_accepts": 0,
+        "far": 0.0,
+        "effective_owner_rejections": 1,
+        "effective_frr": 0.5,
+        "nonspeech_false_accepts": 0,
+        "uncertain": 3
+      },
+      {
+        "window_s": 2.0,
+        "owner_trials": 2,
+        "other_speech_trials": 1,
+        "nonspeech_trials": 2,
+        "false_accepts": 0,
+        "far": 0.0,
+        "effective_owner_rejections": 1,
+        "effective_frr": 0.5,
+        "nonspeech_false_accepts": 0,
+        "uncertain": 3
+      }
+    ]
+  }
+}

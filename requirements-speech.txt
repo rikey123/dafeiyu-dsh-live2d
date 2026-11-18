@@ -1,0 +1,10 @@
+fastapi>=0.115,<1
+uvicorn>=0.34,<1
+python-multipart>=0.0.20,<1
+numpy>=1.26,<3
+faster-whisper>=1.1,<2
+sherpa-onnx>=1.12,<3
+websockets>=15,<18
+huggingface-hub>=0.26,<2
+pywin32>=308; sys_platform == "win32"
+# OpenVINO GenAI is optional. See speech/README.md.

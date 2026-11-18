@@ -1,0 +1,80 @@
+{
+  "method": "real local inference; protobuf PCM; no microphone, playback or receipts",
+  "voice_policy": {
+    "requested": "auto",
+    "predicted": "cpu",
+    "reason": "gpu_unavailable",
+    "prediction_only": true
+  },
+  "local_speech": {
+    "status": "ok",
+    "asr": {
+      "ready": true,
+      "device": "CPU",
+      "detail": "sherpa-onnx SenseVoice int8"
+    },
+    "tts": {
+      "ready": true,
+      "device": "CPU",
+      "detail": "sherpa-onnx VITS: sherpa-onnx-vits-zh-ll"
+    },
+    "devices": [
+      "CPU",
+      "GPU",
+      "NPU"
+    ],
+    "speaker": {
+      "enabled": true,
+      "ready": false,
+      "enrolled": false,
+      "detail": "声纹模型尚未加载",
+      "threshold": 0.65,
+      "not_authentication": true
+    },
+    "streaming_asr": {
+      "enabled": true,
+      "files_present": true,
+      "missing_files": [],
+      "loaded": false,
+      "device": null
+    },
+    "ready": true,
+    "detail": "本地语音可用"
+  },
+  "cosy_after": {
+    "ready": false,
+    "configured": true,
+    "device": null,
+    "device_requested": "auto",
+    "effective_device": null,
+    "gpu_eligible": false,
+    "hardware": {
+      "cuda_available": false,
+      "total_gib": null,
+      "free_gib": null,
+      "effective_free_gib": null,
+      "min_free_gib": 6.0,
+      "min_total_gib": 7.5,
+      "reason": "cuda_unavailable"
+    },
+    "detail": "模型将在请求的隔离进程中加载。",
+    "busy": false,
+    "model_name": "Fun-CosyVoice3-0.5B-2512",
+    "model_version": "3",
+    "precision_requested": "auto",
+    "precision": null
+  },
+  "turns": [
+    {
+      "first_pcm_seconds": 0.4059999999590218,
+      "pcm_bytes": 1920,
+      "stopped_during_audio": true
+    },
+    {
+      "first_pcm_seconds": 0.40600000007543713,
+      "pcm_bytes": 109440,
+      "stopped_during_audio": false
+    }
+  ],
+  "unconfirmed_assistant_history": 0
+}

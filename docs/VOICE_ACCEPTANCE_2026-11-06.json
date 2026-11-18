@@ -1,0 +1,748 @@
+{
+  "date": "2026-11-06",
+  "framework_python_tests": 66,
+  "speech_python_tests": 33,
+  "frontend_tests": 44,
+  "build": "npm ci / patch-package / tsc / vite passed",
+  "playback": {
+    "passed": true,
+    "turns": [
+      {
+        "text": "换一个问题。",
+        "contexts": [
+          {
+            "epoch": "e429905d-472e-416f-881d-5a718a5e00c9",
+            "samples": 40320,
+            "consumed": 40320,
+            "text": "好的，我们换一个问题。"
+          },
+          {
+            "epoch": "6883eb12-a251-46ff-8b1a-2d409784f91c",
+            "samples": 25920,
+            "consumed": 25920,
+            "text": "你想聊些什么？"
+          }
+        ],
+        "receipt_count": 2,
+        "milliseconds_to_receipt": 3908,
+        "history_confirmed": true
+      },
+      {
+        "text": "请继续详细介绍。",
+        "contexts": [
+          {
+            "epoch": "4fea9700-887e-4b22-8c58-0522d9b4b5ce",
+            "samples": 74880,
+            "consumed": 74880,
+            "text": "你好，我是大肥鱼，很高兴和你聊天。"
+          },
+          {
+            "epoch": "77ac9849-e431-4ec1-9f42-5fc7ded2c9f4",
+            "samples": 50880,
+            "consumed": 50880,
+            "text": "我们可以慢慢聊今天发生的事情。"
+          },
+          {
+            "epoch": "04241eff-5c65-462c-8e56-df3f9eae0781",
+            "samples": 57600,
+            "consumed": 57600,
+            "text": "你可以在我说话的时候随时插话。"
+          },
+          {
+            "epoch": "0c29e6bf-9b57-4eb6-8c9c-1ca2da061a55",
+            "samples": 60480,
+            "consumed": 60480,
+            "text": "简单的附和不会让我重新开始回答。"
+          },
+          {
+            "epoch": "088a1f30-7fcd-4508-8ae4-26c5b44134e3",
+            "samples": 69120,
+            "consumed": 69120,
+            "text": "如果你想换个话题，直接告诉我就好。"
+          },
+          {
+            "epoch": "bac163f1-906c-43b5-a95b-aa9ea3878060",
+            "samples": 46080,
+            "consumed": 46080,
+            "text": "我会停下来认真听你的问题。"
+          }
+        ],
+        "receipt_count": 6,
+        "milliseconds_to_receipt": 15714,
+        "history_confirmed": true
+      }
+    ],
+    "interrupted_epoch": "1c3a22f9-1cb4-41ab-88c3-d3fad58b2a6b",
+    "interruption_did_not_persist": true,
+    "next_turn_confirmed": true,
+    "heard_prefix": {
+      "text": "你好，我是大肥鱼，很高兴和你聊天。我们可以慢慢聊今天发生的事情。",
+      "confirmed_contexts": 2,
+      "persisted_once": true,
+      "next_turn_confirmed": true
+    },
+    "errors": [],
+    "limitation": "Actual headless Edge official worklet consumption and isolated database, controlled LLM, CPU TTS. Native TTS context confirmation; a context can contain multiple sentences. Not word alignment or a physical speaker/hearing test."
+  },
+  "voice_browser": {
+    "results": [
+      {
+        "name": "official handshake without microphone permission",
+        "passed": true
+      },
+      {
+        "name": "permission denial safely releases initialization and allows retry",
+        "passed": true
+      },
+      {
+        "name": "real official PCM playback drives actual Cubism mouth",
+        "passed": true
+      },
+      {
+        "name": "real local synthesized acknowledgement preserves reply",
+        "passed": true,
+        "transcript": [
+          "好",
+          "好的。"
+        ]
+      },
+      {
+        "name": "real local voice barge-in and next reply",
+        "passed": true,
+        "virtual_input_duration_ms": 1966.5,
+        "input_to_interruption_ms": 1523.1875
+      },
+      {
+        "name": "manual stop uses framework cancellation",
+        "passed": true
+      },
+      {
+        "name": "microphone off releases native tracks",
+        "passed": true
+      },
+      {
+        "name": "disconnect reconnects same session without automatically recording",
+        "passed": true
+      }
+    ],
+    "errors": [],
+    "fixture_boundary": "Backchannel window ends at the following fixture transcription; a delayed final and subsequent valid stop partial may arrive only65ms apart. No wall-clock window conflation."
+  },
+  "owner": {
+    "same_voice_new_text": {
+      "text": "等一下，我想换一个问题，请告诉我今天应该做些什么。",
+      "audio": {
+        "sample_rate": 16000,
+        "channels": 1,
+        "sample_format": "pcm_s16le",
+        "duration_s": 3.926
+      },
+      "quality": {
+        "speech_detected": true,
+        "vad_segments": [
+          {
+            "start_s": 0.006,
+            "end_s": 3.904
+          }
+        ],
+        "vad_model": "silero_vad_v5",
+        "vad_device": "CPU"
+      },
+      "alignment": {
+        "tokens": null,
+        "words": null,
+        "reason": "not_available_for_current_asr"
+      },
+      "speaker": {
+        "accepted": true,
+        "reason": "match",
+        "score": 0.9161,
+        "voiced_seconds": 3.9
+      },
+      "http_seconds": 0.365
+    },
+    "different_voice": {
+      "text": "",
+      "speaker": {
+        "accepted": false,
+        "reason": "mismatch",
+        "score": 0.1203,
+        "voiced_seconds": 6.06
+      },
+      "audio": {
+        "sample_rate": 16000,
+        "channels": 1,
+        "sample_format": "pcm_s16le",
+        "duration_s": 7.241625
+      },
+      "quality": {
+        "speech_detected": true,
+        "vad_segments": [
+          {
+            "start_s": 0.166,
+            "end_s": 2.708
+          },
+          {
+            "start_s": 3.014,
+            "end_s": 6.548
+          }
+        ],
+        "vad_model": "silero_vad_v5",
+        "vad_device": "CPU"
+      },
+      "alignment": {
+        "tokens": null,
+        "words": null,
+        "reason": "not_available_for_current_asr"
+      },
+      "http_seconds": 0.404
+    },
+    "silence": {
+      "text": "",
+      "reason": "no_speech",
+      "audio": {
+        "sample_rate": 16000,
+        "channels": 1,
+        "sample_format": "pcm_s16le",
+        "duration_s": 4.0
+      },
+      "quality": {
+        "speech_detected": false,
+        "vad_segments": [],
+        "vad_model": "silero_vad_v5",
+        "vad_device": "CPU"
+      },
+      "alignment": {
+        "tokens": null,
+        "words": null,
+        "reason": "not_available_for_current_asr"
+      },
+      "speaker": {
+        "accepted": null,
+        "reason": "insufficient_speech"
+      },
+      "http_seconds": 0.088
+    },
+    "noise": {
+      "text": "",
+      "reason": "no_speech",
+      "audio": {
+        "sample_rate": 16000,
+        "channels": 1,
+        "sample_format": "pcm_s16le",
+        "duration_s": 4.0
+      },
+      "quality": {
+        "speech_detected": false,
+        "vad_segments": [],
+        "vad_model": "silero_vad_v5",
+        "vad_device": "CPU"
+      },
+      "alignment": {
+        "tokens": null,
+        "words": null,
+        "reason": "not_available_for_current_asr"
+      },
+      "speaker": {
+        "accepted": null,
+        "reason": "insufficient_speech"
+      },
+      "http_seconds": 0.097
+    },
+    "short": {
+      "text": "",
+      "speaker": {
+        "accepted": null,
+        "reason": "insufficient_speech",
+        "score": null,
+        "voiced_seconds": 0.99
+      },
+      "audio": {
+        "sample_rate": 16000,
+        "channels": 1,
+        "sample_format": "pcm_s16le",
+        "duration_s": 1.0
+      },
+      "quality": {
+        "speech_detected": true,
+        "vad_segments": [
+          {
+            "start_s": 0.006,
+            "end_s": 0.992
+          }
+        ],
+        "vad_model": "silero_vad_v5",
+        "vad_device": "CPU"
+      },
+      "alignment": {
+        "tokens": null,
+        "words": null,
+        "reason": "not_available_for_current_asr"
+      },
+      "http_seconds": 0.177
+    },
+    "pipeline": {
+      "different_voice_no_interrupt": true,
+      "duck_reset": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "next_owner_turn": true,
+      "audio_bytes_during_rejection": 581760,
+      "errors": []
+    },
+    "history_user_count": 2,
+    "passed": true,
+    "method": "Temporary profile/settings; real CPU ERes2Net, Silero, SenseVoice, VITS and Windows SAPI; controlled LLM and paced official protobuf. No human accuracy or physical AEC claim."
+  },
+  "owner_browser": {
+    "passed": true,
+    "recordings": 2,
+    "actual_enrollment": [
+      {
+        "status": 200,
+        "body": {
+          "enrolled": true,
+          "samples": 2,
+          "not_authentication": true
+        }
+      }
+    ],
+    "no_automatic_microphone": true,
+    "close_releases_tracks": true,
+    "errors": [],
+    "method": "Real Edge file-backed microphone, official recorder, WAV conversion, HTTP enrollment, local ERes2Net; no human recording or accuracy claim."
+  },
+  "limitations": "Synthetic/file-backed microphone and controlled local LLM; actual CPU inference and official Edge player. No human accuracy, physical AEC, sound-card stop latency, or NPU acceptance. Long-session measurement pending.",
+  "mouth_profiles": {
+    "results": [
+      {
+        "name": "normal autoplay handshake and both profile reconnects without mic",
+        "passed": true
+      },
+      {
+        "name": "WASM failure is visible and handshake still works",
+        "passed": true
+      }
+    ],
+    "api_key_set": true,
+    "limitations": "No cloud conversation or physical microphone/speaker measurement."
+  },
+  "vowel_shapes": {
+    "passed": true,
+    "method": "Five local VITS vowel fixtures normalized to identical RMS; paced through production Pipecat/official 24k PCM worklet/wLipSync/DeepSeek mouth. Windows sampled by player offset. Tests acoustic shape dependence; does not measure phoneme accuracy or physical AV delay.",
+    "means": [
+      {
+        "label": "A",
+        "start": 0,
+        "end": 1.5,
+        "rms": 2799.9980789799956,
+        "samples": 119,
+        "open": 0.48197424962740987,
+        "form": 0.006928125484416089,
+        "pucker": 0,
+        "funnel": 0,
+        "wide": 0.16993957238287485,
+        "classifications": {
+          "A": 56,
+          "E": 1
+        }
+      },
+      {
+        "label": "I",
+        "start": 1.9,
+        "end": 3.4,
+        "rms": 2800.0020600662065,
+        "samples": 110,
+        "open": 0.48965836655009876,
+        "form": 0.24899348440495403,
+        "pucker": 0,
+        "funnel": 0,
+        "wide": 0,
+        "classifications": {
+          "I": 49,
+          "E": 1
+        }
+      },
+      {
+        "label": "U",
+        "start": 3.8,
+        "end": 5.3,
+        "rms": 2800.008115226335,
+        "samples": 113,
+        "open": 0.43684359751971424,
+        "form": -0.24142774299973935,
+        "pucker": 0.2822064944600637,
+        "funnel": 0.05579234650605811,
+        "wide": 0.023993970125715816,
+        "classifications": {
+          "U": 38,
+          "A": 6,
+          "O": 6
+        }
+      },
+      {
+        "label": "E",
+        "start": 5.7,
+        "end": 7.2,
+        "rms": 2800.0018059443582,
+        "samples": 108,
+        "open": 0.4402560790379842,
+        "form": 0.2065070849256935,
+        "pucker": 0,
+        "funnel": 0,
+        "wide": 0.05328457616054005,
+        "classifications": {
+          "A": 11,
+          "E": 34,
+          "S": 3
+        }
+      },
+      {
+        "label": "O",
+        "start": 7.6,
+        "end": 9.1,
+        "rms": 2800.0037998486123,
+        "samples": 107,
+        "open": 0.4613903724701605,
+        "form": -0.28275262390341716,
+        "pucker": 0.14528840957818745,
+        "funnel": 0.25056526558386666,
+        "wide": 0,
+        "classifications": {
+          "O": 29,
+          "U": 19
+        }
+      }
+    ],
+    "ranges": {
+      "form": 0.5317461083083712,
+      "funnel": 0.25056526558386666,
+      "pucker": 0.2822064944600637
+    },
+    "errors": []
+  },
+  "owner_corpus": {
+    "provenance": "Synthetic VITS enrollment and independent text tests; Kokoro alternative voice, seeded noise/silence. Plumbing only; not human accuracy.",
+    "threshold": 0.65,
+    "threshold_tuned": false,
+    "production_profile_modified": false,
+    "enrollment_sha256": [
+      "5bf68a9d47e5f0209106af68870713a78b33ea27bd37b4ce186e09cc1c1f639d",
+      "ce37c21da78599e7d9df040bf11e3449172e27b41713504ec86ecc48f0d91ed1"
+    ],
+    "enrollment_pair_scores": [
+      0.8290599584579468
+    ],
+    "results": [
+      {
+        "id": "topic-change",
+        "kind": "speech",
+        "expected_owner": true,
+        "accepted": true,
+        "score": 0.857683539390564,
+        "reason": "scored",
+        "voiced_seconds": 2.626,
+        "audio_sha256": "c31f4b3f73289319a758a88d029b5afa5a84926b4c9a6f6636aca76b511948e0",
+        "processing_seconds": 0.13989009999204427
+      },
+      {
+        "id": "backchannel-ok",
+        "kind": "speech",
+        "expected_owner": true,
+        "accepted": null,
+        "score": null,
+        "reason": "insufficient_speech",
+        "voiced_seconds": 0.416,
+        "audio_sha256": "306728521d84c8f6dadd4be7c162f54ecc48b72ac138d2fc13c4ccb2281ba4b8",
+        "processing_seconds": 0.07532800000626594
+      },
+      {
+        "id": "other",
+        "kind": "speech",
+        "expected_owner": false,
+        "accepted": false,
+        "score": 0.3638005554676056,
+        "reason": "scored",
+        "voiced_seconds": 6.178,
+        "audio_sha256": "09a976343cd5ba86b428873060ca6df421b7af9a66b563452415eb0026b361ab",
+        "processing_seconds": 0.27274450002005324
+      },
+      {
+        "id": "noise",
+        "kind": "noise",
+        "expected_owner": false,
+        "accepted": null,
+        "score": null,
+        "reason": "insufficient_speech",
+        "voiced_seconds": 0.0,
+        "audio_sha256": "4ba6454b37925f0442415be8035f1b151b1067f83c065c5cfafcf54195aad79e",
+        "processing_seconds": 0.09745050000492483
+      },
+      {
+        "id": "silence",
+        "kind": "silence",
+        "expected_owner": false,
+        "accepted": null,
+        "score": null,
+        "reason": "insufficient_speech",
+        "voiced_seconds": 0.0,
+        "audio_sha256": "20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa",
+        "processing_seconds": 0.10036779998335987
+      }
+    ],
+    "summary": {
+      "owner_trials": 2,
+      "other_trials": 1,
+      "false_accepts": 0,
+      "far": 0.0,
+      "non_speech_trials": 2,
+      "non_speech_false_accepts": 0,
+      "effective_owner_rejections": 1,
+      "effective_frr": 0.5,
+      "scored_owner_trials": 1,
+      "scored_owner_rejections": 0,
+      "scored_frr": 0.0,
+      "uncertain_trials": 3
+    },
+    "limitations": "Short/unknown owner trials count as effective rejection. Scored-only FRR has a separate denominator. Non-speech trials are excluded from impostor FAR. No threshold fitting, identity cache bypass, online overlapping separation, physical AEC or replay resistance inferred. Synthetic trials do not establish human FAR/FRR."
+  },
+  "reconnect_resources": {
+    "passed": true,
+    "method": "Actual Edge; three handshake-completed connections with fake microphone, disconnect/reconnect/manual mic reopen each time",
+    "peak_live_contexts": 2,
+    "final": {
+      "contexts": [
+        "closed",
+        "closed",
+        "closed",
+        "closed",
+        "closed",
+        "closed",
+        "running",
+        "running"
+      ],
+      "tracks": [
+        "ended",
+        "ended",
+        "ended",
+        "live"
+      ],
+      "sockets": [
+        3,
+        3,
+        3,
+        1
+      ]
+    },
+    "snapshots": [
+      {
+        "contexts": [
+          "closed",
+          "closed",
+          "running"
+        ],
+        "tracks": [
+          "ended"
+        ],
+        "sockets": [
+          3,
+          1
+        ]
+      },
+      {
+        "contexts": [
+          "closed",
+          "closed",
+          "closed",
+          "closed",
+          "running"
+        ],
+        "tracks": [
+          "ended",
+          "ended"
+        ],
+        "sockets": [
+          3,
+          3,
+          1
+        ]
+      },
+      {
+        "contexts": [
+          "closed",
+          "closed",
+          "closed",
+          "closed",
+          "closed",
+          "closed",
+          "running"
+        ],
+        "tracks": [
+          "ended",
+          "ended",
+          "ended"
+        ],
+        "sockets": [
+          3,
+          3,
+          3,
+          1
+        ]
+      }
+    ],
+    "limitation": "Local connection failure injection, not wide-area packet jitter; headless/fake mic, not physical AEC."
+  },
+  "deepseek_primary": {
+    "passed": true,
+    "model": "deepseek-chat",
+    "assistant": "你好呀，今天过得怎么样？",
+    "observed": {
+      "first_mouth_ms": 1808.300000011921,
+      "max_open": 0.48999980092048645,
+      "max_form": 0.28625813126564026,
+      "player_worklet_events": 107,
+      "mic_calls": 0
+    },
+    "playback_contexts": 1,
+    "all_contexts_confirmed": true,
+    "errors": [],
+    "limitation": "One real cloud text turn, local CPU TTS and actual browser/model; no microphone ASR or physical sound measurement. First mouth includes click/network/model/TTS/render and is not speaker latency."
+  },
+  "matched_corpus": {
+    "source": "docs/VOICE_CORPUS_MATCHED_2026-11-06.json",
+    "same_ids_and_file_hashes_as_before": true,
+    "runs": 36,
+    "reference_characters": 318,
+    "non_speech_before": "6/6 false text",
+    "non_speech_after": "0/6 false text",
+    "voiced_cer_before": 0.14150943396226415,
+    "voiced_cer_after": 0.14150943396226415,
+    "limitation": "Repeated same12 synthetic cases. CER excludes non-speech; independent human corpus remains required."
+  },
+  "soak": "docs/VOICE_SOAK_2026-11-06.json",
+  "offline_phoneme_browser": {
+    "method": "Edge official worklet consumed-sample clock + actual Cubism parameters; MFA greeting fixture",
+    "epoch": "f2ea9f25-8d7b-41b8-b5ce-e405b6f2b432",
+    "hash": "2f3413f8ea50ea8f3a71dd634ff7c84dab7b4cdd67ba0e6402f7912f804e3369",
+    "i": {
+      "text": "i˨˩˦",
+      "start_s": 0.06,
+      "end_s": 0.14,
+      "unit": "phoneme"
+    },
+    "iSamples": 24,
+    "iFormMax": 0.3499999940395355,
+    "stopTail": [
+      {
+        "epoch": "da018be4-28c3-443f-9a5f-2d13bd66e905",
+        "samples": 7680,
+        "open": 0,
+        "form": 0
+      },
+      {
+        "epoch": "da018be4-28c3-443f-9a5f-2d13bd66e905",
+        "samples": 7680,
+        "open": 0,
+        "form": 0
+      },
+      {
+        "epoch": "da018be4-28c3-443f-9a5f-2d13bd66e905",
+        "samples": 7680,
+        "open": 0,
+        "form": 0
+      },
+      {
+        "epoch": "da018be4-28c3-443f-9a5f-2d13bd66e905",
+        "samples": 7680,
+        "open": 0,
+        "form": 0
+      },
+      {
+        "epoch": "da018be4-28c3-443f-9a5f-2d13bd66e905",
+        "samples": 7680,
+        "open": 0,
+        "form": 0
+      }
+    ],
+    "errors": [],
+    "wrong_epoch_forwarding_and_following_boundary_ack_passed": true,
+    "limitations": "Offline fixture; original WAV SHA and epoch validated before sample-clock use. Only simple IPA vowels mapped; unknown phones use MFCC. Wrong epoch delivery and later completion passed, no isolated visual fallback accuracy claim. No human phoneme annotation or realtime forced alignment."
+  },
+  "recorder_failure": {
+    "failed": {
+      "contexts": [
+        "running",
+        "closed"
+      ],
+      "tracks": [
+        "ended"
+      ],
+      "injected": true
+    },
+    "retry": {
+      "contexts": [
+        "running",
+        "closed",
+        "running"
+      ],
+      "tracks": [
+        "ended",
+        "live"
+      ]
+    }
+  },
+  "continuation": {
+    "explicitOnly": true,
+    "newRequest": true,
+    "newQuestionClears": true,
+    "limitation": "Explicit new request; no original audio resume or guarantee of semantic non-repetition."
+  },
+  "python_suite_scope": "66 = tests plus speech/test_pipecat_services.py in .venv-voice;33 = speech excluding that file in .venv. Counts are disjoint.",
+  "expression_browser": {
+    "starts": [
+      {
+        "type": "voice.playback.start",
+        "epoch": "b23685b3-7066-45b9-8184-25aee0d28e64",
+        "sample_rate": 24000,
+        "text": "今天很开心，听到你的消息真好。"
+      },
+      {
+        "type": "voice.playback.start",
+        "epoch": "120def9a-7716-4e69-81e7-69825152c502",
+        "sample_rate": 24000,
+        "text": "抱歉，刚才的事情让人难过。"
+      }
+    ],
+    "firstConsumed": [
+      {
+        "event": "consumed",
+        "samples": 768,
+        "epoch": "b23685b3-7066-45b9-8184-25aee0d28e64",
+        "at": 5840.799999952316
+      },
+      {
+        "event": "consumed",
+        "samples": 768,
+        "epoch": "120def9a-7716-4e69-81e7-69825152c502",
+        "at": 8481
+      }
+    ],
+    "firstHappy": {
+      "at": 6070.399999976158,
+      "happy": 0.10338708758354187,
+      "sad": 0
+    },
+    "firstSad": {
+      "at": 8706.799999952316,
+      "happy": 0.7938926219940186,
+      "sad": 0.10319586843252182
+    },
+    "maxHappy": 1,
+    "maxSad": 0.1196950227022171,
+    "errors": [],
+    "limitation": "Two controlled Chinese sentences, real CPU TTS/Edge/Cubism; parameter response after first consumption. Context-level timing, not precise audio onset, phoneme emotion or human aesthetic evaluation."
+  }
+}

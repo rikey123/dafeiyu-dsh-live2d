@@ -1,0 +1,13 @@
+{
+  "name": "dafeiyu-workspace",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "npm --prefix web run build:dsh",
+    "test:release": "node --test scripts/test-release-dsh.mjs scripts/test-dsh-setup.mjs",
+    "release": "node scripts/release-dsh.mjs",
+    "test:plugin": "node --test plugins/dsh/test/*.test.mjs"
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "timestamp_utc": "2026-11-05T17:58:20.187708+00:00",
+  "endpoint": "http://127.0.0.1:8766",
+  "method": "Three serial stream then WAV requests per sentence; times from HTTP request start to first PCM and complete WAV. No warmup excluded.",
+  "samples": [
+    {
+      "sentence": "short",
+      "text": "你好，今天怎么样？",
+      "repeat": 1,
+      "first_pcm_s": 0.1329359999508597,
+      "stream_complete_s": 0.3144196000066586,
+      "pcm_bytes": 49640,
+      "chunks": 3,
+      "sample_rate": "16000",
+      "wav_complete_s": 0.37209050002275035,
+      "wav_bytes": 49342
+    },
+    {
+      "sentence": "short",
+      "text": "你好，今天怎么样？",
+      "repeat": 2,
+      "first_pcm_s": 0.09445899998536333,
+      "stream_complete_s": 0.28067129995906726,
+      "pcm_bytes": 45000,
+      "chunks": 2,
+      "sample_rate": "16000",
+      "wav_complete_s": 0.3054497999837622,
+      "wav_bytes": 48684
+    },
+    {
+      "sentence": "short",
+      "text": "你好，今天怎么样？",
+      "repeat": 3,
+      "first_pcm_s": 0.12401510000927374,
+      "stream_complete_s": 0.3311433999915607,
+      "pcm_bytes": 45534,
+      "chunks": 2,
+      "sample_rate": "16000",
+      "wav_complete_s": 0.2793361999792978,
+      "wav_bytes": 49196
+    },
+    {
+      "sentence": "long",
+      "text": "你好，今天我们一起聊聊天吧。你可以告诉我最近遇到的事情，我会认真听，也可以陪你一起想办法。",
+      "repeat": 1,
+      "first_pcm_s": 0.10370750003494322,
+      "stream_complete_s": 1.2344914000132121,
+      "pcm_bytes": 233030,
+      "chunks": 10,
+      "sample_rate": "16000",
+      "wav_complete_s": 1.3223859999561682,
+      "wav_bytes": 230644
+    },
+    {
+      "sentence": "long",
+      "text": "你好，今天我们一起聊聊天吧。你可以告诉我最近遇到的事情，我会认真听，也可以陪你一起想办法。",
+      "repeat": 2,
+      "first_pcm_s": 0.12679409998236224,
+      "stream_complete_s": 1.4300564999575727,
+      "pcm_bytes": 232074,
+      "chunks": 10,
+      "sample_rate": "16000",
+      "wav_complete_s": 1.3074257000116631,
+      "wav_bytes": 221828
+    },
+    {
+      "sentence": "long",
+      "text": "你好，今天我们一起聊聊天吧。你可以告诉我最近遇到的事情，我会认真听，也可以陪你一起想办法。",
+      "repeat": 3,
+      "first_pcm_s": 0.12531370000215247,
+      "stream_complete_s": 1.3064637999632396,
+      "pcm_bytes": 235700,
+      "chunks": 10,
+      "sample_rate": "16000",
+      "wav_complete_s": 1.3586277999565937,
+      "wav_bytes": 231262
+    }
+  ],
+  "tts_health": {
+    "ready": true,
+    "device": "CPU",
+    "detail": "sherpa-onnx VITS: sherpa-onnx-vits-zh-ll"
+  },
+  "summary": {
+    "short": {
+      "first_pcm_s": 0.12401510000927374,
+      "stream_complete_s": 0.3144196000066586,
+      "wav_complete_s": 0.3054497999837622
+    },
+    "long": {
+      "first_pcm_s": 0.12531370000215247,
+      "stream_complete_s": 1.3064637999632396,
+      "wav_complete_s": 1.3223859999561682
+    }
+  }
+}

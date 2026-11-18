@@ -1,0 +1,1 @@
+"""Local OpenVINO LLM service."""

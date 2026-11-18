@@ -1,0 +1,2 @@
+# Optional offline alignment; install in a separate environment.
+qwen-asr==0.0.6

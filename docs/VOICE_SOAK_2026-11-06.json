@@ -1,0 +1,73 @@
+{
+  "date": "2026-11-06",
+  "method": "Real headless Edge official PCM/worklet, actual local CPU VITS, controlled local LLM. Typed input, cancellation every7 turns, page reload every20; segmented version includes six-context long reply every9. Same app, isolated temporary settings/database. No microphone acquisition.",
+  "baseline": {
+    "version": "whole-context after CSP repair",
+    "passed": true,
+    "duration_seconds": 1802.07,
+    "turns": 225,
+    "completed": 193,
+    "cancelled": 32,
+    "click_to_final_receipt_and_history_ms": {
+      "n": 193,
+      "p50": 3526,
+      "p95": 3752,
+      "definition": "Click to browser consumption ACK and database read; no physical speaker latency."
+    },
+    "max_live_contexts": 1,
+    "max_queued_samples": 8192,
+    "overflows": 0,
+    "microphone_requests": 0,
+    "max_js_heap_bytes": 146319929,
+    "errors": [],
+    "reply_groups": {
+      "short": {
+        "n": 193,
+        "p50": 3526,
+        "p95": 3752
+      },
+      "long": {
+        "n": 0,
+        "p50": null,
+        "p95": null
+      }
+    }
+  },
+  "segmented": {
+    "version": "3503ab6+2ef879c initial client; recorder cleanup added during run, no live capture used",
+    "passed": true,
+    "duration_seconds": 1807.417,
+    "turns": 206,
+    "completed": 177,
+    "cancelled": 29,
+    "click_to_final_receipt_and_history_ms": {
+      "n": 177,
+      "p50": 3549,
+      "p95": 16045,
+      "definition": "Click to browser consumption ACK and database read; no physical speaker latency."
+    },
+    "max_live_contexts": 1,
+    "max_queued_samples": 11072,
+    "overflows": 0,
+    "microphone_requests": 0,
+    "max_js_heap_bytes": 117778105,
+    "errors": [],
+    "reply_groups": {
+      "short": {
+        "n": 158,
+        "p50": 3536,
+        "p95": 3998
+      },
+      "long": {
+        "n": 19,
+        "p50": 16040,
+        "p95": 16823
+      }
+    }
+  },
+  "invalid_runs": [
+    "Initial run stopped after production CSP failure; not a pass.",
+    "Second partial run stopped after per-context default3-second idle regression; not a pass."
+  ],
+  "limitations": "Not human conversation, microphone ASR, wide-area jitter, physical AEC, speaker latency or cloud inference. ACK completion scales with reply duration; mixed short/long P95 is not a first-audio metric. JS heap GC nondeterministic; active contexts/resource bounds are the gate. Optional offline-phoneme and continuation UI additions after run are separately verified."
+}

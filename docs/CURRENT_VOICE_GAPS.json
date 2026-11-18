@@ -1,0 +1,2238 @@
+{
+  "date": "2026-11-06",
+  "baseline_commit": "5c5ce43",
+  "scope": "18 explicit research GitHub repository URLs plus named projects/direct-support dependencies and two added lip-sync sources: 46 pinned source archives. Relevant implementation/document inspection; not uniform application benchmarking.",
+  "states": {
+    "缺失": "上游有对应接口/实现，当前生产链未接入；适用性与效果仍受模型、后端、硬件和许可证限制。",
+    "部分": "当前有同类基础能力，但缺少所列细节，或上游只提供不同层级的机制；不等于完全落后。",
+    "已具备": "当前已直接复用或有同等用途机制，不计为新增缺口。",
+    "非同类": "用于另一产品/部署层；不能直接称作当前语音体验优势。",
+    "待验证": "源码/文档提供候选或配置，但实现完整性、对应后端或本机效果尚不够确定。"
+  },
+  "current_baseline": [
+    {
+      "area": "识别",
+      "current": "连续PCM输入，但LocalSpeechSTT收完整VAD片段后HTTP请求SenseVoice，仅产生finalized=True；尚无实时部分转写。",
+      "evidence": [
+        {
+          "path": "speech/pipecat_services.py",
+          "line": 47,
+          "finding": "继承SegmentedSTTService"
+        },
+        {
+          "path": "speech/pipecat_services.py",
+          "line": 77,
+          "finding": "整段PCM封装WAV并识别"
+        }
+      ]
+    },
+    {
+      "area": "轮次与打断",
+      "current": "已有Silero、默认Local Smart Turn结束判断、播放时先duck；硬打断只由确认最终转写触发，附和为有限中文规则。",
+      "evidence": [
+        {
+          "path": "server/pipecat_voice.py",
+          "line": 80,
+          "finding": "配置VAD和ChineseTurnStartStrategy"
+        },
+        {
+          "path": "speech/pipecat_turns.py",
+          "line": 9,
+          "finding": "有限附和词表"
+        },
+        {
+          "path": "speech/pipecat_turns.py",
+          "line": 36,
+          "finding": "收到TranscriptionFrame才启动新轮次"
+        }
+      ]
+    },
+    {
+      "area": "语音输出",
+      "current": "按句文本提交VITS，通过原生callback提前发送PCM，有界准入/连接复用/取消持锁；不支持同一合成会话持续append LLM token。",
+      "evidence": [
+        {
+          "path": "speech/pipecat_services.py",
+          "line": 134,
+          "finding": "每次run_tts提交完整text"
+        },
+        {
+          "path": "speech/server.py",
+          "line": 474,
+          "finding": "本地增量PCM端点"
+        }
+      ]
+    },
+    {
+      "area": "播放与历史",
+      "current": "官方PCM播放器、手动停止、清队与口型重置已具备；服务器保存框架输出历史，没有应用级播放进度/完成ACK。",
+      "evidence": [
+        {
+          "path": "web/src/voice.ts",
+          "line": 182,
+          "finding": "停止官方播放器并发voice.stop"
+        },
+        {
+          "path": "server/pipecat_voice.py",
+          "line": 120,
+          "finding": "助手轮次停止后保存框架文字"
+        },
+        {
+          "path": "docs/PROTOCOL.md",
+          "line": 37,
+          "finding": "明确历史不等于已听位置"
+        }
+      ]
+    },
+    {
+      "area": "回声与降噪",
+      "current": "浏览器请求AEC/NS/AGC，并展示实际报告；生产后端无同步扬声器参考AEC。独立APM实验及合成测试不能证明外放双讲效果。",
+      "evidence": [
+        {
+          "path": "web/src/voice.ts",
+          "line": 135,
+          "finding": "读取浏览器音轨设置"
+        },
+        {
+          "path": "server/pipecat_voice.py",
+          "line": 91,
+          "finding": "生产处理器链没有原生AEC模块"
+        }
+      ]
+    },
+    {
+      "area": "本人声音",
+      "current": "CPU ERes2Net/Silero、2—5样本模板、质量门和相似度筛选；整段至少2秒有效人声后核对，不是在线多说话人分离/目标声音提取。",
+      "evidence": [
+        {
+          "path": "speech/speaker.py",
+          "line": 79,
+          "finding": "整段VAD提取并计算embedding"
+        },
+        {
+          "path": "speech/speaker.py",
+          "line": 131,
+          "finding": "对模板作最终相似度判断"
+        }
+      ]
+    },
+    {
+      "area": "口型与表情",
+      "current": "wLipSync/MFCC、AIRI平滑、本地声线模板、多嘴参数已具备；没有音素时间区间，E/O/U混淆；表情仍按TTS文本关键词近似。",
+      "evidence": [
+        {
+          "path": "web/src/voice.ts",
+          "line": 47,
+          "finding": "加载声学profile与WASM"
+        },
+        {
+          "path": "web/src/avatar/lipsync/adapter.ts",
+          "line": 10,
+          "finding": "固定多参数映射公式"
+        },
+        {
+          "path": "web/src/voice.ts",
+          "line": 162,
+          "finding": "按TTS文本关键词设表情"
+        }
+      ]
+    },
+    {
+      "area": "工程与验收",
+      "current": "原生阶段metrics、受控回归和一次真实DeepSeek链路已具备；无持续真人P50/P95、真实外放AEC指标、长时噪声/多人语音验收。语音实际CPU。",
+      "evidence": [
+        {
+          "path": "server/pipecat_voice.py",
+          "line": 97,
+          "finding": "原生metrics开启"
+        },
+        {
+          "path": "docs/VALIDATION.md",
+          "line": 1,
+          "finding": "已有测量和未验收边界"
+        }
+      ]
+    }
+  ],
+  "priorities": [
+    {
+      "priority": "P0",
+      "gap": "增量识别和更早的可靠打断",
+      "sources": "sherpa-onnx / FunASR / Qwen3-ASR / VoiceManager",
+      "reason": "在说话过程中获得部分文字，再结合本人声音门和打断意图区分。Smart Turn已经接入，继续等final ASR不会获得首词打断。",
+      "prerequisite": "先对中文短指令、附和、数字和噪声做质量/延迟对照；声纹当前要求2秒，不能直接让陌生人的部分转写启动回答。"
+    },
+    {
+      "priority": "P0",
+      "gap": "核查并修复现有口型依赖与校准质量",
+      "sources": "wLipSync / HF STV / MotionSync",
+      "reason": "已发现六类配置MFCC写入范围问题；当前嘴形会变，但不等于发音分类正确。",
+      "prerequisite": "先处理依赖问题并重新收集模板、独立验证；再比较中文音素模型或官方引擎，不能盲搬默认英文模型。"
+    },
+    {
+      "priority": "P0",
+      "gap": "真实外放AEC与双讲验收",
+      "sources": "HF speech-to-speech / Edge-Voice-Assistant / HermesConsole",
+      "reason": "需要正确播放参考和ADC/DAC时钟，且证明角色说话时用户人声仍被保留。",
+      "prerequisite": "浏览器内建AEC与原生设备APM分开评测；不能在没有正确参考时叠加第二层AEC。"
+    },
+    {
+      "priority": "P1",
+      "gap": "播放确认、已听历史和误打断恢复",
+      "sources": "LiveKit / Open-LLM-VTuber Web / VoiceManager",
+      "reason": "把实际播放区间回传服务端，才有条件截断上下文并决定续播还是新回答。",
+      "prerequisite": "上游完成回执/整段展示文本也不等于逐字已听。Pipecat empty-user-turn重新提示LLM，不是原音续播。"
+    },
+    {
+      "priority": "P1",
+      "gap": "韵律、音色与文本/音频双向流",
+      "sources": "CosyVoice / VoxCPM / Qwen3-TTS / AIRI",
+      "reason": "当前VITS能早出PCM，仍没有参考音色克隆、自然语言风格控制、跨句统一韵律或持续文本输入会话。",
+      "prerequisite": "中文音质、首音、长句停顿、资源占用和权重许可要分别实测；模型API的stream参数不自动代表双向文本流。"
+    },
+    {
+      "priority": "P1",
+      "gap": "声音身份与复杂声场",
+      "sources": "HF diarization / Evatar / sherpa-onnx",
+      "reason": "当前能做整段单人模板验证，尚不能持续跟踪多人、分离同时讲话或只提取用户声音。",
+      "prerequisite": "diarization只标谁在何时说话，不等于认出已注册的你，也不等于消除重叠语音；短命令误拒绝和重放需另评估。"
+    },
+    {
+      "priority": "P1",
+      "gap": "持续观测、压力和真人验收",
+      "sources": "Smart Turn benchmarks / Pipecat metrics / HermesConsole / VoiceManager",
+      "reason": "原生阶段指标已有，但欠缺用户可感知的整链时钟、队列水位、欠载/溢出、误打断率及长时统计。",
+      "prerequisite": "目前0.124秒首PCM和2.51秒云端首次嘴动分别是小样本组件/单次链路，不能当P50/P95或物理首音。"
+    },
+    {
+      "priority": "P2",
+      "gap": "端到端语音模型与规模化部署",
+      "sources": "Moshi / MiniCPM-o / GLM-4-Voice / Qwen3-Omni / vLLM-Omni / OpenTalking",
+      "reason": "可以探索保留语气的直接语音理解、模型层双工、主动发言，或多会话服务。",
+      "prerequisite": "这类功能可能需要整体架构和硬件改变；不一定适合当前Intel Windows单人Live2D产品，不能先当确定收益。"
+    }
+  ],
+  "projects": [
+    {
+      "repo": "akkoaya/EvatarFramework",
+      "license": "Apache-2.0",
+      "current_baseline": "Pipecat 会话；已实现单人声纹向量合并与校验。",
+      "capabilities": [
+        {
+          "mechanism": "多样本声纹模板归一化与匹配",
+          "evidence": [
+            {
+              "path": "src/evatar_framework/providers/speaker/store.py",
+              "line": 131,
+              "finding": "归一化各样本、合并均值并存储；143 行按相似度匹配。"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "多样本可降低单次录音的偶然影响；上游还支持多用户索引。",
+          "adoption_cost": "本项目已采用单人模板思路；多用户需要身份管理、阈值和隐私设计。"
+        },
+        {
+          "mechanism": "原生客户端重连与退避配置",
+          "evidence": [
+            {
+              "path": "src/evatar_framework/core/config.py",
+              "line": 73,
+              "finding": "配置初始及最大重连间隔；native_soak.py 的 67 行使用这些参数。"
+            }
+          ],
+          "comparison": "已具备",
+          "benefit": "连接中断后的自动重试和可观测性。",
+          "adoption_cost": "当前web/src/reconnect.ts已有1—30秒指数退避，同会话重连已有受控验收；上游原生设备配置不能证明在途音频/时钟完整恢复。"
+        }
+      ],
+      "missing_top": [
+        "需要时才扩展多用户索引；用户当前需求是只回应本人",
+        "反复网络抖动后的在途音频及播放状态恢复仍待实测"
+      ],
+      "corrections": [
+        "旧报告已补声纹模板机制；重连配置不是完整端到端恢复证明。"
+      ],
+      "commit": "63b414c9633d55234949b3754686dcc7acebea60"
+    },
+    {
+      "repo": "aryeo0908/whisper-loop",
+      "license": "MIT",
+      "current_baseline": "Pipecat 取消传播、按句聚合及阶段指标；STT 为分段请求。",
+      "capabilities": [
+        {
+          "mechanism": "独立轮次任务取消与通知",
+          "evidence": [
+            {
+              "path": "server/app/pipeline.py",
+              "line": 106,
+              "finding": "插话取消当前 asyncio 任务并发送被打断轮次通知。"
+            }
+          ],
+          "comparison": "已具备",
+          "benefit": "隔离轮次取消并明确客户端事件。",
+          "adoption_cost": "需比较 Pipecat 帧取消及客户端队列清空，增加故障和背压测试。 当前已经有同类机制，不把其存在计作当前缺失；实际鲁棒性仍须测试。"
+        },
+        {
+          "mechanism": "流式 LLM 按句入队 TTS",
+          "evidence": [
+            {
+              "path": "server/app/pipeline.py",
+              "line": 173,
+              "finding": "累积 token 并将完整句子发送到合成队列。"
+            }
+          ],
+          "comparison": "已具备",
+          "benefit": "在回复结束前开始句子合成。",
+          "adoption_cost": "当前已有原生句子聚合及增量 PCM；中文标点与延迟需继续实测。"
+        }
+      ],
+      "missing_top": [
+        "端到端播放确认尚未具备"
+      ],
+      "corrections": [
+        "逐帧 VAD 不代表流式增量识别；其代码先汇集话段再识别。"
+      ],
+      "commit": "810e1d5d410557038d1379cd709e3fb979422bde"
+    },
+    {
+      "repo": "Code-Amadeus/Amadeus",
+      "license": "AGPL-3.0",
+      "current_baseline": "最终识别后确认打断、中文附和过滤、浏览器请求 AEC。",
+      "capabilities": [
+        {
+          "mechanism": "基于音量及回声候选的插话判断",
+          "evidence": [
+            {
+              "path": "asr/barge_in_detector.py",
+              "line": 271,
+              "finding": "检测候选并调用自回声判断以抑制扬声器回声触发。"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "可探索在播放时更早区分人声和自回声。",
+          "adoption_cost": "启发式并非声学 AEC；需中文、双讲误判实验及 AGPL 许可评估。"
+        },
+        {
+          "mechanism": "最终音频消费接口",
+          "evidence": [
+            {
+              "path": "asr/manager.py",
+              "line": 159,
+              "finding": "consume 接收最终音频片段。"
+            }
+          ],
+          "comparison": "已具备",
+          "benefit": "与当前分段识别同类，不能据此证明真流式 STT。",
+          "adoption_cost": "无需替换现有识别链。"
+        }
+      ],
+      "missing_top": [
+        "真实环境自回声误打断效果未测"
+      ],
+      "corrections": [
+        "旧报告中的回声启发式不应称为已验证 AEC。"
+      ],
+      "commit": "9ef43dda7cc2ac177601889478116caabe562e88"
+    },
+    {
+      "repo": "datascale-ai/opentalking",
+      "license": "Apache-2.0",
+      "current_baseline": "本地 Pipecat 会话和 Live2D；无 Redis 会话队列。",
+      "capabilities": [
+        {
+          "mechanism": "Redis 会话状态和任务排队",
+          "evidence": [
+            {
+              "path": "apps/api/services/session_service.py",
+              "line": 29,
+              "finding": "向 Redis 推送任务，170 行读取和更新会话状态。"
+            }
+          ],
+          "comparison": "非同类",
+          "benefit": "适合服务进程解耦与多会话部署。",
+          "adoption_cost": "引入 Redis 和跨服务一致性，对单机伴侣可能增加复杂度。"
+        },
+        {
+          "mechanism": "上传音频前明确打断",
+          "evidence": [
+            {
+              "path": "apps/api/services/session_service.py",
+              "line": 255,
+              "finding": "发起上传 PCM 语音前调用 interrupt。"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "明确处理新语音与在播任务的冲突。",
+          "adoption_cost": "协议和媒体栈不同，需先核对现有取消和播放完成语义。"
+        }
+      ],
+      "missing_top": [
+        "多进程会话队列非当前单机场景必要条件"
+      ],
+      "corrections": [
+        "排队能力不证明实时延迟或播放 ACK。"
+      ],
+      "commit": "8c739a5a6f114daf71aeace832a668c3ad60f536"
+    },
+    {
+      "repo": "FahadiF/Edge-Voice-Assistant",
+      "license": "Apache-2.0",
+      "current_baseline": "浏览器请求 AEC；后端无同步实际扬声器参考；已有 TTS 流和取消。",
+      "capabilities": [
+        {
+          "mechanism": "WebRTC APM 双向参考处理",
+          "evidence": [
+            {
+              "path": "src/eva/audio/processor.py",
+              "line": 93,
+              "finding": "分别处理采集和播放参考帧，支持流延迟设置。"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "设备同步正确时具备声学回声消除路径。",
+          "adoption_cost": "必须取得实际播放参考、时钟对齐并验证双讲；本机未证明效果。"
+        },
+        {
+          "mechanism": "ASR 过期结果 epoch 丢弃",
+          "evidence": [
+            {
+              "path": "src/eva/asr/base.py",
+              "line": 5,
+              "finding": "不可中断的解码通过 epoch 丢弃过期结果。"
+            }
+          ],
+          "comparison": "待验证",
+          "benefit": "取消后避免旧识别结果污染新轮次。",
+          "adoption_cost": "需对 Pipecat 取消与本地推理不可中断情形设计实测。"
+        }
+      ],
+      "missing_top": [
+        "设备参考同步 AEC",
+        "旧 ASR 结果跨轮隔离的系统级实测"
+      ],
+      "corrections": [
+        "本地 APM 合成实验不是产品真实双讲验收。"
+      ],
+      "commit": "6ba8a2d7f715e967ecc2f75539f553fb37198ee6"
+    },
+    {
+      "repo": "huggingface/speech-to-speech",
+      "license": "Apache-2.0",
+      "current_baseline": "本地 MFCC 口型模板、单人声纹、浏览器 AEC 请求，后端无播放参考。",
+      "capabilities": [
+        {
+          "mechanism": "带时间戳播放参考的 AEC",
+          "evidence": [
+            {
+              "path": "src/speech_to_speech/api/openai_realtime/echo_canceller.py",
+              "line": 45,
+              "finding": "按播放时间排队参考帧，60 行按采集时间处理。"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "提供实际采集和播放时间对齐的回声消除架构。",
+          "adoption_cost": "需设备时间戳、播放参考及双讲测试；浏览器后端当前不具备。"
+        },
+        {
+          "mechanism": "音频时间轴口型事件",
+          "evidence": [
+            {
+              "path": "src/speech_to_speech/pipeline/visemes.py",
+              "line": 6,
+              "finding": "定义音频时间轴口型区间；api/openai_realtime/visemes.py:10 定义事件。"
+            },
+            {
+              "path": "src/speech_to_speech/STV/w2v_stv_handler.py",
+              "line": 38,
+              "finding": "MIN_AUDIO_LENGTH为0.5秒"
+            },
+            {
+              "path": "src/speech_to_speech/STV/w2v_stv_handler.py",
+              "line": 128,
+              "finding": "flush先推断口型再发送缓冲音频"
+            },
+            {
+              "path": "src/speech_to_speech/arguments_classes/w2v_stv_arguments.py",
+              "line": 11,
+              "finding": "默认音素检查点是英文"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "可将预测口型与音频区间显式同步。",
+          "adoption_cost": "默认音素识别模型为英文（arguments_classes/w2v_stv_arguments.py:11），中文准确性与现有 MFCC 模板需对比，增加模型和时间同步成本。 此实现缓冲约0.5秒再推断，flush在音频转发前执行，可能引入额外等待；精细口型与首音延迟需权衡。"
+        },
+        {
+          "mechanism": "流式说话人分离与跨话段跟踪",
+          "evidence": [
+            {
+              "path": "src/speech_to_speech/diarization/streaming.py",
+              "line": 28,
+              "finding": "流式处理音频并追踪活动说话人，156 行保留跨话段缓存。"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "可标记多位说话人的活动区间。",
+          "adoption_cost": "需 Nemotron 模型与支持的 Transformers；上游警告 CPU 持续语音可能跟不上。说话人分离不等于本人声纹验证。"
+        }
+      ],
+      "missing_top": [
+        "同步设备参考 AEC",
+        "多说话人在线分离",
+        "经中文验证的音素时间口型事件"
+      ],
+      "corrections": [
+        "旧报告遗漏口型事件与流式说话人分离；默认口型识别模型是英文。"
+      ],
+      "commit": "5108a3eacea81298a9dc62d5179abcacfb8119f1"
+    },
+    {
+      "repo": "liampetti/fulloch",
+      "license": "MIT",
+      "current_baseline": "浏览器管理麦克风和 PCM 播放，官方 WebSocket 传输；物理 AEC 未测。",
+      "capabilities": [
+        {
+          "mechanism": "浏览器 AEC 请求及播放取消",
+          "evidence": [
+            {
+              "path": "server/static/js/browser-satellite.js",
+              "line": 166,
+              "finding": "设置 echoCancellation 和 noiseSuppression；170 行起取消已安排播放。"
+            }
+          ],
+          "comparison": "已具备",
+          "benefit": "浏览器侧处理回声并及时清空计划播放。",
+          "adoption_cost": "本项目已有同类请求和中断；不同浏览器实际声学效果须实测。 当前已经有同类机制，不把其存在计作当前缺失；实际鲁棒性仍须测试。"
+        },
+        {
+          "mechanism": "无界面卫星端指数退避重连",
+          "evidence": [
+            {
+              "path": "clients/headless/satellite.py",
+              "line": 216,
+              "finding": "连接失败后退避重试并限制最大间隔。"
+            }
+          ],
+          "comparison": "待验证",
+          "benefit": "设备网络断开后可恢复连接。",
+          "adoption_cost": "当前官方浏览器传输的恢复及对话状态一致性需测试；不应创建第二设备所有者。"
+        }
+      ],
+      "missing_top": [
+        "断线后会话恢复验收",
+        "真实设备 AEC 测量"
+      ],
+      "corrections": [
+        "旧报告缺少卫星重连细节；播放状态不等同已听文本 ACK。"
+      ],
+      "commit": "c7b08e736397e2066b13c37fbea2e833e25cd5f0"
+    },
+    {
+      "repo": "livekit/agents",
+      "license": "Apache-2.0",
+      "current_baseline": "最终转写确认后打断，附和过滤；无客户端播放 ACK。",
+      "capabilities": [
+        {
+          "mechanism": "自适应打断和误打断恢复",
+          "evidence": [
+            {
+              "path": "livekit-agents/livekit/agents/voice/agent_activity.py",
+              "line": 5044,
+              "finding": "可启用误打断后恢复；agent.py:113 支持 adaptive 或 VAD 模式。"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "暂停后识别误打断并恢复播放，可能减少误停。",
+          "adoption_cost": "需要对应音频会话与中文噪声测试；替换 Pipecat 需要另一运行栈。 恢复路径还要求resume_false_interruption配置、timeout及输出audio.can_pause，不能假设所有输出后端可续播。"
+        },
+        {
+          "mechanism": "播放完成位置和同步文本",
+          "evidence": [
+            {
+              "path": "livekit-agents/livekit/agents/voice/agent_activity.py",
+              "line": 3400,
+              "finding": "等待 playout 并读取播放位置及同步转写。"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "可基于传输提供的播放状态改进被打断文本历史。",
+          "adoption_cost": "能力取决于具体输出实现，不等同证明物理扬声器已被听见；需客户端协议支持。"
+        }
+      ],
+      "missing_top": [
+        "已播放文本确认",
+        "经验证的误打断暂停恢复"
+      ],
+      "corrections": [
+        "旧报告遗漏播放位置及同步文本；不能默认所有传输均提供设备级 ACK。"
+      ],
+      "commit": "652eee4ea809ee524fb0ada2383d06eebc3d93a0"
+    },
+    {
+      "repo": "pipecat-ai/pipecat",
+      "license": "BSD-2-Clause",
+      "current_baseline": "已用 1.15 帧流水线、SmartTurn、按句 TTS、RTVI metrics。",
+      "capabilities": [
+        {
+          "mechanism": "原生阶段指标和句子聚合",
+          "evidence": [
+            {
+              "path": "src/pipecat/pipeline/worker.py",
+              "line": 185,
+              "finding": "可启用指标；services/tts_service.py:85 定义句子及 token 聚合。"
+            }
+          ],
+          "comparison": "已具备",
+          "benefit": "复用框架指标和合成生命周期。",
+          "adoption_cost": "本项目已实测服务端 TTS 首 PCM 与处理时长；并非实际播放延迟。"
+        },
+        {
+          "mechanism": "空用户轮次恢复",
+          "evidence": [
+            {
+              "path": "src/pipecat/processors/aggregators/llm_response_universal.py",
+              "line": 1704,
+              "finding": "空轮次可插入提示并重新请求 LLM。"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "空话段造成中断时可触发重新回应。",
+          "adoption_cost": "重新生成而非续播；默认提示假设已听上下文，当前无播放确认，不能宣称安全续播。"
+        }
+      ],
+      "missing_top": [
+        "播放 ACK 驱动的已听历史",
+        "真实误打断恢复验收"
+      ],
+      "corrections": [
+        "已有默认 SmartTurn 和指标；空轮次重生成不能等同暂停续播。"
+      ],
+      "commit": "de8998789d5690073ddd1dafcec7268839af8153"
+    },
+    {
+      "repo": "pipecat-ai/pipecat-client-web",
+      "license": "BSD-2-Clause",
+      "current_baseline": "已使用官方客户端与 RTVI 消息。",
+      "capabilities": [
+        {
+          "mechanism": "打断回调与事件",
+          "evidence": [
+            {
+              "path": "client-js/client/client.ts",
+              "line": 480,
+              "finding": "调用 onBotInterrupted 并发出 BotInterrupted 事件。"
+            }
+          ],
+          "comparison": "已具备",
+          "benefit": "应用可对服务端打断统一响应。",
+          "adoption_cost": "仍需验证播放清空时序；回调本身不是音频已听确认。"
+        },
+        {
+          "mechanism": "类型化指标消息",
+          "evidence": [
+            {
+              "path": "client-js/rtvi/messages.ts",
+              "line": 47,
+              "finding": "定义 RTVI metrics 消息类型。"
+            }
+          ],
+          "comparison": "已具备",
+          "benefit": "复用标准指标协议。",
+          "adoption_cost": "客户端展示与统计需要明确指标边界。"
+        }
+      ],
+      "missing_top": [
+        "实际播放进度与文本确认"
+      ],
+      "corrections": [
+        "客户端打断回调不能证明扬声器已播放。"
+      ],
+      "commit": "c6a0a68c8d569db7be37a2c85201bf41b3d7cc79"
+    },
+    {
+      "repo": "pipecat-ai/pipecat-client-web-transports",
+      "license": "BSD-2-Clause",
+      "current_baseline": "使用官方 WebSocket 传输和音频播放管理。",
+      "capabilities": [
+        {
+          "mechanism": "打断消息处理",
+          "evidence": [
+            {
+              "path": "transports/websocket-transport/src/webSocketTransport.ts",
+              "line": 234,
+              "finding": "解析传入的 interruption。"
+            }
+          ],
+          "comparison": "已具备",
+          "benefit": "统一传输层处理播放打断。",
+          "adoption_cost": "需跨设备验证缓冲音频及时清除。"
+        },
+        {
+          "mechanism": "重连失败事件",
+          "evidence": [
+            {
+              "path": "transports/websocket-transport/src/webSocketTransport.ts",
+              "line": 252,
+              "finding": "监听 reconnect-failed 并报告连接错误。"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "向调用者暴露无法重连的状态。",
+          "adoption_cost": "并不证明断线后的会话与未播放音频自动恢复；需故障注入测试。"
+        }
+      ],
+      "missing_top": [
+        "断网恢复及会话一致性验证"
+      ],
+      "corrections": [
+        "重连失败事件不是完整恢复保证。"
+      ],
+      "commit": "5cc10220f45e16d2a027beddcbe6b26eb5b8dd4f"
+    },
+    {
+      "repo": "pipecat-ai/pipecat-examples",
+      "license": "BSD-2-Clause",
+      "current_baseline": "单会话 Pipecat 串行语音流水线，指标已启用。",
+      "capabilities": [
+        {
+          "mechanism": "并行流水线与 VAD",
+          "evidence": [
+            {
+              "path": "daily-multi-translation/bot.py",
+              "line": 79,
+              "finding": "创建 VAD 处理器，95 行使用 ParallelPipeline。"
+            }
+          ],
+          "comparison": "非同类",
+          "benefit": "示范多目标并行处理。",
+          "adoption_cost": "本项目单路中文对话没有直接需求；并行引入资源与顺序管理成本。"
+        },
+        {
+          "mechanism": "框架指标启用示例",
+          "evidence": [
+            {
+              "path": "daily-multi-translation/bot.py",
+              "line": 127,
+              "finding": "启用处理和用量指标。"
+            }
+          ],
+          "comparison": "已具备",
+          "benefit": "与官方示例一致地获取处理阶段指标。",
+          "adoption_cost": "实际设备延迟仍需独立测量。"
+        }
+      ],
+      "missing_top": [],
+      "corrections": [
+        "示例组合不等同已在本机测得性能优势。"
+      ],
+      "commit": "7875d02bc0714d59528b0c8797664308af960a3a"
+    },
+    {
+      "repo": "pipecat-ai/smart-turn",
+      "license": "BSD-2-Clause（模型权重许可另查）",
+      "current_baseline": "Pipecat 默认 LocalSmartTurn v3.2 CPU 已加载。",
+      "capabilities": [
+        {
+          "mechanism": "音频轮次结束预测",
+          "evidence": [
+            {
+              "path": "record_and_predict.py",
+              "line": 173,
+              "finding": "处理分段音频并在 192 行输出完整性及概率。"
+            }
+          ],
+          "comparison": "已具备",
+          "benefit": "在 VAD 基础上辅助判断轮次是否完成。",
+          "adoption_cost": "当前已启用；中文语料准确率及本机时延仍需独立评测。"
+        },
+        {
+          "mechanism": "延迟与吞吐基准",
+          "evidence": [
+            {
+              "path": "benchmark.py",
+              "line": 372,
+              "finding": "报告 p50、p90、平均延迟和吞吐量。"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "可建立轮次检测性能基线。",
+          "adoption_cost": "需代表性中文数据及本机实测，不可直接引用上游数字。"
+        }
+      ],
+      "missing_top": [
+        "中文轮次准确率与时延基准"
+      ],
+      "corrections": [
+        "旧版 defer adoption 错误；当前已加载模型。"
+      ],
+      "commit": "4786657e242dfe77dd138699ac564ee074a2a543"
+    },
+    {
+      "repo": "TacoTakumi/HermesConsole",
+      "license": "MIT",
+      "current_baseline": "浏览器请求 AEC，尚无真实扬声器到麦克风的产品验收。",
+      "capabilities": [
+        {
+          "mechanism": "物理设备 AEC 验收门槛",
+          "evidence": [
+            {
+              "path": "app/src/androidTest/kotlin/com/hermesconsole/app/AecHardwareGateTest.kt",
+              "line": 46,
+              "finding": "通过设备扬声器与麦克风测试回声，133 行检查硬件 AEC。"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "检测真实回声路径而非仅合成数据。",
+          "adoption_cost": "Android 硬件专用；需为目标 Windows 浏览器、音频设备设计等价测试。"
+        },
+        {
+          "mechanism": "可重复打断语音样本",
+          "evidence": [
+            {
+              "path": "scripts/make-bargein-speech.py",
+              "line": 3,
+              "finding": "生成固定语音用于可重复打断测试。"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "降低人工语音测试的波动。",
+          "adoption_cost": "须补充真人、双讲、中文短附和和噪声样本。"
+        }
+      ],
+      "missing_top": [
+        "目标设备的真实 AEC 及双讲门槛"
+      ],
+      "corrections": [
+        "Android 设备测试结果不能外推至本机。"
+      ],
+      "commit": "55d8c732482cfbab398cfcab68d8eea08146d2ba"
+    },
+    {
+      "repo": "TacoTakumi/VoiceManager",
+      "license": "MIT",
+      "current_baseline": "分段 SenseVoice STT，增量 PCM TTS；无播放进度 ACK。",
+      "capabilities": [
+        {
+          "mechanism": "增量 STT 中间结果与最终结果",
+          "evidence": [
+            {
+              "path": "src/voicemanager/pipeline/audiocpp_stt.py",
+              "line": 14,
+              "finding": "音频事件产生增量文本，FLUSH 输出最终结果；35 行映射 interim 与 final。"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "无需等待整段语音结束即可获得部分文本。",
+          "adoption_cost": "依赖具体流式后端、模型和运行环境；需验证中文、CPU/NPU 和声纹门禁次序。"
+        },
+        {
+          "mechanism": "客户端播放边界与麦克风样本时钟",
+          "evidence": [
+            {
+              "path": "src/voicemanager/transport/turn_engine.py",
+              "line": 45,
+              "finding": "以麦克风采样计数关联播放起止和送出的回复。"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "可对齐播放与插话事件。",
+          "adoption_cost": "需客户端主动上报边界；不能仅凭边界证明每个字被用户听到。"
+        },
+        {
+          "mechanism": "有界队列与溢出丢弃",
+          "evidence": [
+            {
+              "path": "src/voicemanager/transport/turn_engine.py",
+              "line": 1039,
+              "finding": "非阻塞入队并处理队列满；对应状态在 855 行。"
+            }
+          ],
+          "comparison": "待验证",
+          "benefit": "避免慢速旁路阻塞麦克风接收。",
+          "adoption_cost": "需制定丢帧指标和降级策略；丢弃可能影响轮次检测。"
+        }
+      ],
+      "missing_top": [
+        "真增量 STT",
+        "播放边界确认",
+        "队列压力指标与恢复策略"
+      ],
+      "corrections": [
+        "旧报告未充分说明流式 STT、播放边界及背压；这些能力依赖特定后端与协议。"
+      ],
+      "commit": "256d573cbd6981da29f51dc66faabcebb83d8eab"
+    },
+    {
+      "repo": "CoreWorxLab/local-livekit-plugins",
+      "capabilities": [
+        {
+          "mechanism": "Piper ChunkedStream 封装分块音频",
+          "evidence": [
+            {
+              "path": "src/local_livekit_plugins/piper_tts.py",
+              "line": 55,
+              "finding": "LiveKit 分块 TTS 流"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "可用标准 LiveKit 音频流接口；当前已有 VITS 回调 PCM",
+          "adoption_cost": "需要引入 LiveKit 生命周期并验证中文 Piper 音质"
+        },
+        {
+          "mechanism": "faster-whisper STT 适配器",
+          "evidence": [
+            {
+              "path": "src/local_livekit_plugins/faster_whisper_stt.py",
+              "line": 50,
+              "finding": "本地 STT 服务类"
+            }
+          ],
+          "comparison": "已具备",
+          "benefit": "本地识别可替换；当前已有 faster-whisper 后备",
+          "adoption_cost": "框架适配与模型许可核查"
+        }
+      ],
+      "missing_top": [],
+      "corrections": [
+        "分块 TTS 不等于流式文本输入，当前同样已有音频增量输出。"
+      ],
+      "commit": "598d56d5a234e81438cd293927d6917b3633c7fb",
+      "license": "源码 MIT；模型单独核查"
+    },
+    {
+      "repo": "FunAudioLLM/CosyVoice",
+      "capabilities": [
+        {
+          "mechanism": "零样本参考音频与流式模型输出",
+          "evidence": [
+            {
+              "path": "cosyvoice/cli/cosyvoice.py",
+              "line": 91,
+              "finding": "inference_zero_shot 接受参考音频及 stream 参数"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "无需固定说话人即可控制音色，同时分块输出",
+          "adoption_cost": "需权重许可、参考音频治理及本机性能和音质评测"
+        },
+        {
+          "mechanism": "跨语言与自然语言指令控制",
+          "evidence": [
+            {
+              "path": "cosyvoice/cli/cosyvoice.py",
+              "line": 105,
+              "finding": "跨语言推理入口"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "跨语言音色保持与表达风格控制",
+          "adoption_cost": "较重 PyTorch 依赖，中文效果及 CPU/NPU 待测"
+        },
+        {
+          "mechanism": "音频生成器按 stream 参数返回",
+          "evidence": [
+            {
+              "path": "cosyvoice/cli/cosyvoice.py",
+              "line": 85,
+              "finding": "循环返回模型 TTS 输出"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "更早输出音频；当前 VITS 已有回调分段",
+          "adoption_cost": "须比较首块延迟与打断恢复；这里不证明文本输入本身流式"
+        },
+        {
+          "mechanism": "CosyVoice2/3 持续流式文本输入",
+          "comparison": "缺失",
+          "benefit": "同一合成会话可持续接收文本生成器，交错生成语音token，超出当前“整句text请求→callback PCM”的能力。",
+          "adoption_cost": "源码明确仅CosyVoice2/3且该路径不支持vLLM；需适配生成器、取消、缓存、中文音质和本机资源，不能保证在当前CPU更快。",
+          "evidence": [
+            {
+              "path": "cosyvoice/cli/frontend.py",
+              "line": 79,
+              "finding": "输入为Generator时返回增量token生成器"
+            },
+            {
+              "path": "cosyvoice/cli/model.py",
+              "line": 104,
+              "finding": "Generator路由到inference_bistream并检查版本与vLLM限制"
+            },
+            {
+              "path": "cosyvoice/llm/llm.py",
+              "line": 552,
+              "finding": "实现接收Generator的inference_bistream"
+            }
+          ]
+        }
+      ],
+      "missing_top": [
+        "参考音色克隆",
+        "风格指令",
+        "同一会话增量文本输入，需CosyVoice2/3且非vLLM路径"
+      ],
+      "corrections": [
+        "VITS 已有原生 callback，不应把音频分块当作独有优势。"
+      ],
+      "commit": "074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc",
+      "license": "源码 Apache-2.0；权重按具体模型卡"
+    },
+    {
+      "repo": "FunAudioLLM/SenseVoice",
+      "capabilities": [
+        {
+          "mechanism": "ONNX 语音识别推理封装",
+          "evidence": [
+            {
+              "path": "utils/model_bin.py",
+              "line": 139,
+              "finding": "特征推理入口"
+            }
+          ],
+          "comparison": "已具备",
+          "benefit": "当前已通过 sherpa-onnx 在 CPU 完成中文分段最终识别",
+          "adoption_cost": "现有模型和运行时继续维护"
+        },
+        {
+          "mechanism": "音频数据加载与特征提取",
+          "evidence": [
+            {
+              "path": "utils/model_bin.py",
+              "line": 101,
+              "finding": "音频加载及后续特征提取"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "可复用参考前处理进行精度对照",
+          "adoption_cost": "不能据此推断实时部分结果或 NPU 加速"
+        }
+      ],
+      "missing_top": [],
+      "corrections": [
+        "源码仓库许可证是 MIT，具体模型权重许可独立核查；本机运行是 CPU。"
+      ],
+      "commit": "586bbdb2b052f4fe19322581825228b6810a9fb3",
+      "license": "源码 MIT；模型权重单独核查"
+    },
+    {
+      "repo": "ggml-org/llama.cpp",
+      "capabilities": [
+        {
+          "mechanism": "本地模型服务上下文",
+          "evidence": [
+            {
+              "path": "tools/server/server-context.cpp",
+              "line": 1019,
+              "finding": "server_context_impl 服务实现"
+            }
+          ],
+          "comparison": "非同类",
+          "benefit": "可选本地语言模型推理，降低对云端依赖",
+          "adoption_cost": "部署兼容 GGUF 模型，需测中文效果、设备性能和许可"
+        }
+      ],
+      "missing_top": [
+        "可选本地对话模型"
+      ],
+      "corrections": [
+        "该服务本身不是可直接替代当前 ASR 和 TTS 的语音管线。"
+      ],
+      "commit": "10d4846a572aebf21c0482d140b00e74c0f1ad20",
+      "license": "源码 MIT；模型许可独立"
+    },
+    {
+      "repo": "hexgrad/kokoro",
+      "capabilities": [
+        {
+          "mechanism": "返回文本、音素和音频分段",
+          "evidence": [
+            {
+              "path": "kokoro/pipeline.py",
+              "line": 292,
+              "finding": "返回 graphemes、phonemes 和 output"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "能获取音素文本供调试；当前也可分段输出音频",
+          "adoption_cost": "中文前端、模型与音质需实测；音素字符串不等于时间戳"
+        },
+        {
+          "mechanism": "文本管线按块迭代输出",
+          "evidence": [
+            {
+              "path": "kokoro/pipeline.py",
+              "line": 361,
+              "finding": "管线调用入口"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "方便段落音频增量处理",
+          "adoption_cost": "不能据此认定是真正持续流式文本输入或声学逐帧生成"
+        }
+      ],
+      "missing_top": [
+        "可用的音素序列"
+      ],
+      "corrections": [
+        "音素输出不提供已验证的音素起止时间，不能直接用于精确口型同步。"
+      ],
+      "commit": "dfb907a02bba8152ca444717ca5d78747ccb4bec",
+      "license": "源码 Apache-2.0；权重和音色许可单独核查"
+    },
+    {
+      "repo": "k2-fsa/sherpa-onnx",
+      "capabilities": [
+        {
+          "mechanism": "在线识别端点检测与 token 时间戳",
+          "evidence": [
+            {
+              "path": "sherpa-onnx/python/sherpa_onnx/online_recognizer.py",
+              "line": 1193,
+              "finding": "is_endpoint 及流重置接口"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "可得到流式部分识别及端点判断，时间戳可用于文本对齐",
+          "adoption_cost": "需挑选准确的在线模型并测短语、数字、中文麦克风及打断策略"
+        },
+        {
+          "mechanism": "离线 TTS 生成回调",
+          "evidence": [
+            {
+              "path": "sherpa-onnx/python/csrc/offline-tts.cc",
+              "line": 126,
+              "finding": "生成时回调音频样本和进度"
+            }
+          ],
+          "comparison": "已具备",
+          "benefit": "当前 VITS 已通过回调输出 PCM，降低等待完整 WAV 的首音时间",
+          "adoption_cost": "当前是 CPU 分段回调，非连续声学生成或流式文本输入"
+        }
+      ],
+      "missing_top": [
+        "可靠的在线部分识别和模型端点"
+      ],
+      "corrections": [
+        "在线实验曾误识数字，不能替换 SenseVoice 最终结果；不宣称 NPU。"
+      ],
+      "commit": "079a6f05d05a18bc6e993704a557c2f62c7a17a5",
+      "license": "源码 Apache-2.0；每个模型许可单独核查"
+    },
+    {
+      "repo": "kyutai-labs/moshi",
+      "capabilities": [
+        {
+          "mechanism": "有状态语言模型逐步音频 token 生成",
+          "evidence": [
+            {
+              "path": "moshi/moshi/models/lm.py",
+              "line": 786,
+              "finding": "流式模型 step"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "探索语音到语音交互和语音上下文建模",
+          "adoption_cost": "模型资源、中文质量和真实全双工延迟须实测"
+        },
+        {
+          "mechanism": "模型 TTS 生成",
+          "evidence": [
+            {
+              "path": "moshi/moshi/models/tts.py",
+              "line": 497,
+              "finding": "TTS generate 入口"
+            }
+          ],
+          "comparison": "非同类",
+          "benefit": "可作为端到端架构研究参考",
+          "adoption_cost": "需要适配不同音频 token 和生命周期，不推断本机 NPU 支持"
+        }
+      ],
+      "missing_top": [
+        "端到端语音 token 对话"
+      ],
+      "corrections": [
+        "代码逐步生成不证明本机中文全双工效果或性能。"
+      ],
+      "commit": "e6a55d2722a65870ef52a6c9f6ecfc0e90f38362",
+      "license": "源码 Apache-2.0 或 MIT；权重许可另核查"
+    },
+    {
+      "repo": "modelscope/FunASR",
+      "capabilities": [
+        {
+          "mechanism": "Paraformer 缓存分块及最终块标记",
+          "evidence": [
+            {
+              "path": "funasr/models/paraformer_streaming/model.py",
+              "line": 47,
+              "finding": "cache、chunk_size 和 is_final"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "可在句尾前输出识别结果，支持更早的语义打断",
+          "adoption_cost": "需评估假打断、中文识别准确率及设备开销"
+        },
+        {
+          "mechanism": "统一模型生成接口",
+          "evidence": [
+            {
+              "path": "funasr/auto/auto_model.py",
+              "line": 841,
+              "finding": "AutoModel generate"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "便于比较多种中文识别模型",
+          "adoption_cost": "新模型及 PyTorch 依赖较重，模型各自许可需核查"
+        }
+      ],
+      "missing_top": [
+        "真实流式部分识别"
+      ],
+      "corrections": [
+        "应继续保留 SenseVoice 最终识别，直到真实音频对比证明替换质量。"
+      ],
+      "commit": "fd1d4aa655effca86dc03b70a09db7e4e6409a10",
+      "license": "源码 MIT；具体模型许可另核查"
+    },
+    {
+      "repo": "ollama/ollama",
+      "capabilities": [
+        {
+          "mechanism": "本地聊天与生成服务",
+          "evidence": [
+            {
+              "path": "server/routes.go",
+              "line": 3019,
+              "finding": "ChatHandler"
+            }
+          ],
+          "comparison": "非同类",
+          "benefit": "可选择本地对话模型，不必依赖云端文本推理",
+          "adoption_cost": "运行服务与模型；中文和本地硬件性能待测"
+        }
+      ],
+      "missing_top": [
+        "本地 LLM 备选"
+      ],
+      "corrections": [
+        "不提供完整识别或语音合成；不推断 NPU 支持。"
+      ],
+      "commit": "a6d33251620eef7629c73b09e672f2df243eb363",
+      "license": "源码 MIT；模型许可单独核查"
+    },
+    {
+      "repo": "openai/whisper",
+      "capabilities": [
+        {
+          "mechanism": "词级时间戳对齐",
+          "evidence": [
+            {
+              "path": "whisper/timing.py",
+              "line": 279,
+              "finding": "add_word_timestamps"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "可将转写词与时间对齐",
+          "adoption_cost": "推理成本和中文词粒度需实测；并非 TTS 音素时间戳"
+        },
+        {
+          "mechanism": "窗口式多语言转写",
+          "evidence": [
+            {
+              "path": "whisper/transcribe.py",
+              "line": 38,
+              "finding": "transcribe 及分段处理"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "提供识别质量比较；当前有 faster-whisper 回退",
+          "adoption_cost": "非原生实时部分转写，需额外模型"
+        }
+      ],
+      "missing_top": [
+        "可验证的识别时间对齐"
+      ],
+      "corrections": [
+        "词级对齐不等同生成语音音素时间戳。"
+      ],
+      "commit": "86098128c0b4f24f0e2aa2994de830614b474227",
+      "license": "源码 MIT；权重许可另核查"
+    },
+    {
+      "repo": "OpenBMB/VoxCPM",
+      "capabilities": [
+        {
+          "mechanism": "模型生成步骤输出音频块",
+          "evidence": [
+            {
+              "path": "src/voxcpm/core.py",
+              "line": 204,
+              "finding": "generate_streaming"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "生成中逐块返回波形；当前 VITS 亦有 callback 音频分段",
+          "adoption_cost": "中文质量、速度、流式文本输入和硬件要求分别验证"
+        },
+        {
+          "mechanism": "参考提示缓存条件生成",
+          "evidence": [
+            {
+              "path": "src/voxcpm/core.py",
+              "line": 312,
+              "finding": "使用 prompt cache 的生成路径"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "参考音频条件和可复用提示特征",
+          "adoption_cost": "模型授权、参考音频管理和推理资源"
+        }
+      ],
+      "missing_top": [
+        "音色克隆与提示缓存"
+      ],
+      "corrections": [
+        "流式音频生成不证明支持任意追加文本或音素时间戳。"
+      ],
+      "commit": "4b8dd4440d33396b3f429201f8af0529b4d2c601",
+      "license": "源码 Apache-2.0；模型权重单独核查"
+    },
+    {
+      "repo": "QwenLM/Qwen3-ASR",
+      "capabilities": [
+        {
+          "mechanism": "状态化 PCM 分块识别",
+          "evidence": [
+            {
+              "path": "qwen_asr/inference/qwen3_asr.py",
+              "line": 657,
+              "finding": "streaming_transcribe 接受 PCM 和状态"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "可能在说话期间展示部分文本、提前判断打断",
+          "adoption_cost": "需要中文真实麦克风误识、端点、资源与延迟评测"
+        },
+        {
+          "mechanism": "可选强制对齐",
+          "evidence": [
+            {
+              "path": "qwen_asr/inference/qwen3_forced_aligner.py",
+              "line": 395,
+              "finding": "给定转写执行强制对齐"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "生成字符或词的音频时间跨度",
+          "adoption_cost": "额外对齐模型和耗时，不能视作 TTS 音素时间戳"
+        }
+      ],
+      "missing_top": [
+        "部分转写",
+        "转写与音频强制对齐"
+      ],
+      "corrections": [
+        "模型设备与 NPU 能力未在本机验证。"
+      ],
+      "commit": "7c6daf77a2421100f5fb066495372c00129d39ff",
+      "license": "源码 Apache-2.0；权重按对应模型卡"
+    },
+    {
+      "repo": "QwenLM/Qwen3-Omni",
+      "capabilities": [
+        {
+          "mechanism": "音频输入多模态推理示例",
+          "evidence": [
+            {
+              "path": "web_demo_captioner.py",
+              "line": 50,
+              "finding": "音频描述生成"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "可探索语音音色情感等超出纯转写的理解",
+          "adoption_cost": "模型规模、中文效果和硬件性能需单独验证"
+        },
+        {
+          "mechanism": "自动设备映射与多模态处理",
+          "evidence": [
+            {
+              "path": "web_demo_captioner.py",
+              "line": 20,
+              "finding": "模型 device_map 和音频处理"
+            }
+          ],
+          "comparison": "待验证",
+          "benefit": "可作为多模态架构候选",
+          "adoption_cost": "示例不证明当前机器 NPU 或实时全双工可用"
+        }
+      ],
+      "missing_top": [
+        "原生多模态音频理解"
+      ],
+      "corrections": [
+        "演示代码不能证明全双工中文表现或设备延迟。"
+      ],
+      "commit": "e4235853125589c789f06a2dd83e9f4126df5e9d",
+      "license": "源码 Apache-2.0；模型权重按模型卡"
+    },
+    {
+      "repo": "QwenLM/Qwen3-TTS",
+      "capabilities": [
+        {
+          "mechanism": "参考音频克隆",
+          "evidence": [
+            {
+              "path": "qwen_tts/inference/qwen3_tts_model.py",
+              "line": 470,
+              "finding": "generate_voice_clone"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "个性化音色生成",
+          "adoption_cost": "需验证授权、模型、资源与中文质量"
+        },
+        {
+          "mechanism": "文本描述设计音色",
+          "evidence": [
+            {
+              "path": "qwen_tts/inference/qwen3_tts_model.py",
+              "line": 637,
+              "finding": "generate_voice_design"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "可根据文字控制声音特征",
+          "adoption_cost": "额外模型与 GPU/CPU 延迟评估"
+        },
+        {
+          "mechanism": "非流式文本接口的模拟设置",
+          "evidence": [
+            {
+              "path": "qwen_tts/inference/qwen3_tts_model.py",
+              "line": 513,
+              "finding": "明确不启用真正流式输入或生成"
+            }
+          ],
+          "comparison": "非同类",
+          "benefit": "避免误把参数命名当作实时生成优势",
+          "adoption_cost": "需寻找并单独验证真正流式后端"
+        }
+      ],
+      "missing_top": [
+        "语音克隆",
+        "文字音色设计"
+      ],
+      "corrections": [
+        "该审计接口明确不提供真正流式文本输入或流式生成。"
+      ],
+      "commit": "022e286b98fbec7e1e916cb940cdf532cd9f488e",
+      "license": "源码 Apache-2.0；权重按模型卡"
+    },
+    {
+      "repo": "QwenLM/Qwen3.5",
+      "capabilities": [
+        {
+          "mechanism": "模型系列介绍与规模选择",
+          "evidence": [
+            {
+              "path": "README.md",
+              "line": 34,
+              "finding": "固定源码归档只有说明和许可，无推理实现"
+            }
+          ],
+          "comparison": "非同类",
+          "benefit": "可供选择本地中文对话模型",
+          "adoption_cost": "外部运行时、权重许可和中文延迟需另行评测"
+        }
+      ],
+      "missing_top": [
+        "可选本地对话模型"
+      ],
+      "corrections": [
+        "README-only，无法引用该仓库实际语音实现，不声称存在实时语音或 NPU 能力。"
+      ],
+      "commit": "2ea10dc725823bf7c3e21ce8557cbe15245132ae",
+      "license": "仓库 Apache-2.0；模型版本许可独立核查"
+    },
+    {
+      "repo": "snakers4/silero-vad",
+      "capabilities": [
+        {
+          "mechanism": "状态化流式 VAD",
+          "evidence": [
+            {
+              "path": "src/silero_vad/utils_vad.py",
+              "line": 591,
+              "finding": "VADIterator"
+            }
+          ],
+          "comparison": "已具备",
+          "benefit": "当前 Pipecat 使用 Silero 切分语音，避免整段连续识别",
+          "adoption_cost": "需要真实环境调试语音边界，不提供说话人身份"
+        },
+        {
+          "mechanism": "离线语音区间时间戳",
+          "evidence": [
+            {
+              "path": "src/silero_vad/utils_vad.py",
+              "line": 281,
+              "finding": "get_speech_timestamps"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "可离线检查起止边界",
+          "adoption_cost": "区间为语音活动，不是文字或音素强制对齐"
+        }
+      ],
+      "missing_top": [],
+      "corrections": [
+        "VAD endpointing 和在线 ASR 模型的部分识别与端点机制不同。"
+      ],
+      "commit": "066409f3d9db45a30d21dfcbf9147826ffdd7052",
+      "license": "源码 MIT；模型许可另核查"
+    },
+    {
+      "repo": "SYSTRAN/faster-whisper",
+      "capabilities": [
+        {
+          "mechanism": "分段 Whisper 转写和词级时间戳",
+          "evidence": [
+            {
+              "path": "faster_whisper/transcribe.py",
+              "line": 254,
+              "finding": "转写接口及 word_timestamps 参数"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "当前已有 CPU fallback；启用词级对齐可扩展转写时间信息",
+          "adoption_cost": "性能和中文对齐质量需实测"
+        },
+        {
+          "mechanism": "转写时语音活动过滤",
+          "evidence": [
+            {
+              "path": "faster_whisper/transcribe.py",
+              "line": 289,
+              "finding": "vad_filter 参数"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "可在批处理转写中去掉静音；当前已有上游 VAD 分段",
+          "adoption_cost": "重复 VAD 参数需校准，非原生实时部分识别"
+        }
+      ],
+      "missing_top": [
+        "词级时间戳输出"
+      ],
+      "corrections": [
+        "当前虽有 fallback，但其词级时间戳尚未暴露。"
+      ],
+      "commit": "2a3a857737d17d974f30d818ebec69ce11929e5c",
+      "license": "源码 MIT；转换模型许可另核查"
+    },
+    {
+      "repo": "THUDM/GLM-4-Voice",
+      "capabilities": [
+        {
+          "mechanism": "语言模型音频 token 流输出",
+          "evidence": [
+            {
+              "path": "model_server.py",
+              "line": 83,
+              "finding": "generate_stream 逐 token 输出"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "探索语音 token 端到端对话",
+          "adoption_cost": "多模型部署，资源及中文语音对话质量待测"
+        },
+        {
+          "mechanism": "语音 flow 流推理",
+          "evidence": [
+            {
+              "path": "flow_inference.py",
+              "line": 97,
+              "finding": "stream_inference"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "可逐步解码生成语音；当前已有 VITS 回调分段",
+          "adoption_cost": "需要端到端模型适配及实测，不推断全双工或 NPU"
+        }
+      ],
+      "missing_top": [
+        "端到端语音 token 生成"
+      ],
+      "corrections": [
+        "流式 token 和语音解码不自动证明低延迟全双工。"
+      ],
+      "commit": "eb00ce9142e8d98b0ed7c57cd47e0d6d5dce9a1a",
+      "license": "源码 Apache-2.0；模型许可另核查"
+    },
+    {
+      "repo": "vllm-project/vllm",
+      "capabilities": [
+        {
+          "mechanism": "异步模型请求与增量生成",
+          "evidence": [
+            {
+              "path": "vllm/v1/engine/async_llm.py",
+              "line": 740,
+              "finding": "异步 generate"
+            }
+          ],
+          "comparison": "非同类",
+          "benefit": "集中式多请求 LLM 服务可扩展吞吐",
+          "adoption_cost": "需服务器、兼容模型和硬件；Windows/NPU 未测"
+        }
+      ],
+      "missing_top": [],
+      "corrections": [
+        "异步 LLM token 生成不是 ASR 或 TTS 实时能力。"
+      ],
+      "commit": "14d147a7a05d29d011a67ed1f1f819c03546dafe",
+      "license": "源码 Apache-2.0；模型许可独立"
+    },
+    {
+      "repo": "vllm-project/vllm-omni",
+      "capabilities": [
+        {
+          "mechanism": "双工客户端发送 PCM 流",
+          "evidence": [
+            {
+              "path": "vllm_omni/clients/duplex.py",
+              "line": 801,
+              "finding": "stream_pcm"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "为双向音频提供客户端协议；当前已有独立识别与合成的交互",
+          "adoption_cost": "特定后端和模型必须验证实际双工、中文质量和中断"
+        },
+        {
+          "mechanism": "异步多模态生成",
+          "evidence": [
+            {
+              "path": "vllm_omni/entrypoints/async_omni.py",
+              "line": 150,
+              "finding": "async generate"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "统一多模态模型服务入口",
+          "adoption_cost": "服务器和硬件依赖高，模型能力不可一概而论"
+        }
+      ],
+      "missing_top": [
+        "统一多模态双工模型"
+      ],
+      "corrections": [
+        "客户端流接口不保证任意模型实时双工或 NPU 可用。"
+      ],
+      "commit": "1200aa7379ffd264baff6faf192e3a3ca2cd7ad9",
+      "license": "源码 Apache-2.0；模型许可独立"
+    },
+    {
+      "repo": "wwbin2017/bailing",
+      "capabilities": [
+        {
+          "mechanism": "FunASR 识别后端接口",
+          "evidence": [
+            {
+              "path": "bailing/asr.py",
+              "line": 36,
+              "finding": "FunASR 适配类"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "演示后端替换，当前已有本地识别抽象",
+          "adoption_cost": "需核对具体模型和分块语义"
+        },
+        {
+          "mechanism": "Kokoro 合成后端",
+          "evidence": [
+            {
+              "path": "bailing/tts.py",
+              "line": 202,
+              "finding": "KOKOROTTS 类"
+            }
+          ],
+          "comparison": "缺失",
+          "benefit": "提供另一种音色和音质选择",
+          "adoption_cost": "新增前端、模型和中文音质评估"
+        }
+      ],
+      "missing_top": [
+        "可选 Kokoro 音色"
+      ],
+      "corrections": [
+        "多个适配器并不证明流式文本、对齐、中文或 NPU 性能。"
+      ],
+      "commit": "2f7dc881b684c50fb0c612361a34b44bd5626aea",
+      "license": "源码 MIT；模型与服务条款单独核查"
+    },
+    {
+      "repo": "electron/electron",
+      "commit": "6d9ec3d7433a01587615a23881ed64ed94e1fa6d",
+      "capabilities": [
+        {
+          "evidence": [
+            {
+              "path": "shell/browser/electron_permission_manager.cc",
+              "line": 117,
+              "finding": "设置权限请求处理器"
+            }
+          ],
+          "comparison": "非同类",
+          "benefit": "桌面封装可集中控制授权",
+          "adoption_cost": "引入 Electron、桌面打包与权限维护",
+          "mechanism": "桌面媒体权限策略"
+        },
+        {
+          "evidence": [
+            {
+              "path": "shell/browser/electron_permission_manager.cc",
+              "line": 350,
+              "finding": "按来源检查请求权限"
+            }
+          ],
+          "comparison": "非同类",
+          "benefit": "适合桌面容器权限治理",
+          "adoption_cost": "需评估浏览器与桌面策略一致性",
+          "mechanism": "来源权限检查"
+        }
+      ],
+      "missing_top": [],
+      "corrections": [
+        "本次依据当前 5c5ce43 能力重审；差异不表示统一性能优势。"
+      ],
+      "license": "MIT"
+    },
+    {
+      "repo": "lipku/LiveTalking",
+      "commit": "c7269433a2b6ecebcd9342445d2ecc882c98b0da",
+      "capabilities": [
+        {
+          "evidence": [
+            {
+              "path": "server/webrtc.py",
+              "line": 69,
+              "finding": "按音视频时间基递增时间戳并等待帧时刻"
+            }
+          ],
+          "comparison": "非同类",
+          "benefit": "适用于 WebRTC 像素视频音画对齐",
+          "adoption_cost": "需引入视频传输与媒体时钟，本机延迟未测",
+          "mechanism": "音频视频时钟"
+        },
+        {
+          "evidence": [
+            {
+              "path": "avatars/audio_features/hubert.py",
+              "line": 24,
+              "finding": "执行音频特征步骤并排队音频帧"
+            }
+          ],
+          "comparison": "非同类",
+          "benefit": "服务端特征可驱动视频头像",
+          "adoption_cost": "需模型、算力和视频头像链路",
+          "mechanism": "音频特征队列"
+        }
+      ],
+      "missing_top": [],
+      "corrections": [
+        "本次依据当前 5c5ce43 能力重审；差异不表示统一性能优势。"
+      ],
+      "license": "Apache-2.0"
+    },
+    {
+      "repo": "moeru-ai/airi",
+      "commit": "11b8989f6dd7f840cf6b15ce59e367656fb11ac6",
+      "capabilities": [
+        {
+          "evidence": [
+            {
+              "path": "packages/model-driver-lipsync/src/shared/wlipsync/vowel-driver.ts",
+              "line": 101,
+              "finding": "选择胜出元音并按音量门控、平滑；并非完整概率分布"
+            }
+          ],
+          "comparison": "已具备",
+          "benefit": "按频谱驱动嘴型并在静音闭嘴",
+          "adoption_cost": "已有 wLipSync 与本地 VITS profile，泛化仍待验证",
+          "mechanism": "元音音频分析"
+        },
+        {
+          "evidence": [
+            {
+              "path": "packages/stage-ui/src/libs/speech/streaming-pipeline.ts",
+              "line": 91,
+              "finding": "允许增量 appendText 输入"
+            },
+            {
+              "path": "packages/stage-ui/src/libs/speech/streaming-pipeline.ts",
+              "line": 358,
+              "finding": "默认在 sentence.end 合并并解码；bufferEntireSession 时等待整个会话"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "可增量提交文本、组织分句和取消；不保证音频在句末前输出",
+          "adoption_cost": "当前本地 VITS 按句生成；需验证 provider 的事件与音频分块方式，不能假定消除句级等待。",
+          "mechanism": "流式语音调度"
+        },
+        {
+          "evidence": [
+            {
+              "path": "packages/stage-ui/src/composables/queues.ts",
+              "line": 60,
+              "finding": "将解析出的情绪加入队列"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "可按输出任务组织表情",
+          "adoption_cost": "当前以 TTS 文本关键词近似，需播放时间对齐",
+          "mechanism": "表情队列"
+        }
+      ],
+      "missing_top": [
+        "流式语音调度",
+        "表情队列"
+      ],
+      "corrections": [
+        "当前已有本地 VITS profile 和选择机制；泛化仍待验证。",
+        "上游权重采用胜出类别和平滑，不应描述为完整元音概率；wLipSync 1.3.1 MFCC 输出存在已测得的上游内存更新风险，需结合主审查。"
+      ],
+      "license": "MIT"
+    },
+    {
+      "repo": "Open-LLM-VTuber/Open-LLM-VTuber",
+      "commit": "992309c0aa19845960228f880013d4685fde93b5",
+      "capabilities": [
+        {
+          "evidence": [
+            {
+              "path": "src/open_llm_vtuber/conversations/conversation_handler.py",
+              "line": 116,
+              "finding": "中断处理接收 heard_response 并传给代理和历史"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "中断后可修正代理上下文",
+          "adoption_cost": "当前框架输出历史未获浏览器逐字播放确认；上游文本精度也需验证",
+          "mechanism": "中断已听文本"
+        },
+        {
+          "evidence": [
+            {
+              "path": "src/open_llm_vtuber/websocket_handler.py",
+              "line": 369,
+              "finding": "从中断消息读取文本并分派"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "协议显式传递已听片段",
+          "adoption_cost": "需要播放器回执和文本音频对齐，不能直接保证逐字精确",
+          "mechanism": "客户端中断消息"
+        }
+      ],
+      "missing_top": [
+        "中断已听文本",
+        "客户端中断消息"
+      ],
+      "corrections": [
+        "本次依据当前 5c5ce43 能力重审；差异不表示统一性能优势。"
+      ],
+      "license": "MIT"
+    },
+    {
+      "repo": "Open-LLM-VTuber/Open-LLM-VTuber-Web",
+      "commit": "d176e7df2366952e3bacbf12cf9a8b18a4315932",
+      "capabilities": [
+        {
+          "evidence": [
+            {
+              "path": "src/renderer/src/utils/task-queue.ts",
+              "line": 4,
+              "finding": "按异步任务维护队列"
+            }
+          ],
+          "comparison": "已具备",
+          "benefit": "有序播放与清队",
+          "adoption_cost": "当前由 Pipecat 官方播放器管理队列，不应重复造队列",
+          "mechanism": "音频任务队列"
+        },
+        {
+          "evidence": [
+            {
+              "path": "src/renderer/src/utils/audio-manager.ts",
+              "line": 20,
+              "finding": "统一停止当前音频与口型"
+            }
+          ],
+          "comparison": "已具备",
+          "benefit": "中断时清理播放和角色状态",
+          "adoption_cost": "需保持当前中断及销毁回归测试",
+          "mechanism": "音频与口型停止"
+        },
+        {
+          "evidence": [
+            {
+              "path": "src/renderer/src/hooks/canvas/use-live2d-expression.ts",
+              "line": 57,
+              "finding": "依据模型默认情绪配置处理表情"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "模型特定表情可配置",
+          "adoption_cost": "当前关键词近似表情，需定义配置与播放时序",
+          "mechanism": "表情映射"
+        },
+        {
+          "evidence": [
+            {
+              "path": "src/renderer/src/hooks/utils/use-audio-task.ts",
+              "line": 237,
+              "finding": "后端合成完成且前端任务队列完成后发送 frontend-playback-complete"
+            },
+            {
+              "path": "src/renderer/src/hooks/utils/use-audio-task.ts",
+              "line": 85,
+              "finding": "播放任务开始时累积整段展示文本"
+            },
+            {
+              "path": "src/renderer/src/hooks/utils/use-interrupt.ts",
+              "line": 27,
+              "finding": "中断时发送累积 fullResponse"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "明确告知服务端前端队列播放完成，并可在中断时回传播放任务粒度文本",
+          "adoption_cost": "任务开始即累积整段文本，故中途打断可能领先已听音频；需要更细音频文本对齐，不能视为逐字回执。",
+          "mechanism": "播放完成回执及中断文本"
+        }
+      ],
+      "missing_top": [
+        "表情映射",
+        "播放完成回执及中断文本"
+      ],
+      "corrections": [
+        "本次依据当前 5c5ce43 能力重审；差异不表示统一性能优势。"
+      ],
+      "license": "Open-LLM-VTuber License 1.0"
+    },
+    {
+      "repo": "OpenBMB/MiniCPM-o",
+      "commit": "47e1fa75b45b8c122ca2a52150762bf6183f1c5e",
+      "capabilities": [
+        {
+          "evidence": [
+            {
+              "path": "web_demos/minicpm-o_2.6/model_server.py",
+              "line": 466,
+              "finding": "流式 prefill 音频；524 行调用 streaming_generate"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "统一模型可处理连续音频和生成",
+          "adoption_cost": "当前 ASR/LLM/TTS 分离，需模型权重和设备评估",
+          "mechanism": "流式输入与生成"
+        },
+        {
+          "evidence": [
+            {
+              "path": "web_demos/minicpm-o_2.6/model_server.py",
+              "line": 419,
+              "finding": "根据说话时间戳计算等待时间"
+            }
+          ],
+          "comparison": "待验证",
+          "benefit": "有助流式输出节奏控制",
+          "adoption_cost": "该代码不足以证明真实全双工，需重叠输入输出和打断实验",
+          "mechanism": "说话时钟"
+        },
+        {
+          "evidence": [
+            {
+              "path": "docs/minicpm_o4dot5_zh.md",
+              "line": 25,
+              "finding": "文档描述在线全双工编解码和毫秒时间线时分复用"
+            },
+            {
+              "path": "docs/minicpm_o4dot5_zh.md",
+              "line": 1189,
+              "finding": "示例使用 trust_remote_code 加载模型，并在 1204 行调用 as_duplex"
+            },
+            {
+              "path": "docs/api.md",
+              "line": 284,
+              "finding": "API 文档声明 4.5 支持全双工实时交互"
+            }
+          ],
+          "comparison": "待验证",
+          "benefit": "若实际实现符合文档，可同时建模输入输出并主动决策发言",
+          "adoption_cost": "4.5 文档和远端模型代码/权重声明不能由本地 2.6 demo 源码证实；需获取模型、核对代码许可并在本机测试重叠输入输出、打断和延迟。",
+          "mechanism": "4.5 全双工声明"
+        }
+      ],
+      "missing_top": [
+        "流式输入与生成",
+        "说话时钟",
+        "4.5 全双工声明"
+      ],
+      "corrections": [
+        "4.5 文档明确声明全双工，示例通过 trust_remote_code 加载模型并调用 as_duplex；固定归档中的 2.6 demo 不能证明 4.5 的实现或本机效果。"
+      ],
+      "license": "Apache-2.0; model terms separate"
+    },
+    {
+      "repo": "suzuran0y/Live2D-LLM-Chat",
+      "commit": "b333789c0962cd6244330120ec24634f8a5a70a8",
+      "capabilities": [
+        {
+          "evidence": [
+            {
+              "path": "packages/contracts/protocol.py",
+              "line": 16,
+              "finding": "检查 RIFF 长度并用 wave 验证音频"
+            }
+          ],
+          "comparison": "已具备",
+          "benefit": "可拒绝损坏输入",
+          "adoption_cost": "当前有录入格式校验；具体边界需逐项比较",
+          "mechanism": "WAV 输入校验"
+        },
+        {
+          "evidence": [
+            {
+              "path": "workers/asr/worker.py",
+              "line": 39,
+              "finding": "worker 调用识别引擎"
+            }
+          ],
+          "comparison": "已具备",
+          "benefit": "独立进程边界有利服务隔离",
+          "adoption_cost": "当前 ASR 已通过独立 HTTP 语音进程隔离；不能将进程分离列为缺口。",
+          "mechanism": "ASR worker 分离"
+        },
+        {
+          "evidence": [
+            {
+              "path": "packages/contracts/protocol.py",
+              "line": 12,
+              "finding": "定义 chunk-ack、completed、error 等请求与事件类型"
+            },
+            {
+              "path": "packages/contracts/protocol.py",
+              "line": 75,
+              "finding": "读取并校验 worker 协议帧"
+            }
+          ],
+          "comparison": "部分",
+          "benefit": "显式区分完成、错误与音频块确认，便于监控和背压",
+          "adoption_cost": "当前 Pipecat 事件及 HTTP 过程已有部分状态；需逐项比较语义后再决定，不必复制整套协议。",
+          "mechanism": "结构化 worker 帧"
+        }
+      ],
+      "missing_top": [
+        "结构化 worker 帧"
+      ],
+      "corrections": [
+        "当前 ASR 已位于独立 HTTP 语音进程，worker 分离并非缺失。"
+      ],
+      "license": "Apache-2.0"
+    },
+    {
+      "repo": "TMElyralab/MuseTalk",
+      "commit": "0a89dec45a0192b824e3cf4daf96c239440c5ed8",
+      "capabilities": [
+        {
+          "evidence": [
+            {
+              "path": "scripts/realtime_inference.py",
+              "line": 244,
+              "finding": "提取 Whisper 音频特征并按 fps 切片"
+            }
+          ],
+          "comparison": "非同类",
+          "benefit": "音频条件驱动像素脸视频",
+          "adoption_cost": "当前为可编辑 Cubism 参数；模型与 GPU 依赖，本机性能未测",
+          "mechanism": "音频特征与帧切片"
+        },
+        {
+          "evidence": [
+            {
+              "path": "scripts/realtime_inference.py",
+              "line": 212,
+              "finding": "消费结果队列并处理视频帧"
+            }
+          ],
+          "comparison": "非同类",
+          "benefit": "适合真人视频头像合成",
+          "adoption_cost": "需视频合成和输出时钟，不能直接替代 Cubism",
+          "mechanism": "视频帧输出"
+        }
+      ],
+      "missing_top": [],
+      "corrections": [
+        "MuseTalk 有实时推理入口；生成像素视频而非 Cubism 参数，本机延迟未测。"
+      ],
+      "license": "MIT; model terms separate"
+    },
+    {
+      "repo": "mrxz/wlipsync",
+      "capabilities": [
+        {
+          "mechanism": "播放音频的 MFCC 分类与时间平滑",
+          "comparison": "已具备",
+          "benefit": "在同等音量下仍可产生不同元音嘴形，且不依赖文本猜测。",
+          "adoption_cost": "当前已直接依赖1.3.1；其 worklet 发送胜出类别，前端再平滑成权重，不是原始分类置信度或完整音素概率。",
+          "evidence": [
+            {
+              "path": "src/main.c",
+              "line": 123,
+              "finding": "从实际音频提取特征并评分分类"
+            },
+            {
+              "path": "www/audio-processor.js",
+              "line": 106,
+              "finding": "向主线程发送胜出类别和时间戳"
+            },
+            {
+              "path": "www/audio-node.ts",
+              "line": 85,
+              "finding": "将胜出类别映射为目标并平滑"
+            }
+          ]
+        },
+        {
+          "mechanism": "声音专属校准模板",
+          "comparison": "已具备",
+          "benefit": "模板可随声线更换，而非将某个说话人的样例当作通用中文模型。",
+          "adoption_cost": "本项目已有本地 VITS 模板和选择；E/O/U仍混淆。上游官方不含创建器，建议 Unity uLipSync 校准，本项目离线工具属于额外适配。",
+          "evidence": [
+            {
+              "path": "README.md",
+              "line": 54,
+              "finding": "校准说明与外部 Unity 创建流程"
+            },
+            {
+              "path": "www/types.ts",
+              "line": 5,
+              "finding": "每类可存 MFCC 校准数据"
+            }
+          ]
+        },
+        {
+          "mechanism": "预计算二进制 profile",
+          "comparison": "缺失",
+          "benefit": "减少原始模板传输体积和初始化预计算。",
+          "adoption_cost": "当前两个模板作为JSON进入前端包；这是体积/初始化优化，不能提高发音分类准确率，优先级低于修复特征和校准。",
+          "evidence": [
+            {
+              "path": "www/parse.ts",
+              "line": 10,
+              "finding": "解析预计算的二进制校准文件"
+            },
+            {
+              "path": "tools/json2bin.js",
+              "line": 17,
+              "finding": "使用同一上游WASM转换profile"
+            }
+          ]
+        }
+      ],
+      "missing_top": [
+        "上游导出特征写入范围风险",
+        "更可靠的中文声线校准与独立发音评测",
+        "可选预计算profile"
+      ],
+      "corrections": [
+        "已具备声学口型，不再是默认音量开合；当前平滑权重不等于完整类别概率。"
+      ],
+      "risks": [
+        {
+          "title": "六类配置只更新六个MFCC槽位",
+          "evidence": [
+            {
+              "path": "src/main.c",
+              "line": 180,
+              "finding": "写入mfccOut的循环上界为类别数量profile.mfccCount"
+            },
+            {
+              "path": "src/score/calc_cosine_similarity_scores.c",
+              "line": 16,
+              "finding": "评分遍历MFCC_NUM个系数，常量为12"
+            }
+          ],
+          "finding": "固定源码存在类别数量与系数数量混用；独立实例化已安装1.3.1 WASM，以六类配置和12槽哨兵运行execute后，前六槽更新、后六槽保留哨兵。当前本地模板同样为六类，应优先核查。",
+          "limit": "这证明了写入范围问题，不能证明它是所有E/O/U混淆的唯一原因；本轮未修补依赖、未改生产内存。",
+          "reproduction": "node scripts/probe_wlipsync_mfcc.cjs；固定诊断快照 docs/WLIPSYNC_MFCC_PROBE.json"
+        }
+      ],
+      "commit": "177f3ac4095dbad81be0a800a8c6f975abe4ae04",
+      "license": "MIT"
+    },
+    {
+      "repo": "Live2D/CubismWebMotionSyncComponents",
+      "capabilities": [
+        {
+          "mechanism": "模型专属音频→形状映射和后处理配置",
+          "comparison": "部分",
+          "benefit": "以motionsync3配置表达多个音频类别到多个Cubism参数的权重、缩放、阻尼和平滑，便于不同角色独立调校。",
+          "adoption_cost": "我们已有五个嘴参数映射及范围检查，但映射公式写在adapter.ts；当前皮肤没有motionsync3，需制作并验证映射。",
+          "evidence": [
+            {
+              "path": "Samples/Resources/Kei_vowels/Kei_vowels.motionsync3.json",
+              "line": 17,
+              "finding": "配置嘴参数及范围和平滑"
+            },
+            {
+              "path": "Samples/Resources/Kei_vowels/Kei_vowels.motionsync3.json",
+              "line": 117,
+              "finding": "音频类别与模型形状映射"
+            },
+            {
+              "path": "Framework/src/cubismmotionsyncdata.ts",
+              "line": 140,
+              "finding": "按模型配置建立引擎映射列表"
+            }
+          ]
+        },
+        {
+          "mechanism": "官方CRI分析、混合和平滑接口",
+          "comparison": "待验证",
+          "benefit": "提供专门的音频分析与形状后处理接口，可作为替代声学分析器进行对照。",
+          "adoption_cost": "仓库不含Core；需另取Core/SDK、接受独立许可并适配模型。仅凭接口不能断言中文口型比wLipSync准确或延迟更低。",
+          "evidence": [
+            {
+              "path": "Framework/src/cubismmotionsyncprocessorcri.ts",
+              "line": 25,
+              "finding": "Analyze接收blendRatio/smoothing/audioLevelEffectRatio"
+            },
+            {
+              "path": "README.md",
+              "line": 33,
+              "finding": "Core不在本仓库"
+            },
+            {
+              "path": "LICENSE.md",
+              "line": 1,
+              "finding": "组件、SDK和Core的独立许可条件"
+            }
+          ]
+        }
+      ],
+      "missing_top": [
+        "角色映射配置化",
+        "官方引擎的中文/延迟A/B仍未完成"
+      ],
+      "corrections": [
+        "并非完整MIT开源依赖；源码组件与闭源Core/SDK/素材许可分开，不能把接口存在当作准确度优势。"
+      ],
+      "commit": "9e7a356fb55148ea20f6e43f8f0b63f36bcc2be4",
+      "license": "Live2D Open Software；Core/SDK 另受 Proprietary/SDK 条款"
+    }
+  ]
+}

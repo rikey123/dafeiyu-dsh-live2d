@@ -1,0 +1,513 @@
+{
+  "method": "Full GitHub source archives, pinned commits, no model weights or upstream installers executed. Local copies: artifacts/upstream-archives/<owner>__<repo>/.",
+  "repositories": [
+    {
+      "repo": "akkoaya/EvatarFramework",
+      "origin": "explicit research GitHub URL",
+      "url": "https://github.com/akkoaya/EvatarFramework",
+      "commit": "63b414c9633d55234949b3754686dcc7acebea60",
+      "sha256": "ba94387d56a01300123ab26debc45d4abf2906b11dfa601e450a6e69e35984a1",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "aryeo0908/whisper-loop",
+      "origin": "explicit research GitHub URL",
+      "url": "https://github.com/aryeo0908/whisper-loop",
+      "commit": "810e1d5d410557038d1379cd709e3fb979422bde",
+      "sha256": "b4c320956af08b3c9adff0a22490f29acfc09fda588ef354e04b9b84c4af6327",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "Code-Amadeus/Amadeus",
+      "origin": "explicit research GitHub URL",
+      "url": "https://github.com/Code-Amadeus/Amadeus",
+      "commit": "9ef43dda7cc2ac177601889478116caabe562e88",
+      "sha256": "f08cb2e5e56db12710758fd2e057ff39fe3040a3291e633ee26eb30f1a7df1ba",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "CoreWorxLab/local-livekit-plugins",
+      "origin": "explicit research GitHub URL",
+      "url": "https://github.com/CoreWorxLab/local-livekit-plugins",
+      "commit": "598d56d5a234e81438cd293927d6917b3633c7fb",
+      "sha256": "cf5f5eada28af4f47f23d6e920aff0e93d69998b332198c5f2b3ac9f22c7deb6",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "datascale-ai/opentalking",
+      "origin": "explicit research GitHub URL",
+      "url": "https://github.com/datascale-ai/opentalking",
+      "commit": "8c739a5a6f114daf71aeace832a668c3ad60f536",
+      "sha256": "1ab81838787c2e55f5b4b1b428d58e9436688559af8b555d8832e2e735a8e0eb",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "electron/electron",
+      "origin": "named project: Electron desktop shell",
+      "url": "https://github.com/electron/electron",
+      "commit": "6d9ec3d7433a01587615a23881ed64ed94e1fa6d",
+      "sha256": "e25e0d90c2afc6ca8ab39270ebfa51d484855f9e5bb3587c406efe9224cc1e13",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "FahadiF/Edge-Voice-Assistant",
+      "origin": "explicit research GitHub URL",
+      "url": "https://github.com/FahadiF/Edge-Voice-Assistant",
+      "commit": "6ba8a2d7f715e967ecc2f75539f553fb37198ee6",
+      "sha256": "8932ee6f1d22b295f77e7e599470f11876e8291e27d111d87f235e42bd928943",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "FunAudioLLM/CosyVoice",
+      "origin": "named project: CosyVoice",
+      "url": "https://github.com/FunAudioLLM/CosyVoice",
+      "commit": "074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc",
+      "sha256": "4e7b1ce909f97abcc8afa0a890f92ccf2839ff435c698d4f04a1ba7aa71a022f",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "FunAudioLLM/SenseVoice",
+      "origin": "named project: SenseVoice",
+      "url": "https://github.com/FunAudioLLM/SenseVoice",
+      "commit": "586bbdb2b052f4fe19322581825228b6810a9fb3",
+      "sha256": "eec431f9c59781444f961f5e2031c629e57eeb6d7d2444fb480aa32664a5589f",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "ggml-org/llama.cpp",
+      "origin": "named project: llama.cpp",
+      "url": "https://github.com/ggml-org/llama.cpp",
+      "commit": "10d4846a572aebf21c0482d140b00e74c0f1ad20",
+      "sha256": "5922ee80cb5c195bb0154669b355efa52ccb3e4e3ce60a8b865f9fbd37b5f6d2",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "hexgrad/kokoro",
+      "origin": "named project: Kokoro",
+      "url": "https://github.com/hexgrad/kokoro",
+      "commit": "dfb907a02bba8152ca444717ca5d78747ccb4bec",
+      "sha256": "812ff60daa1b292a4e002d9ec016a4961b394f5b427f902714043aaee969757d",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "huggingface/speech-to-speech",
+      "origin": "explicit research GitHub URL",
+      "url": "https://github.com/huggingface/speech-to-speech",
+      "commit": "5108a3eacea81298a9dc62d5179abcacfb8119f1",
+      "sha256": "d7977e3093d9aea4a4e625c0d799a7e69241aa6be95bd1fc0e0fe5221cb1e2bd",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "k2-fsa/sherpa-onnx",
+      "origin": "named project: sherpa-onnx",
+      "url": "https://github.com/k2-fsa/sherpa-onnx",
+      "commit": "079a6f05d05a18bc6e993704a557c2f62c7a17a5",
+      "sha256": "f2d885aca9d2fb8f7b049a004faaa7aee6e2fb7f6021e83d6b539fb04fe0daeb",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "kyutai-labs/moshi",
+      "origin": "named project: Moshi",
+      "url": "https://github.com/kyutai-labs/moshi",
+      "commit": "e6a55d2722a65870ef52a6c9f6ecfc0e90f38362",
+      "sha256": "20ec52116b1691464c8048dd867489506fcaff20fc0f31631433621ba566410c",
+      "licenses": [
+        "LICENSE-APACHE",
+        "LICENSE-MIT"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "liampetti/fulloch",
+      "origin": "explicit research GitHub URL",
+      "url": "https://github.com/liampetti/fulloch",
+      "commit": "c7b08e736397e2066b13c37fbea2e833e25cd5f0",
+      "sha256": "d3969df1d6edd336ffeb49e2479a75af0ed5a89e0fddd329e880c78f0e2ece85",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "lipku/LiveTalking",
+      "origin": "explicit research GitHub URL",
+      "url": "https://github.com/lipku/LiveTalking",
+      "commit": "c7269433a2b6ecebcd9342445d2ecc882c98b0da",
+      "sha256": "0091f8d29e21a62a90bc6476ae0a3deff421b5040b5e871600119a84ff6f7259",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "livekit/agents",
+      "origin": "explicit research GitHub URL",
+      "url": "https://github.com/livekit/agents",
+      "commit": "652eee4ea809ee524fb0ada2383d06eebc3d93a0",
+      "sha256": "c97e5a556960f5fd3562531a60d83e968315043186ddffdf136542cf8f2150ad",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "modelscope/FunASR",
+      "origin": "named project: FunASR / Paraformer",
+      "url": "https://github.com/modelscope/FunASR",
+      "commit": "fd1d4aa655effca86dc03b70a09db7e4e6409a10",
+      "sha256": "ce7454d9554a18e592bc992c7ea171c69f52f8e42e4fae5006b1ffc004cd89f4",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "moeru-ai/airi",
+      "origin": "explicit research GitHub URL",
+      "url": "https://github.com/moeru-ai/airi",
+      "commit": "11b8989f6dd7f840cf6b15ce59e367656fb11ac6",
+      "sha256": "42189a806198342f9f2745b680a13964153504549ec0979a6bfcf0a9c4ee5344",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "ollama/ollama",
+      "origin": "named project: Ollama",
+      "url": "https://github.com/ollama/ollama",
+      "commit": "a6d33251620eef7629c73b09e672f2df243eb363",
+      "sha256": "cbaf1d967f6f02f5180a444ef138697d57c9b7b2f23848ec71742881c427f09d",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "Open-LLM-VTuber/Open-LLM-VTuber",
+      "origin": "explicit research GitHub URL",
+      "url": "https://github.com/Open-LLM-VTuber/Open-LLM-VTuber",
+      "commit": "992309c0aa19845960228f880013d4685fde93b5",
+      "sha256": "8b3014faaf99b9f9b241560523f8dfef7ce3b0edfb07cd9ef16155f0ee157551",
+      "licenses": [
+        "LICENSE",
+        "LICENSE-Live2D.md"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "Open-LLM-VTuber/Open-LLM-VTuber-Web",
+      "origin": "named project: Open-LLM-VTuber frontend",
+      "url": "https://github.com/Open-LLM-VTuber/Open-LLM-VTuber-Web",
+      "commit": "d176e7df2366952e3bacbf12cf9a8b18a4315932",
+      "sha256": "6cb9ab5d299d8c8c433d19e7e38b9c50d96a25068804b739bd70f46491041ec6",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "openai/whisper",
+      "origin": "named project: Whisper",
+      "url": "https://github.com/openai/whisper",
+      "commit": "86098128c0b4f24f0e2aa2994de830614b474227",
+      "sha256": "1e30f6543d697a0a3e5ab6f2d0564ab006e636f6e200140b9e80c6d168c47b99",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "OpenBMB/MiniCPM-o",
+      "origin": "named project: MiniCPM-o",
+      "url": "https://github.com/OpenBMB/MiniCPM-o",
+      "commit": "47e1fa75b45b8c122ca2a52150762bf6183f1c5e",
+      "sha256": "71c29c2db3af853a2b9feb1430c4d0c82e7e884f65c37d653cd86fe19aa3ca75",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "OpenBMB/VoxCPM",
+      "origin": "named project: VoxCPM",
+      "url": "https://github.com/OpenBMB/VoxCPM",
+      "commit": "4b8dd4440d33396b3f429201f8af0529b4d2c601",
+      "sha256": "b38186d3c53592bd921892fd92a2d72d3454d7ea17788574ec0a38b466085aba",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "pipecat-ai/pipecat",
+      "origin": "explicit research GitHub URL",
+      "url": "https://github.com/pipecat-ai/pipecat",
+      "commit": "de8998789d5690073ddd1dafcec7268839af8153",
+      "sha256": "3a000fd800d2974e4062571771756fff1bdf8f51a055638066ba067a9b1d124a",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "pipecat-ai/pipecat-client-web",
+      "origin": "named project: Pipecat official browser client dependency",
+      "url": "https://github.com/pipecat-ai/pipecat-client-web",
+      "commit": "c6a0a68c8d569db7be37a2c85201bf41b3d7cc79",
+      "sha256": "bfb7cfc21fbed3b1b875f99e3388d62fe5369299199784dbe3a017492bdd56fd",
+      "licenses": [
+        "LICENSE.md"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "pipecat-ai/pipecat-client-web-transports",
+      "origin": "named project: Pipecat official browser transports dependency",
+      "url": "https://github.com/pipecat-ai/pipecat-client-web-transports",
+      "commit": "5cc10220f45e16d2a027beddcbe6b26eb5b8dd4f",
+      "sha256": "629bb38b859bb995b43ac618a5f5bf56aba64c4543f58af5c5e234b248ef8a42",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "pipecat-ai/pipecat-examples",
+      "origin": "explicit research GitHub URL",
+      "url": "https://github.com/pipecat-ai/pipecat-examples",
+      "commit": "7875d02bc0714d59528b0c8797664308af960a3a",
+      "sha256": "4c95dc620bcfab62757796095f0b52b8e739948d9c39423527b42dd36eb29d0b",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "pipecat-ai/smart-turn",
+      "origin": "explicit research GitHub URL",
+      "url": "https://github.com/pipecat-ai/smart-turn",
+      "commit": "4786657e242dfe77dd138699ac564ee074a2a543",
+      "sha256": "92848493d3efbb1df71d39c358025d68a97fa536511f5cfbf5873a30420f1aa8",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "QwenLM/Qwen3-ASR",
+      "origin": "named project: Qwen3-ASR",
+      "url": "https://github.com/QwenLM/Qwen3-ASR",
+      "commit": "7c6daf77a2421100f5fb066495372c00129d39ff",
+      "sha256": "6de6171d8499f8af32ff638909e38ea472839b60dcd57ea083ea71230ed5a4a2",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "QwenLM/Qwen3-Omni",
+      "origin": "named project: Qwen3-Omni",
+      "url": "https://github.com/QwenLM/Qwen3-Omni",
+      "commit": "e4235853125589c789f06a2dd83e9f4126df5e9d",
+      "sha256": "c7a87189eb4291b166c0683de536d47314373d1a53174b91d0025759131f0fc4",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "QwenLM/Qwen3-TTS",
+      "origin": "named project: Qwen3-TTS",
+      "url": "https://github.com/QwenLM/Qwen3-TTS",
+      "commit": "022e286b98fbec7e1e916cb940cdf532cd9f488e",
+      "sha256": "0f2732485bce635f419f142a57d4309415fd79397e7c47edeaf0f8215a4dbb76",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "QwenLM/Qwen3.5",
+      "origin": "named project: Qwen3.5",
+      "url": "https://github.com/QwenLM/Qwen3.5",
+      "commit": "2ea10dc725823bf7c3e21ce8557cbe15245132ae",
+      "sha256": "a521bbc8be5e03b04abb7245c0a50a99a67593b573ab5f89e20b1bf9abdc960a",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "snakers4/silero-vad",
+      "origin": "named project: Silero VAD",
+      "url": "https://github.com/snakers4/silero-vad",
+      "commit": "066409f3d9db45a30d21dfcbf9147826ffdd7052",
+      "sha256": "f69bc60cf5e46e18433300a1a614cc7d8f3dc777c1175228c33e2776c927cdaa",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "suzuran0y/Live2D-LLM-Chat",
+      "origin": "named project: Live2D-LLM-Chat (resolved by GitHub repository search)",
+      "url": "https://github.com/suzuran0y/Live2D-LLM-Chat",
+      "commit": "b333789c0962cd6244330120ec24634f8a5a70a8",
+      "sha256": "c94ddeaaaaa547a22e6c54ae1899657bd4bcc1cfbbd6dd767e2e9d1de8b6bf89",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "SYSTRAN/faster-whisper",
+      "origin": "named project: faster-whisper",
+      "url": "https://github.com/SYSTRAN/faster-whisper",
+      "commit": "2a3a857737d17d974f30d818ebec69ce11929e5c",
+      "sha256": "d61640ce477bd40e4de6e91ac28d3d0856acd9519a2ab2e5e142bfcf6d2389c7",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "TacoTakumi/HermesConsole",
+      "origin": "explicit research GitHub URL",
+      "url": "https://github.com/TacoTakumi/HermesConsole",
+      "commit": "55d8c732482cfbab398cfcab68d8eea08146d2ba",
+      "sha256": "5b1f1ee74db86f2882d10e7a546516370f5c9546e05ea6a321e833794d82d548",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "TacoTakumi/VoiceManager",
+      "origin": "explicit research GitHub URL",
+      "url": "https://github.com/TacoTakumi/VoiceManager",
+      "commit": "256d573cbd6981da29f51dc66faabcebb83d8eab",
+      "sha256": "336d9341c5b376198434dd630622ac84a9b573684f87f8e6c5fd6b5e13a24669",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "THUDM/GLM-4-Voice",
+      "origin": "named project: GLM-4-Voice",
+      "url": "https://github.com/THUDM/GLM-4-Voice",
+      "commit": "eb00ce9142e8d98b0ed7c57cd47e0d6d5dce9a1a",
+      "sha256": "06a749f648f735a088551f022f5fd0285c51287b7e497c2024bdfcae38fbbdd6",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "TMElyralab/MuseTalk",
+      "origin": "named project: MuseTalk",
+      "url": "https://github.com/TMElyralab/MuseTalk",
+      "commit": "0a89dec45a0192b824e3cf4daf96c239440c5ed8",
+      "sha256": "52521c3b5887558a29b39405b84eaba25e1194350b01bcc031002fa3ecd918e9",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "vllm-project/vllm",
+      "origin": "named project: vLLM",
+      "url": "https://github.com/vllm-project/vllm",
+      "commit": "14d147a7a05d29d011a67ed1f1f819c03546dafe",
+      "sha256": "69ba56302ca01db528fd88cd790cde79e31a874dc36f8055b79a626935ab0aa6",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "vllm-project/vllm-omni",
+      "origin": "named project: vLLM-Omni",
+      "url": "https://github.com/vllm-project/vllm-omni",
+      "commit": "1200aa7379ffd264baff6faf192e3a3ca2cd7ad9",
+      "sha256": "028cf288b5cb63d05b4c7a76a191a5cf3c91482ba77090727ce6b1c758411af8",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "wwbin2017/bailing",
+      "origin": "explicit research GitHub URL",
+      "url": "https://github.com/wwbin2017/bailing",
+      "commit": "2f7dc881b684c50fb0c612361a34b44bd5626aea",
+      "sha256": "b4e86ca4f9aefbeb946b6021e64e763988d8869d6b15a52568efec9df6b3d7ed",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "Live2D/CubismWebMotionSyncComponents",
+      "origin": "additional implementation source review",
+      "url": "https://github.com/Live2D/CubismWebMotionSyncComponents",
+      "commit": "9e7a356fb55148ea20f6e43f8f0b63f36bcc2be4",
+      "sha256": "b5bd471d0849268df9b3c2f67308e3dcb9bb3ffe362f34c2ffb61c42e11e7f5e",
+      "licenses": [
+        "LICENSE.md"
+      ],
+      "status": "downloaded"
+    },
+    {
+      "repo": "mrxz/wlipsync",
+      "origin": "additional implementation source review",
+      "url": "https://github.com/mrxz/wlipsync",
+      "commit": "177f3ac4095dbad81be0a800a8c6f975abe4ae04",
+      "sha256": "0bc62d8c4180e1d9923aca4a266d15acd5bc2a758773575d8a955bf06c783b03",
+      "licenses": [
+        "LICENSE"
+      ],
+      "status": "downloaded"
+    }
+  ]
+}

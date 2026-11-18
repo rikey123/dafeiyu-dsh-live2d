@@ -1,0 +1,5 @@
+# Mature voice orchestration, isolated from hardware inference dependencies.
+-r requirements.txt
+pipecat-ai==1.15.0
+# Native DeepSeek TTS uses the maintained asyncio WebSocket client and proxy API.
+websockets>=15,<18

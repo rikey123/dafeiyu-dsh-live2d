@@ -1,0 +1,12 @@
+{
+  "name": "dafeiyu-qa",
+  "private": true,
+  "scripts": {
+    "voice": "node ../scripts/check_pipecat_voice.cjs",
+    "idle": "node ../scripts/check_idle.cjs",
+    "primary": "node ../scripts/check_primary_voice.cjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.58.0"
+  }
+}

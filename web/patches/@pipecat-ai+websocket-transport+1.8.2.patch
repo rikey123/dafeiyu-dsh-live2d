@@ -1,0 +1,333 @@
+diff --git a/node_modules/@pipecat-ai/websocket-transport/dist/index.module.js b/node_modules/@pipecat-ai/websocket-transport/dist/index.module.js
+--- a/node_modules/@pipecat-ai/websocket-transport/dist/index.module.js
++++ b/node_modules/@pipecat-ai/websocket-transport/dist/index.module.js
+@@ -367,16 +367,45 @@
+     this.write = { buffer: new Float32Array(this.bufferLength), trackId: null };
+     this.writeOffset = 0;
+     this.trackSampleOffsets = {};
++    this.queuedSamples = 0; this.maxQueued = 0; this.underruns = 0; this.dropped = 0; this.consumed = 0;
++    this.pendingSamples = 0; this.pendingEpoch = null; this.active = false; this.starved = false; this.boundaryPending = false;
++    this.overflows = 0; this.maxQueueSamples = 240000;
+     this.port.onmessage = (event) => {
+       if (event.data) {
+         const payload = event.data;
++        if (this.hasInterrupted) return;
+         if (payload.event === 'write') {
+           const int16Array = payload.buffer;
++          if (this.queuedSamples + int16Array.length > this.maxQueueSamples) {
++            this.overflows++; this.dropped += this.queuedSamples + int16Array.length; this.queuedSamples = 0;
++            this.outputBuffers = []; this.writeOffset = 0; this.pendingSamples = 0; this.pendingEpoch = null;
++            this.hasInterrupted = true; this.active = false;
++            this.port.postMessage({ event: 'overflow', epoch: this.epoch }); this.report();
++            return;
++          }
+           const float32Array = new Float32Array(int16Array.length);
+           for (let i = 0; i < int16Array.length; i++) {
+             float32Array[i] = int16Array[i] / 0x8000; // Convert Int16 to Float32
+           }
+           this.writeData(float32Array, payload.trackId);
++        } else if (payload.event === 'epoch') {
++          this.report(); this.active = true; this.starved = false; this.boundaryPending = false;
++          if (this.writeOffset) {
++            this.write.validSamples = this.writeOffset;
++            this.outputBuffers.push(this.write);
++            this.write = { buffer: new Float32Array(this.bufferLength), trackId: null };
++            this.writeOffset = 0;
++          }
++          this.epoch = payload.epoch;
++        } else if (payload.event === 'flush') {
++          this.boundaryPending = true;
++          if (this.writeOffset) {
++            this.write.validSamples = this.writeOffset;
++            this.outputBuffers.push(this.write);
++            this.write = { buffer: new Float32Array(this.bufferLength), trackId: null };
++            this.writeOffset = 0;
++          }
++          if (this.queuedSamples === 0) { this.report(); this.active = false; this.boundaryPending = false; }
+         } else if (
+           payload.event === 'offset' ||
+           payload.event === 'interrupt'
+@@ -384,6 +413,7 @@
+           const requestId = payload.requestId;
+           const trackId = this.write.trackId;
+           const offset = this.trackSampleOffsets[trackId] || 0;
++          this.report();
+           this.port.postMessage({
+             event: 'offset',
+             requestId,
+@@ -391,6 +421,7 @@
+             offset,
+           });
+           if (payload.event === 'interrupt') {
++            this.dropped += this.queuedSamples; this.queuedSamples = 0; this.report();
+             this.hasInterrupted = true;
+           }
+         } else {
+@@ -401,19 +432,28 @@
+   }
+ 
+   writeData(float32Array, trackId = null) {
++    this.queuedSamples += float32Array.length;
++    this.maxQueued = Math.max(this.maxQueued, this.queuedSamples);
++    if (this.writeOffset === 0) this.write.epoch = this.epoch;
+     let { buffer } = this.write;
+     let offset = this.writeOffset;
+     for (let i = 0; i < float32Array.length; i++) {
+       buffer[offset++] = float32Array[i];
+       if (offset >= buffer.length) {
+         this.outputBuffers.push(this.write);
+-        this.write = { buffer: new Float32Array(this.bufferLength), trackId };
++        this.write = { buffer: new Float32Array(this.bufferLength), trackId, epoch: this.epoch };
+         buffer = this.write.buffer;
+         offset = 0;
+       }
+     }
+     this.writeOffset = offset;
+     return true;
++  }
++
++  report() {
++    if (this.pendingSamples) this.port.postMessage({ event: 'consumed', samples: this.pendingSamples, epoch: this.pendingEpoch });
++    this.pendingSamples = 0; this.pendingEpoch = null;
++    this.port.postMessage({ event: 'telemetry', queuedSamples: this.queuedSamples, maxQueued: this.maxQueued, underruns: this.underruns, dropped: this.dropped, consumed: this.consumed, overflows: this.overflows });
+   }
+ 
+   process(inputs, outputs, parameters) {
+@@ -425,20 +465,24 @@
+       return false;
+     } else if (outputBuffers.length) {
+       this.hasStarted = true;
+-      const { buffer, trackId } = outputBuffers.shift();
++      const { buffer, trackId, validSamples, epoch } = outputBuffers.shift();
+       for (let i = 0; i < outputChannelData.length; i++) {
+         outputChannelData[i] = buffer[i] || 0;
+       }
++      const count = validSamples ?? buffer.length;
++      if (this.pendingSamples && this.pendingEpoch !== epoch) this.report();
++      this.pendingEpoch = epoch; this.pendingSamples += count; this.consumed += count; this.queuedSamples -= count; this.starved = false;
++      if (this.pendingSamples >= 768 || (this.boundaryPending && this.queuedSamples === 0)) this.report();
++      if (this.boundaryPending && this.queuedSamples === 0) { this.active = false; this.boundaryPending = false; }
+       if (trackId) {
+         this.trackSampleOffsets[trackId] =
+           this.trackSampleOffsets[trackId] || 0;
+         this.trackSampleOffsets[trackId] += buffer.length;
+       }
+       return true;
+-    } else if (this.hasStarted) {
+-      this.port.postMessage({ event: 'stop' });
+-      return false;
+     } else {
++      if (this.active && this.hasStarted && !this.starved && !this.boundaryPending) { this.underruns++; this.starved = true; this.report(); }
++      if (this.boundaryPending && this.queuedSamples === 0) { this.report(); this.active = false; this.boundaryPending = false; }
+       return true;
+     }
+   }
+@@ -478,7 +522,7 @@
+             sampleRate: this.sampleRate
+         });
+         if (this._speakerID) this.context.setSinkId(this._speakerID);
+-        if (this.context.state === "suspended") await this.context.resume();
++        if (this.context.state === "suspended") void this.context.resume().catch(() => {});
+         try {
+             await this.context.audioWorklet.addModule(this.scriptSrc);
+         } catch (e) {
+@@ -520,14 +564,19 @@
+    * @returns {Promise<true>}
+    */ _start() {
+         const streamNode = new AudioWorkletNode(this.context, "stream_processor");
++        streamNode.port.postMessage({ event: "epoch", epoch: this.playbackEpoch });
+         streamNode.connect(this.context.destination);
+         streamNode.port.onmessage = (e)=>{
+             const { event: event } = e.data;
+-            if (event === "stop") {
++            if (event === "consumed") this.onConsumed?.(e.data.samples, e.data.epoch);
++            else if (event === "telemetry") this.onTelemetry?.(e.data);
++            else if (event === "overflow") this.onOverflow?.(e.data.epoch);
++            else if (event === "stop") {
+                 streamNode.disconnect();
+-                this.stream = null;
++                if (this.stream === streamNode) this.stream = null;
+             } else if (event === "offset") {
+                 const { requestId: requestId, trackId: trackId, offset: offset } = e.data;
++                if (!this.offsetRequests?.has(requestId)) return;
+                 const currentTime = offset / this.sampleRate;
+                 this.trackSampleOffsets[requestId] = {
+                     trackId: trackId,
+@@ -569,17 +618,30 @@
+    */ async getTrackSampleOffset(interrupt = false) {
+         if (!this.stream) return null;
+         const requestId = crypto.randomUUID();
+-        this.stream.port.postMessage({
++        const stream = this.stream;
++        if (interrupt) this.stream = null;
++        if (this.context.state !== "running") {
++            if (interrupt) stream.disconnect();
++            return null;
++        }
++        this.offsetRequests ??= new Set();
++        this.offsetRequests.add(requestId);
++        stream.port.postMessage({
+             event: interrupt ? "interrupt" : "offset",
+             requestId: requestId
+         });
+         let trackSampleOffset;
+-        while(!trackSampleOffset){
++        const deadline = performance.now() + 500;
++        while(!trackSampleOffset && this.context.state === "running" && performance.now() < deadline){
+             trackSampleOffset = this.trackSampleOffsets[requestId];
+             await new Promise((r)=>setTimeout(()=>r(), 1));
+         }
++        this.offsetRequests.delete(requestId);
++        delete this.trackSampleOffsets[requestId];
++        if (interrupt) stream.disconnect();
++        if (!trackSampleOffset) return null;
+         const { trackId: trackId } = trackSampleOffset;
+-        if (interrupt && trackId) this.interruptedTrackIds[trackId] = true;
++        if (interrupt && trackId && trackId !== "default") this.interruptedTrackIds[trackId] = true;
+         return trackSampleOffset;
+     }
+     /**
+@@ -772,32 +834,10 @@
+       }
+     }
+     const inputs = inputList[0];
+-    // There's latency at the beginning of a stream before recording starts
+-    // Make sure we actually receive audio data before we start storing chunks
+-    let sliceIndex = 0;
+-    if (!this.foundAudio) {
+-      for (const channel of inputs) {
+-        sliceIndex = 0; // reset for each channel
+-        if (this.foundAudio) {
+-          break;
+-        }
+-        if (channel) {
+-          for (const value of channel) {
+-            if (value !== 0) {
+-              // find only one non-zero entry in any channel
+-              this.foundAudio = true;
+-              break;
+-            } else {
+-              sliceIndex++;
+-            }
+-          }
+-        }
+-      }
+-    }
+-    if (inputs && inputs[0] && this.foundAudio && this.recording) {
++    if (inputs && inputs[0] && this.recording) {
+       // We need to copy the TypedArray, because the \`process\`
+       // internals will reuse the same buffer to hold each input
+-      const chunk = inputs.map((input) => input.slice(sliceIndex));
++      const chunk = inputs.map((input) => input.slice());
+       this.chunks.push(chunk);
+       this.sendChunk(chunk);
+     }
+@@ -1075,11 +1115,11 @@
+         deviceId = deviceId ?? this.deviceSelection?.deviceId;
+         try {
+             const config = {
+-                audio: true
+-            };
+-            if (deviceId) config.audio = {
+-                deviceId: {
+-                    exact: deviceId
++                audio: {
++                    echoCancellation: true,
++                    noiseSuppression: true,
++                    autoGainControl: true,
++                    ...(deviceId ? { deviceId: { exact: deviceId } } : {})
+                 }
+             };
+             this.stream = await navigator.mediaDevices.getUserMedia(config);
+@@ -1091,15 +1131,19 @@
+                 type: "unknown",
+                 error: err
+             });
+-            throw new Error("Could not start media stream");
+-        }
+-        this.listDevices().then((devices)=>{
+-            deviceId = this.stream.getAudioTracks()[0].getSettings().deviceId;
+-            console.log("find current device", devices, deviceId, this.stream.getAudioTracks()[0].getSettings());
+-            this.deviceSelection = devices.find((d)=>d.deviceId === deviceId);
+-            console.log("current device", this.deviceSelection);
+-        });
+-        const context = new AudioContext({
++            // Preserve DOMException.name so callers can distinguish missing
++            // hardware, denied permission, stale device IDs and busy devices.
++            throw err;
++        }
++        const stream = this.stream;
++        navigator.mediaDevices.enumerateDevices().then((devices)=>{
++            if (this.stream !== stream) return;
++            deviceId = stream.getAudioTracks()[0]?.getSettings().deviceId;
++            this.deviceSelection = devices.find((d)=>d.kind === "audioinput" && d.deviceId === deviceId);
++        }).catch(()=>{});
++        let context;
++        try {
++        context = new AudioContext({
+             sampleRate: this.sampleRate
+         });
+         const source = context.createMediaStreamSource(this.stream);
+@@ -1147,6 +1191,16 @@
+         this.processor = processor;
+         console.log("begin completed");
+         return true;
++        } catch (error) {
++            stream.getTracks().forEach((track)=>track.stop());
++            this.stream = null;
++            this.processor = null;
++            this.source = null;
++            this.node = null;
++            this.analyser = null;
++            if (context && context.state !== "closed") await context.close().catch(()=>{});
++            throw error;
++        }
+     }
+     /**
+    * Gets the current frequency domain data from the recording track
+@@ -3128,8 +3182,8 @@
+     }
+     async _disconnect() {
+         this.state = "disconnecting";
++        await this._ws?.close();
+         await this._mediaManager.disconnect();
+-        await this._ws?.close();
+         this.state = "disconnected";
+         this._callbacks.onDisconnected?.();
+     }
+@@ -3180,10 +3234,15 @@
+         });
+         // disabling the keep alive, there is no API for it inside Pipecat
+         ws.keepAliveInterval = 0;
++        // The application owns session recreation and backoff. Reopening only
++        // the socket would skip RTVI readiness and race the new session.
++        ws.shouldRetryFn = ()=>false;
+         ws.on("open", ()=>{
+             (0, $jEyWk$logger).debug("Websocket connection opened");
+         });
+-        ws.on("message", async (data)=>{
++        let receiveQueue = Promise.resolve();
++        ws.on("message", (data)=>{
++            receiveQueue = receiveQueue.then(async ()=>{
+             try {
+                 const parsed = await this._serializer.deserialize(data);
+                 if (parsed.type === "audio") this._mediaManager.bufferBotAudio(parsed.audio);
+@@ -3195,6 +3254,7 @@
+             } catch (e) {
+                 (0, $jEyWk$logger).error("Failed to deserialize incoming message", e);
+             }
++            });
+         });
+         ws.on("error", (error)=>{
+             this.connectionError(`websocket error: ${error}`);
+@@ -3202,8 +3262,8 @@
+         ws.on("connection-timeout", ()=>{
+             this.connectionError("websocket connection timed out");
+         });
+-        ws.on("close", (code)=>{
+-            this.connectionError(`websocket connection closed. Code: ${code}`);
++        ws.on("close", (code, reason)=>{
++            this.connectionError(reason || `本地语音连接已关闭（${code}），请检查服务后重试`);
+         });
+         ws.on("reconnect-failed", ()=>{
+             this.connectionError(`websocket reconnect failed`);

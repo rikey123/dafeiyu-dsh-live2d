@@ -1,0 +1,1360 @@
+{
+  "date": "2026-11-06",
+  "scope": "44 research/support repositories plus official MotionSync and wLipSync source; fixed source inspection, not a uniform runtime benchmark.",
+  "projects": [
+    {
+      "repo": "CoreWorxLab/local-livekit-plugins",
+      "evidence": [
+        {
+          "path": "src/local_livekit_plugins/piper_tts.py",
+          "line": 55,
+          "finding": "Piper chunked stream adapter"
+        },
+        {
+          "path": "src/local_livekit_plugins/faster_whisper_stt.py",
+          "line": 50,
+          "finding": "faster-whisper LiveKit STT adapter"
+        }
+      ],
+      "advantage": [
+        "LiveKit 标准语音服务封装，减少适配代码",
+        "Piper 分块输出和本地 Whisper 组合"
+      ],
+      "gap": [
+        "依赖 LiveKit 生命周期，与当前 Pipecat 架构不同",
+        "未验证本机 Windows 和中文模型"
+      ],
+      "decision": "参考适配边界，保留 Pipecat",
+      "dependencies": "LiveKit agents, Piper, faster-whisper",
+      "license": "源码 MIT；模型单独核查",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。",
+      "commit": "598d56d5a234e81438cd293927d6917b3633c7fb"
+    },
+    {
+      "repo": "FunAudioLLM/CosyVoice",
+      "evidence": [
+        {
+          "path": "cosyvoice/cli/cosyvoice.py",
+          "line": 80,
+          "finding": "SFT 流式合成"
+        },
+        {
+          "path": "cosyvoice/cli/cosyvoice.py",
+          "line": 91,
+          "finding": "零样本与 stream 参数"
+        },
+        {
+          "path": "cosyvoice/cli/cosyvoice.py",
+          "line": 105,
+          "finding": "跨语言提示音频"
+        }
+      ],
+      "advantage": [
+        "支持模型流式输出及语速参数",
+        "参考音频零样本音色、跨语言和指令控制",
+        "可缓存零样本说话人特征"
+      ],
+      "gap": [
+        "依赖较重的模型及运行时，本机 CPU/NPU 延迟未测",
+        "当前 VITS 为本地 CPU 回调分段，不提供零样本克隆"
+      ],
+      "decision": "保留候选，需独立权重许可、硬件及中文语音基准",
+      "dependencies": "PyTorch, CosyVoice 模型及前端依赖",
+      "license": "源码 Apache-2.0；权重按具体模型卡",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。",
+      "commit": "074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc"
+    },
+    {
+      "repo": "FunAudioLLM/SenseVoice",
+      "evidence": [
+        {
+          "path": "utils/model_bin.py",
+          "line": 28,
+          "finding": "SenseVoiceSmall ONNX 推理封装"
+        },
+        {
+          "path": "utils/model_bin.py",
+          "line": 139,
+          "finding": "特征输入推理"
+        }
+      ],
+      "advantage": [
+        "多语言语音识别并提供 ONNX 实现",
+        "可复用现有本地中文识别模型"
+      ],
+      "gap": [
+        "当前接入为分段最终识别，不提供实时部分转写",
+        "无本机 NPU 性能证据"
+      ],
+      "decision": "保留 sherpa-onnx SenseVoice 作为最终识别",
+      "dependencies": "ONNX Runtime、模型权重及 token",
+      "license": "源码 MIT；模型权重单独核查",
+      "implemented": "通过 sherpa-onnx 使用模型；不是复制其 Python 模型实现。",
+      "commit": "586bbdb2b052f4fe19322581825228b6810a9fb3"
+    },
+    {
+      "repo": "ggml-org/llama.cpp",
+      "evidence": [
+        {
+          "path": "tools/server/server-context.cpp",
+          "line": 1019,
+          "finding": "本地推理服务上下文实现"
+        }
+      ],
+      "advantage": [
+        "本地模型服务与量化生态",
+        "可作为替代云端文本生成的运行时"
+      ],
+      "gap": [
+        "本身不替代当前识别与 TTS 语音管线",
+        "目标模型及 Windows NPU 未验证"
+      ],
+      "decision": "保留为可选本地 LLM 服务",
+      "dependencies": "GGML、GGUF 模型及对应后端",
+      "license": "源码 MIT；模型许可独立",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。",
+      "commit": "10d4846a572aebf21c0482d140b00e74c0f1ad20"
+    },
+    {
+      "repo": "hexgrad/kokoro",
+      "evidence": [
+        {
+          "path": "kokoro/pipeline.py",
+          "line": 42,
+          "finding": "KPipeline 输出文本、音素和音频"
+        },
+        {
+          "path": "kokoro/pipeline.py",
+          "line": 361,
+          "finding": "文本管线迭代输出"
+        }
+      ],
+      "advantage": [
+        "分段生成并暴露音素和文本信息",
+        "支持音色与速度配置，便于替换 TTS"
+      ],
+      "gap": [
+        "输出分段不代表连续声学流式或音素时间戳",
+        "中文音质和 CPU 延迟未在本机测量"
+      ],
+      "decision": "中文音质基准候选，不替换现有 VITS",
+      "dependencies": "PyTorch、语言前端、模型及音色",
+      "license": "源码 Apache-2.0；权重和音色许可单独核查",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。",
+      "commit": "dfb907a02bba8152ca444717ca5d78747ccb4bec"
+    },
+    {
+      "repo": "k2-fsa/sherpa-onnx",
+      "evidence": [
+        {
+          "path": "sherpa-onnx/python/sherpa_onnx/online_recognizer.py",
+          "line": 1051,
+          "finding": "在线识别流解码"
+        },
+        {
+          "path": "sherpa-onnx/python/sherpa_onnx/offline_recognizer.py",
+          "line": 1932,
+          "finding": "离线识别流解码"
+        }
+      ],
+      "advantage": [
+        "同一运行时支持在线与离线识别",
+        "本机已使用 SenseVoice 和 VITS；VITS 回调可逐段输出 PCM",
+        "本地 CPU 部署避免在线服务依赖"
+      ],
+      "gap": [
+        "回调分段不证明连续声学流式",
+        "实验在线模型对数字和部分样本有误识，不能替代最终识别"
+      ],
+      "decision": "继续作为本地生产运行时；在线识别只可选预览",
+      "dependencies": "sherpa-onnx、ONNX Runtime、分别下载模型",
+      "license": "源码 Apache-2.0；每个模型许可单独核查",
+      "implemented": "直接运行 SenseVoice/VITS/ERes2Net；本轮采用原生 TTS callback 增量 PCM。",
+      "commit": "079a6f05d05a18bc6e993704a557c2f62c7a17a5"
+    },
+    {
+      "repo": "kyutai-labs/moshi",
+      "evidence": [
+        {
+          "path": "moshi/moshi/models/lm.py",
+          "line": 786,
+          "finding": "语言模型逐步处理音频 token"
+        },
+        {
+          "path": "moshi/moshi/models/tts.py",
+          "line": 497,
+          "finding": "TTS 生成接口"
+        }
+      ],
+      "advantage": [
+        "语音 token 模型提供逐步生成机制",
+        "探索语音到语音全双工和语调上下文"
+      ],
+      "gap": [
+        "完整模型部署和中文表现未在当前硬件验证",
+        "与现有分离 ASR/LLM/TTS 可观测管线接口不同"
+      ],
+      "decision": "研究候选，不作为当前生产依赖",
+      "dependencies": "PyTorch 或 Rust 运行时、Moshi/Mimi 模型",
+      "license": "源码 Apache-2.0 或 MIT；权重许可另核查",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。",
+      "commit": "e6a55d2722a65870ef52a6c9f6ecfc0e90f38362"
+    },
+    {
+      "repo": "modelscope/FunASR",
+      "evidence": [
+        {
+          "path": "funasr/models/paraformer_streaming/model.py",
+          "line": 47,
+          "finding": "分块流式识别与 cache"
+        },
+        {
+          "path": "funasr/auto/auto_model.py",
+          "line": 841,
+          "finding": "统一 generate 入口"
+        }
+      ],
+      "advantage": [
+        "Paraformer 流式缓存允许增量识别",
+        "模型和预处理组件丰富，支持多种中文语音任务"
+      ],
+      "gap": [
+        "新模型须实测打断、误识率与 Windows 性能",
+        "目前 SenseVoice 最终结果已集成，迁移会增加模型与依赖"
+      ],
+      "decision": "作为在线识别对照候选，保留 SenseVoice final",
+      "dependencies": "FunASR、PyTorch、模型与前端",
+      "license": "源码 MIT；具体模型许可另核查",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。",
+      "commit": "fd1d4aa655effca86dc03b70a09db7e4e6409a10"
+    },
+    {
+      "repo": "ollama/ollama",
+      "evidence": [
+        {
+          "path": "server/routes.go",
+          "line": 308,
+          "finding": "本地生成 HTTP 处理"
+        },
+        {
+          "path": "server/routes.go",
+          "line": 3019,
+          "finding": "聊天 HTTP 处理"
+        }
+      ],
+      "advantage": [
+        "本地模型服务与模型管理",
+        "文本流可连接现有对话流水线"
+      ],
+      "gap": [
+        "不是 ASR/TTS 实现",
+        "本机模型性能及 NPU 后端未实测"
+      ],
+      "decision": "作为可选本地 LLM，语音继续由现有组件负责",
+      "dependencies": "Ollama 服务与模型权重",
+      "license": "源码 MIT；模型许可单独核查",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。",
+      "commit": "a6d33251620eef7629c73b09e672f2df243eb363"
+    },
+    {
+      "repo": "openai/whisper",
+      "evidence": [
+        {
+          "path": "whisper/transcribe.py",
+          "line": 38,
+          "finding": "分段转写实现"
+        },
+        {
+          "path": "whisper/timing.py",
+          "line": 279,
+          "finding": "单词时间戳对齐"
+        }
+      ],
+      "advantage": [
+        "多语言识别与翻译",
+        "提供词级时间戳对齐实现"
+      ],
+      "gap": [
+        "文件窗口转写并非原生实时部分识别",
+        "相对当前 SenseVoice CPU 路径性能未实测"
+      ],
+      "decision": "作为质量对照；运行时优先现有 faster-whisper fallback",
+      "dependencies": "PyTorch、Whisper 权重、音频解码",
+      "license": "源码 MIT；权重许可另核查",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。",
+      "commit": "86098128c0b4f24f0e2aa2994de830614b474227"
+    },
+    {
+      "repo": "OpenBMB/VoxCPM",
+      "evidence": [
+        {
+          "path": "src/voxcpm/core.py",
+          "line": 201,
+          "finding": "完整生成与流式接口"
+        },
+        {
+          "path": "src/voxcpm/core.py",
+          "line": 312,
+          "finding": "提示缓存与逐步波形生成"
+        }
+      ],
+      "advantage": [
+        "generate_streaming 逐步产生波形块",
+        "参考提示缓存提供语音条件控制",
+        "可探索自然度和音色迁移"
+      ],
+      "gap": [
+        "本机 CPU/NPU、首音延迟和中文音质未验证",
+        "与现有 VITS 的依赖和模型体积不同"
+      ],
+      "decision": "保留候选，单独做权重许可和基准测试",
+      "dependencies": "PyTorch、VoxCPM 权重及音频模型",
+      "license": "源码 Apache-2.0；模型权重单独核查",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。",
+      "commit": "4b8dd4440d33396b3f429201f8af0529b4d2c601"
+    },
+    {
+      "repo": "QwenLM/Qwen3-ASR",
+      "evidence": [
+        {
+          "path": "qwen_asr/inference/qwen3_asr.py",
+          "line": 584,
+          "finding": "流式识别状态初始化"
+        },
+        {
+          "path": "qwen_asr/inference/qwen3_asr.py",
+          "line": 657,
+          "finding": "PCM 分块流式转写"
+        },
+        {
+          "path": "qwen_asr/inference/qwen3_forced_aligner.py",
+          "line": 395,
+          "finding": "强制时间对齐"
+        }
+      ],
+      "advantage": [
+        "支持有状态实时 PCM 增量识别",
+        "可选强制对齐产生中文字符或词时间区间",
+        "批量和离线转写接口"
+      ],
+      "gap": [
+        "模型及依赖较重，本机实时性能未测",
+        "对齐依赖独立模型，不能从当前文本直接推断口型"
+      ],
+      "decision": "候选方案，基于真实麦克风准确率和首字延迟比较",
+      "dependencies": "PyTorch/Transformers 或 vLLM、ASR 和可选对齐模型",
+      "license": "源码 Apache-2.0；权重按对应模型卡",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。",
+      "commit": "7c6daf77a2421100f5fb066495372c00129d39ff"
+    },
+    {
+      "repo": "QwenLM/Qwen3-Omni",
+      "evidence": [
+        {
+          "path": "web_demo_captioner.py",
+          "line": 50,
+          "finding": "音频输入生成描述演示"
+        }
+      ],
+      "advantage": [
+        "统一多模态音频理解能力",
+        "可探索直接音频对话与上下文理解"
+      ],
+      "gap": [
+        "演示路径不是可直接替换的本地实时语音服务",
+        "模型硬件和中文全双工延迟未验证"
+      ],
+      "decision": "研究候选，先保留分离管线",
+      "dependencies": "Transformers/PyTorch、多模态模型",
+      "license": "源码 Apache-2.0；模型权重按模型卡",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。",
+      "commit": "e4235853125589c789f06a2dd83e9f4126df5e9d"
+    },
+    {
+      "repo": "QwenLM/Qwen3-TTS",
+      "evidence": [
+        {
+          "path": "qwen_tts/inference/qwen3_tts_model.py",
+          "line": 470,
+          "finding": "语音克隆生成"
+        },
+        {
+          "path": "qwen_tts/inference/qwen3_tts_model.py",
+          "line": 513,
+          "finding": "明确说明该选项不提供真正流式生成"
+        },
+        {
+          "path": "qwen_tts/inference/qwen3_tts_model.py",
+          "line": 637,
+          "finding": "文本描述音色设计"
+        }
+      ],
+      "advantage": [
+        "参考语音克隆、预设音色和文字音色设计",
+        "可按语言和风格控制生成"
+      ],
+      "gap": [
+        "所审推理接口 non_streaming_mode 不等于真正流式输入或生成",
+        "本机 CPU/NPU 首音延迟与模型许可未验证"
+      ],
+      "decision": "作为音质及音色候选，不以模拟流式替换现有回调",
+      "dependencies": "PyTorch、Transformers、Qwen3-TTS 模型",
+      "license": "源码 Apache-2.0；权重按模型卡",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。",
+      "commit": "022e286b98fbec7e1e916cb940cdf532cd9f488e"
+    },
+    {
+      "repo": "QwenLM/Qwen3.5",
+      "evidence": [
+        {
+          "path": "README.md",
+          "line": 34,
+          "finding": "模型系列介绍；固定归档无实现代码"
+        }
+      ],
+      "advantage": [
+        "可作为中文对话模型候选",
+        "不同尺寸允许本地资源与能力权衡"
+      ],
+      "gap": [
+        "固定归档没有可检查的推理实现",
+        "不是直接的流式 ASR 或 TTS"
+      ],
+      "decision": "在外部运行时作为可选 LLM 评测；不声称实现已审计",
+      "dependencies": "外部 Transformers、Ollama 或其他支持的运行时及权重",
+      "license": "仓库 Apache-2.0；模型版本许可独立核查",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。",
+      "commit": "2ea10dc725823bf7c3e21ce8557cbe15245132ae"
+    },
+    {
+      "repo": "snakers4/silero-vad",
+      "evidence": [
+        {
+          "path": "src/silero_vad/utils_vad.py",
+          "line": 281,
+          "finding": "语音区间检测"
+        },
+        {
+          "path": "src/silero_vad/utils_vad.py",
+          "line": 591,
+          "finding": "有状态 VADIterator"
+        }
+      ],
+      "advantage": [
+        "流式 VADIterator 支持逐块检测",
+        "分段接口提供语音区间和阈值控制"
+      ],
+      "gap": [
+        "VAD 只检测语音活动，不验证身份或语义打断",
+        "真实环境阈值和漏检需要麦克风测试"
+      ],
+      "decision": "沿用 Pipecat 的 Silero VAD，保持上层策略",
+      "dependencies": "Silero 模型、ONNX Runtime 或 PyTorch",
+      "license": "源码 MIT；模型许可另核查",
+      "implemented": "通过 Pipecat 与声纹质量门使用。",
+      "commit": "066409f3d9db45a30d21dfcbf9147826ffdd7052"
+    },
+    {
+      "repo": "SYSTRAN/faster-whisper",
+      "evidence": [
+        {
+          "path": "faster_whisper/transcribe.py",
+          "line": 254,
+          "finding": "批量分段转写"
+        },
+        {
+          "path": "faster_whisper/transcribe.py",
+          "line": 285,
+          "finding": "词级时间戳和 VAD 参数"
+        }
+      ],
+      "advantage": [
+        "CTranslate2 支持 CPU int8 转写",
+        "支持词级时间戳和 VAD 过滤",
+        "适合作为 SenseVoice 不可用时回退"
+      ],
+      "gap": [
+        "按音频分段识别，不保证原生实时增量",
+        "与 SenseVoice 的本机准确率和端到端延迟仍需比较"
+      ],
+      "decision": "保留现有本地 fallback",
+      "dependencies": "CTranslate2、faster-whisper、Whisper 模型",
+      "license": "源码 MIT；转换模型许可另核查",
+      "implemented": "保留可选识别后备，当前主识别为 SenseVoice。",
+      "commit": "2a3a857737d17d974f30d818ebec69ce11929e5c"
+    },
+    {
+      "repo": "THUDM/GLM-4-Voice",
+      "evidence": [
+        {
+          "path": "flow_inference.py",
+          "line": 97,
+          "finding": "音频 token 流式推理"
+        },
+        {
+          "path": "model_server.py",
+          "line": 83,
+          "finding": "模型 token 流式生成"
+        }
+      ],
+      "advantage": [
+        "语音 token 生成与流式声音解码",
+        "端到端语音上下文可探索自然交互"
+      ],
+      "gap": [
+        "模型服务与语音 tokenizer 部署复杂",
+        "本机硬件与中文全双工实测缺失"
+      ],
+      "decision": "研究候选，暂不替换当前管线",
+      "dependencies": "PyTorch、GLM 模型、语音 tokenizer 和 flow 模型",
+      "license": "源码 Apache-2.0；模型许可另核查",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。",
+      "commit": "eb00ce9142e8d98b0ed7c57cd47e0d6d5dce9a1a"
+    },
+    {
+      "repo": "vllm-project/vllm",
+      "evidence": [
+        {
+          "path": "vllm/v1/engine/async_llm.py",
+          "line": 411,
+          "finding": "异步请求提交"
+        },
+        {
+          "path": "vllm/v1/engine/async_llm.py",
+          "line": 740,
+          "finding": "异步生成接口"
+        }
+      ],
+      "advantage": [
+        "异步请求处理和增量 token 生成",
+        "高吞吐模型服务适合共享服务器"
+      ],
+      "gap": [
+        "不直接提供完整语音管线",
+        "本机 Windows/NPU 部署和单用户延迟未验证"
+      ],
+      "decision": "远程 LLM 服务候选，当前不引入",
+      "dependencies": "vLLM、支持的硬件后端和模型",
+      "license": "源码 Apache-2.0；模型许可独立",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。",
+      "commit": "14d147a7a05d29d011a67ed1f1f819c03546dafe"
+    },
+    {
+      "repo": "vllm-project/vllm-omni",
+      "evidence": [
+        {
+          "path": "vllm_omni/entrypoints/async_omni.py",
+          "line": 150,
+          "finding": "多模态异步生成"
+        },
+        {
+          "path": "vllm_omni/clients/duplex.py",
+          "line": 801,
+          "finding": "双工 PCM 客户端接口"
+        }
+      ],
+      "advantage": [
+        "多模态服务及音频双工接口",
+        "可复用模型服务与增量生成基础设施"
+      ],
+      "gap": [
+        "本机部署依赖与硬件适配未验证",
+        "不能推定所有模型均支持流式或相同协议"
+      ],
+      "decision": "面向有加速服务器的后续对照方案",
+      "dependencies": "vLLM Omni、支持的运行时及多模态模型",
+      "license": "源码 Apache-2.0；模型许可独立",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。",
+      "commit": "1200aa7379ffd264baff6faf192e3a3ca2cd7ad9"
+    },
+    {
+      "repo": "wwbin2017/bailing",
+      "evidence": [
+        {
+          "path": "bailing/asr.py",
+          "line": 36,
+          "finding": "FunASR 识别封装"
+        },
+        {
+          "path": "bailing/tts.py",
+          "line": 202,
+          "finding": "Kokoro TTS 封装"
+        }
+      ],
+      "advantage": [
+        "展示 ASR/TTS 可替换接口",
+        "集成多种本地或在线语音后端"
+      ],
+      "gap": [
+        "部分后端依赖网络或平台组件",
+        "项目调度与 Pipecat 生命周期不同，音质和中断无本机证据"
+      ],
+      "decision": "借鉴适配器边界，不整体迁移",
+      "dependencies": "具体选择的 FunASR、Kokoro 或在线语音服务",
+      "license": "源码 MIT；模型与服务条款单独核查",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。",
+      "commit": "2f7dc881b684c50fb0c612361a34b44bd5626aea"
+    },
+    {
+      "repo": "akkoaya/EvatarFramework",
+      "commit": "63b414c9633d55234949b3754686dcc7acebea60",
+      "evidence": [
+        {
+          "line": 92,
+          "finding": "会话事件投影",
+          "path": "src/evatar_framework/core/events.py"
+        },
+        {
+          "line": 14,
+          "finding": "会话控制定义",
+          "path": "src/evatar_framework/core/session_control.py"
+        },
+        {
+          "line": 22,
+          "finding": "配置打断最短时长",
+          "path": "src/evatar_framework/core/config.py"
+        },
+        {
+          "line": 97,
+          "finding": "校验已存向量的维度、有限性和归一化",
+          "path": "src/evatar_framework/providers/speaker/store.py"
+        },
+        {
+          "line": 131,
+          "finding": "对多条声纹向量归一化、取平均并持久化",
+          "path": "src/evatar_framework/providers/speaker/store.py"
+        },
+        {
+          "line": 143,
+          "finding": "使用归一化向量进行相似度匹配",
+          "path": "src/evatar_framework/providers/speaker/store.py"
+        }
+      ],
+      "advantage": [
+        "会话事件及投影保持统一事件结构",
+        "会话控制与会话遥测支持运行检查",
+        "可配置最短打断时长",
+        "校验声纹向量维度、有限性和归一化，避免损坏模板直接参与匹配",
+        "多条样本分别归一化并合并，减少对单条录音的依赖",
+        "归一化向量使用内积相似度匹配，并可检查索引维度和数量一致性"
+      ],
+      "gap": "会话运行时与 Pipecat 重复；本项目当前为单人模板，并非 Evatar 的多用户索引",
+      "decision": "已将多样本向量归一化、平均合并和相似度匹配思路移植到本地声纹；另有录音质量、模型版本与原子替换校验。保留 Pipecat，不替换整个项目",
+      "dependencies": "LiveKit 会话栈及所选 ASR、LLM、TTS 提供方",
+      "license": "Apache-2.0",
+      "implemented": "已借鉴模板可靠性机制；未引入完整会话框架。"
+    },
+    {
+      "repo": "aryeo0908/whisper-loop",
+      "commit": "810e1d5d410557038d1379cd709e3fb979422bde",
+      "evidence": [
+        {
+          "line": 23,
+          "finding": "TurnTimer 记录各阶段时间",
+          "path": "server/app/metrics.py"
+        },
+        {
+          "line": 106,
+          "finding": "插话时取消当前任务并通知客户端",
+          "path": "server/app/pipeline.py"
+        }
+      ],
+      "advantage": [
+        "每轮阶段计时及汇总",
+        "助手每轮使用可独立取消的 asyncio 任务",
+        "插话时告知客户端被打断的轮次"
+      ],
+      "gap": "当前产品尚无设备到扬声器的延迟测量",
+      "decision": "使用 Pipecat 原生指标，不移植计时器",
+      "dependencies": "WebSocket；模型和提供方依配置而异",
+      "license": "MIT",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。"
+    },
+    {
+      "repo": "Code-Amadeus/Amadeus",
+      "commit": "9ef43dda7cc2ac177601889478116caabe562e88",
+      "evidence": [
+        {
+          "line": 43,
+          "finding": "实现插话检测器",
+          "path": "asr/barge_in_detector.py"
+        },
+        {
+          "line": 179,
+          "finding": "判断是否可能为自身回声",
+          "path": "asr/echo_guard.py"
+        }
+      ],
+      "advantage": [
+        "独立插话检测器结合音频和 VAD",
+        "回声防护判断可能的自身回声",
+        "ASR 抽象层分离不同引擎"
+      ],
+      "gap": "回声启发式需要验证，不能等同声学回声消除",
+      "decision": "不复制代码；许可审查后独立评估",
+      "dependencies": "VAD、ASR 和音频设备；模型依赖随配置变化",
+      "license": "AGPL-3.0",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。"
+    },
+    {
+      "repo": "datascale-ai/opentalking",
+      "commit": "8c739a5a6f114daf71aeace832a668c3ad60f536",
+      "evidence": [
+        {
+          "line": 29,
+          "finding": "将任务推送至 Redis",
+          "path": "apps/api/services/session_service.py"
+        },
+        {
+          "line": 170,
+          "finding": "读取及更新会话状态",
+          "path": "apps/api/services/session_service.py"
+        },
+        {
+          "line": 255,
+          "finding": "上传 PCM 播放前执行打断",
+          "path": "apps/api/services/session_service.py"
+        }
+      ],
+      "advantage": [
+        "使用 Redis 保存会话状态和工作队列",
+        "提供明确的会话打断与语音操作",
+        "协调实时数字人服务"
+      ],
+      "gap": "独立协议和运行时与现有技术栈重叠",
+      "decision": "保留 Pipecat 和 Live2D，暂不迁移",
+      "dependencies": "WebRTC 及可选模型服务",
+      "license": "Apache-2.0",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。"
+    },
+    {
+      "repo": "FahadiF/Edge-Voice-Assistant",
+      "commit": "6ba8a2d7f715e967ecc2f75539f553fb37198ee6",
+      "evidence": [
+        {
+          "line": 93,
+          "finding": "APM 处理采集与播放参考",
+          "path": "src/eva/audio/processor.py"
+        },
+        {
+          "line": 5,
+          "finding": "使用 epoch 丢弃过期解码结果",
+          "path": "src/eva/asr/base.py"
+        },
+        {
+          "line": 1195,
+          "finding": "提供真实设备回声测试命令",
+          "path": "src/eva/cli.py"
+        }
+      ],
+      "advantage": [
+        "WebRTC APM 同时处理采集和播放参考",
+        "使用 epoch 拒绝过期 ASR 结果",
+        "专用回声测试可测量实际音频路径"
+      ],
+      "gap": "当前浏览器 WebSocket 后端缺少同步的实际播放参考",
+      "decision": "完成参考时序与双讲验证前不将 APM 接入生产",
+      "dependencies": "LiveKit RTC APM 及双向采集播放设备",
+      "license": "Apache-2.0",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。"
+    },
+    {
+      "repo": "huggingface/speech-to-speech",
+      "commit": "5108a3eacea81298a9dc62d5179abcacfb8119f1",
+      "evidence": [
+        {
+          "line": 45,
+          "finding": "带时间戳的播放参考",
+          "path": "src/speech_to_speech/api/openai_realtime/echo_canceller.py"
+        },
+        {
+          "line": 60,
+          "finding": "带时间戳的采集处理",
+          "path": "src/speech_to_speech/api/openai_realtime/echo_canceller.py"
+        },
+        {
+          "line": 90,
+          "finding": "流水线共享 CancelScope",
+          "path": "src/speech_to_speech/backend_registry.py"
+        }
+      ],
+      "advantage": [
+        "AEC 对齐带时间戳的播放参考和采集音频",
+        "共享 CancelScope 协调流水线各阶段取消",
+        "支持本地模块化语音处理"
+      ],
+      "gap": "后端无法获取浏览器实际播放时序及参考信号",
+      "decision": "作为参考保留，不单独在服务端移植 AEC",
+      "dependencies": "pywebrtc_audio 及真实采集、播放时序",
+      "license": "Apache-2.0",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。"
+    },
+    {
+      "repo": "liampetti/fulloch",
+      "commit": "c7b08e736397e2066b13c37fbea2e833e25cd5f0",
+      "evidence": [
+        {
+          "path": "server/static/js/browser-satellite.js",
+          "line": 311,
+          "finding": "请求浏览器回声消除与降噪"
+        },
+        {
+          "path": "server/satellite_v2.py",
+          "line": 137,
+          "finding": "协商 AEC 上行音频通道"
+        },
+        {
+          "path": "clients/headless/satellite.py",
+          "line": 386,
+          "finding": "中止或停止扬声器流"
+        }
+      ],
+      "advantage": [
+        "浏览器卫星端请求浏览器 AEC 和降噪",
+        "卫星协议协商 AEC 上行通道",
+        "无界面卫星端管理 sounddevice 全双工输入输出并在取消时中止播放"
+      ],
+      "gap": "本项目浏览器已请求 AEC；尚无实际声学 AEC 或已播放文本确认的测量",
+      "decision": "不重复引入卫星运行栈",
+      "dependencies": "WebSocket 卫星端和音频设备",
+      "license": "MIT",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。"
+    },
+    {
+      "repo": "livekit/agents",
+      "commit": "652eee4ea809ee524fb0ada2383d06eebc3d93a0",
+      "evidence": [
+        {
+          "path": "livekit-agents/livekit/agents/voice/agent_activity.py",
+          "line": 5044,
+          "finding": "启用时恢复误打断"
+        },
+        {
+          "path": "livekit-agents/livekit/agents/voice/agent.py",
+          "line": 113,
+          "finding": "选择自适应或 VAD 打断检测"
+        },
+        {
+          "path": "livekit-agents/livekit/agents/voice/agent_session.py",
+          "line": 445,
+          "finding": "打断时长、词数和超时选项"
+        }
+      ],
+      "advantage": [
+        "误打断计时器可恢复暂停的语音",
+        "支持自适应及 VAD 打断",
+        "可配置打断最短时长和词数",
+        "提供 RTC 和会话指标"
+      ],
+      "gap": "当前 Pipecat 路径尚无经验证的等价暂停恢复或已听播放确认",
+      "decision": "保留 Pipecat；替换前评测轮次检测",
+      "dependencies": "LiveKit RTC 及所选插件和模型",
+      "license": "Apache-2.0",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。"
+    },
+    {
+      "repo": "pipecat-ai/pipecat",
+      "commit": "de8998789d5690073ddd1dafcec7268839af8153",
+      "evidence": [
+        {
+          "path": "src/pipecat/pipeline/worker.py",
+          "line": 185,
+          "finding": "配置流水线指标"
+        },
+        {
+          "path": "src/pipecat/services/tts_service.py",
+          "line": 85,
+          "finding": "定义按句和按 token 聚合"
+        },
+        {
+          "path": "src/pipecat/processors/aggregators/llm_response_universal.py",
+          "line": 169,
+          "finding": "描述被打断后的空轮次恢复"
+        }
+      ],
+      "advantage": [
+        "原生帧流水线处理打断传播和上下文聚合",
+        "原生指标提供处理器首帧时间和处理时长",
+        "TTS 支持按句与按 token 聚合"
+      ],
+      "gap": "服务端首帧时间不等于设备实际播放延迟",
+      "decision": "启用原生指标；中文语音保留按句聚合",
+      "dependencies": "pipecat-ai 1.15 及本地语音适配器",
+      "license": "BSD-2-Clause",
+      "implemented": "直接作为生产编排内核，Silero、Smart Turn、backchannel、取消、RTVI；本轮启用原生 metrics。"
+    },
+    {
+      "repo": "pipecat-ai/pipecat-client-web",
+      "commit": "c6a0a68c8d569db7be37a2c85201bf41b3d7cc79",
+      "evidence": [
+        {
+          "path": "client-js/rtvi/messages.ts",
+          "line": 47,
+          "finding": "定义 metrics 消息"
+        },
+        {
+          "path": "client-js/client/client.ts",
+          "line": 41,
+          "finding": "使用有类型的指标数据"
+        }
+      ],
+      "advantage": [
+        "有类型的 RTVI 指标消息",
+        "客户端回调暴露打断和播放状态",
+        "传输层与应用界面解耦"
+      ],
+      "gap": "指标不能证明实际播放或已听历史",
+      "decision": "使用现有客户端及标准消息",
+      "dependencies": "浏览器及兼容传输层",
+      "license": "BSD-2-Clause",
+      "implemented": "直接依赖官方 client-js 1.16.0；源码归档与实际发行包版本分别记录。"
+    },
+    {
+      "repo": "pipecat-ai/pipecat-client-web-transports",
+      "commit": "5cc10220f45e16d2a027beddcbe6b26eb5b8dd4f",
+      "evidence": [
+        {
+          "path": "transports/websocket-transport/src/webSocketTransport.ts",
+          "line": 234,
+          "finding": "处理打断消息"
+        },
+        {
+          "path": "transports/websocket-transport/src/generated/proto/frames.ts",
+          "line": 118,
+          "finding": "定义打断帧"
+        }
+      ],
+      "advantage": [
+        "官方 WebSocket 传输层解析打断",
+        "支持多种传输实现",
+        "有类型的 protobuf 帧序列化音频和控制消息"
+      ],
+      "gap": "无法证明发出的音频已到达扬声器",
+      "decision": "保留官方传输层，不推断已播放历史",
+      "dependencies": "浏览器音频和 WebSocket 传输包",
+      "license": "BSD-2-Clause",
+      "implemented": "直接依赖 websocket-transport 1.8.2 官方 PCM worklet/protobuf 传输。"
+    },
+    {
+      "repo": "pipecat-ai/pipecat-examples",
+      "commit": "7875d02bc0714d59528b0c8797664308af960a3a",
+      "evidence": [
+        {
+          "path": "daily-multi-translation/bot.py",
+          "line": 12,
+          "finding": "语音流水线导入 Silero VAD"
+        },
+        {
+          "path": "aws-agentcore/bot.py",
+          "line": 11,
+          "finding": "另一机器人集成使用 Silero VAD"
+        }
+      ],
+      "advantage": [
+        "展示 Silero VAD 流水线组合",
+        "提供多种集成实现",
+        "可参考框架模式进行兼容性测试"
+      ],
+      "gap": "示例部署和模型选择不能验证本项目效果",
+      "decision": "仅参考流水线模式",
+      "dependencies": "Pipecat 及各示例所需服务",
+      "license": "BSD-2-Clause",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。"
+    },
+    {
+      "repo": "pipecat-ai/smart-turn",
+      "commit": "4786657e242dfe77dd138699ac564ee074a2a543",
+      "evidence": [
+        {
+          "path": "record_and_predict.py",
+          "line": 192,
+          "finding": "预测轮次完整或未完成并报告概率"
+        },
+        {
+          "path": "benchmark.py",
+          "line": 372,
+          "finding": "报告 p50 和 p90 延迟"
+        }
+      ],
+      "advantage": [
+        "基于音频的轮次结束模型补充 VAD",
+        "基准工具报告 p50、p90 和吞吐量"
+      ],
+      "gap": "中文轮次准确率及硬件延迟尚未测量",
+      "decision": "当前已使用：Pipecat 默认结束策略加载 LocalSmartTurn v3.2 CPU；需测量中文轮次准确率与延迟",
+      "dependencies": "模型权重及模型推理运行时",
+      "license": "BSD-2-Clause; separately check model weights",
+      "implemented": "通过 Pipecat 使用 Local Smart Turn v3.2 收尾判断，不自写轮次模型。"
+    },
+    {
+      "repo": "TacoTakumi/HermesConsole",
+      "commit": "55d8c732482cfbab398cfcab68d8eea08146d2ba",
+      "evidence": [
+        {
+          "path": "app/src/androidTest/kotlin/com/hermesconsole/app/AecHardwareGateTest.kt",
+          "line": 46,
+          "finding": "硬件回环 AEC 验收"
+        },
+        {
+          "path": "scripts/make-bargein-speech.py",
+          "line": 3,
+          "finding": "生成可重复的语音打断样本"
+        }
+      ],
+      "advantage": [
+        "物理设备 AEC 测试覆盖扬声器到麦克风路径",
+        "提供可重复语音刺激生成",
+        "区分设备端音频行为与服务端响应"
+      ],
+      "gap": "针对 Android 硬件，不能代表本项目浏览器音频路径",
+      "decision": "借鉴测试原则，不移植生产代码",
+      "dependencies": "具备采集和播放能力的 Android 设备",
+      "license": "MIT",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。"
+    },
+    {
+      "repo": "TacoTakumi/VoiceManager",
+      "commit": "256d573cbd6981da29f51dc66faabcebb83d8eab",
+      "evidence": [
+        {
+          "path": "src/voicemanager/protocol.py",
+          "line": 90,
+          "finding": "定义 cancelled 和 interrupted 结束原因"
+        },
+        {
+          "path": "src/voicemanager/transport/turn_engine.py",
+          "line": 115,
+          "finding": "取消被打断回复并发送音频结束信号"
+        },
+        {
+          "path": "src/voicemanager/client.py",
+          "line": 189,
+          "finding": "客户端接收 interrupted 音频结束事件"
+        }
+      ],
+      "advantage": [
+        "全双工流式 STT 与 TTS 协议",
+        "TTS 结束状态区分取消和打断",
+        "轮次引擎处理取消与音频结束状态"
+      ],
+      "gap": "替换现有适配器成本高，且不能证明浏览器 AEC 效果",
+      "decision": "保留现有语音服务；基准测试后再考虑协议",
+      "dependencies": "STT、TTS 模型、VAD 和运行时依配置变化",
+      "license": "MIT",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。"
+    },
+    {
+      "repo": "electron/electron",
+      "evidence": [
+        {
+          "path": "shell/browser/electron_permission_manager.cc",
+          "line": 117,
+          "finding": "设置权限请求处理器"
+        },
+        {
+          "path": "shell/browser/electron_permission_manager.cc",
+          "line": 350,
+          "finding": "按请求来源检查权限"
+        }
+      ],
+      "advantage": [
+        "桌面权限请求可由应用统一管理",
+        "可按来源检查权限，适合桌面安全策略"
+      ],
+      "gap": [
+        "当前网页依赖浏览器权限流程，未提供 Electron 桌面壳和其权限策略。"
+      ],
+      "decision": "仅参考权限模型；当前浏览器产品不新增 Electron 运行时。",
+      "license": "MIT",
+      "dependencies": [
+        "Electron/Chromium"
+      ],
+      "commit": "6d9ec3d7433a01587615a23881ed64ed94e1fa6d",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。"
+    },
+    {
+      "repo": "lipku/LiveTalking",
+      "evidence": [
+        {
+          "path": "app.py",
+          "line": 102,
+          "finding": "异步处理 WebRTC offer"
+        },
+        {
+          "path": "avatars/audio_features/hubert.py",
+          "line": 33,
+          "finding": "将音频帧放入特征处理队列"
+        }
+      ],
+      "advantage": [
+        "WebRTC offer 提供实时传输入口",
+        "HuBERT 特征队列支持音频驱动头像管线"
+      ],
+      "gap": [
+        "当前 Pipecat 管理传输和打断，Cubism 是可编辑模型；该头像视频管线需另部署模型，尚无本机延迟比较。"
+      ],
+      "decision": "参考队列和中断边界；不替换现有 Pipecat 与 Cubism。",
+      "license": "Apache-2.0",
+      "dependencies": [
+        "PyTorch/WebRTC"
+      ],
+      "commit": "c7269433a2b6ecebcd9342445d2ecc882c98b0da",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。"
+    },
+    {
+      "repo": "moeru-ai/airi",
+      "evidence": [
+        {
+          "path": "packages/model-driver-lipsync/src/shared/wlipsync/vowel-driver.ts",
+          "line": 101,
+          "finding": "按音量和胜出权重判断静音"
+        },
+        {
+          "path": "packages/model-driver-lipsync/src/shared/wlipsync/vowel-driver.ts",
+          "line": 117,
+          "finding": "根据经过时间进行元音权重攻放平滑"
+        },
+        {
+          "path": "packages/model-driver-lipsync/src/live2d/index.ts",
+          "line": 76,
+          "finding": "创建 wLipSync 音频节点"
+        }
+      ],
+      "advantage": [
+        "wLipSync 对音频频谱做元音分类",
+        "元音结果按真实时间平滑并有静音门限",
+        "已有 Live2D 音频节点适配"
+      ],
+      "gap": [
+        "当前已接入固定驱动和上游 profile；该 profile 未针对本地中文 VITS 校准，U/O 分类实测不稳定。"
+      ],
+      "decision": "已复用 MIT 元音驱动与 profile；后续使用 uLipSync 对本地声音校准并验证。",
+      "license": "MIT",
+      "dependencies": [
+        "wlipsync/WASM"
+      ],
+      "commit": "11b8989f6dd7f840cf6b15ce59e367656fb11ac6",
+      "implemented": "直接移植元音 driver、样例 profile；此前已移植 MAGIC 和渲染补丁，来源提交分别记录。"
+    },
+    {
+      "repo": "Open-LLM-VTuber/Open-LLM-VTuber",
+      "evidence": [
+        {
+          "path": "src/open_llm_vtuber/websocket_handler.py",
+          "line": 369,
+          "finding": "处理中断消息"
+        },
+        {
+          "path": "src/open_llm_vtuber/asr/asr_interface.py",
+          "line": 11,
+          "finding": "定义异步转写接口"
+        }
+      ],
+      "advantage": [
+        "中断处理与 WebSocket 会话集中管理",
+        "ASR 接口可替换，默认异步包装同步引擎"
+      ],
+      "gap": [
+        "当前已有 Pipecat 中断与 ASR 适配，替换框架将增加整合成本；线程包装无法保证抢占原生计算。"
+      ],
+      "decision": "参考可替换 ASR 和中断边界；保留现有 Pipecat。",
+      "license": "MIT",
+      "dependencies": [
+        "Python/ASR"
+      ],
+      "commit": "992309c0aa19845960228f880013d4685fde93b5",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。"
+    },
+    {
+      "repo": "Open-LLM-VTuber/Open-LLM-VTuber-Web",
+      "evidence": [
+        {
+          "path": "src/renderer/WebSDK/src/lappwavfilehandler.ts",
+          "line": 63,
+          "finding": "从音频计算 RMS 口型幅度"
+        },
+        {
+          "path": "src/renderer/src/utils/audio-manager.ts",
+          "line": 20,
+          "finding": "同时停止当前音频和口型"
+        }
+      ],
+      "advantage": [
+        "基于 PCM 的 RMS 驱动嘴部开合",
+        "播放与口型支持统一停止",
+        "提供 Cubism Web SDK 集成"
+      ],
+      "gap": [
+        "当前已有播放生命周期与 Cubism 集成；RMS 无法区分等响度元音，其前端许可条款需单独审阅。"
+      ],
+      "decision": "参考停止生命周期；不复制定制许可代码或退回纯 RMS。",
+      "license": "Open-LLM-VTuber License 1.0",
+      "dependencies": [
+        "Electron/Cubism SDK"
+      ],
+      "commit": "d176e7df2366952e3bacbf12cf9a8b18a4315932",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。"
+    },
+    {
+      "repo": "OpenBMB/MiniCPM-o",
+      "evidence": [
+        {
+          "path": "web_demos/minicpm-o_2.6/model_server.py",
+          "line": 66,
+          "finding": "用事件跟踪流式完成状态"
+        },
+        {
+          "path": "web_demos/minicpm-o_2.6/vad_utils.py",
+          "line": 266,
+          "finding": "对输入音频运行 VAD"
+        }
+      ],
+      "advantage": [
+        "记录流式生成完成状态并检测超时",
+        "VAD 分段和音频 prefill 支持多模态流式处理"
+      ],
+      "gap": [
+        "当前采用独立 ASR/LLM/TTS 服务，没有端到端多模态模型；部署权重及设备要求需额外验证。"
+      ],
+      "decision": "作为备选多模态路线；先评估权重许可和本机实时性能。",
+      "license": "Apache-2.0; model terms separate",
+      "dependencies": [
+        "PyTorch/model weights"
+      ],
+      "commit": "47e1fa75b45b8c122ca2a52150762bf6183f1c5e",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。"
+    },
+    {
+      "repo": "suzuran0y/Live2D-LLM-Chat",
+      "evidence": [
+        {
+          "path": "packages/contracts/protocol.py",
+          "line": 16,
+          "finding": "验证 WAV 的 RIFF 长度及格式"
+        },
+        {
+          "path": "workers/asr/worker.py",
+          "line": 39,
+          "finding": "ASR worker 调用转写引擎"
+        }
+      ],
+      "advantage": [
+        "音频协议校验 RIFF 长度和 WAV 格式",
+        "ASR worker 与通信契约分离",
+        "支持音频分块确认事件"
+      ],
+      "gap": [
+        "当前使用 Pipecat PCM 流和已有 WAV 录入校验，不使用其独立 worker 协议。"
+      ],
+      "decision": "参考输入验证与 worker 隔离；不增加重复传输协议。",
+      "license": "Apache-2.0",
+      "dependencies": [
+        "Python/ASR"
+      ],
+      "commit": "b333789c0962cd6244330120ec24634f8a5a70a8",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。"
+    },
+    {
+      "repo": "TMElyralab/MuseTalk",
+      "evidence": [
+        {
+          "path": "scripts/realtime_inference.py",
+          "line": 212,
+          "finding": "处理生成的人脸视频帧"
+        },
+        {
+          "path": "scripts/realtime_inference.py",
+          "line": 239,
+          "finding": "执行音频条件实时推理"
+        },
+        {
+          "path": "scripts/realtime_inference.py",
+          "line": 164,
+          "finding": "从图像提取人脸关键点和边界框"
+        }
+      ],
+      "advantage": [
+        "音频条件驱动人脸视频帧生成",
+        "预处理人脸关键点和边界框",
+        "提供实时推理入口"
+      ],
+      "gap": [
+        "该项目生成像素人脸视频，并非 Cubism 参数驱动；本机实时延迟、显存及资源占用均未测量。"
+      ],
+      "decision": "保留为像素视频替代路线；无法直接移植到当前 Cubism 参数。",
+      "license": "MIT; model terms separate",
+      "dependencies": [
+        "PyTorch/FFmpeg"
+      ],
+      "commit": "0a89dec45a0192b824e3cf4daf96c239440c5ed8",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。"
+    },
+    {
+      "repo": "Live2D/CubismWebMotionSyncComponents",
+      "evidence": [
+        {
+          "path": "README.md",
+          "line": 33,
+          "finding": "MotionSync Core 不包含在源码仓库，需另取发行包"
+        },
+        {
+          "path": "Framework/src/cubismmotionsyncprocessorcri.ts",
+          "line": 25,
+          "finding": "CRI Analyze 接收采样、平滑和混合参数"
+        },
+        {
+          "path": "Samples/Resources/Kei_vowels/Kei_vowels.motionsync3.json",
+          "line": 1,
+          "finding": "元音映射至多个模型参数的配置样例"
+        }
+      ],
+      "advantage": [
+        "官方 CRI 声学分析、混合与平滑",
+        "模型专属多参数口型映射"
+      ],
+      "gap": [
+        "当前皮肤无 motionsync3 配置，不能直接套用样例",
+        "Core 与 SDK 独立许可、发行方式，仓库不是完整可运行依赖"
+      ],
+      "decision": "作为高阶候选，当前采用 MIT wLipSync；不打包未取得的 Core。",
+      "dependencies": "Cubism SDK、MotionSync Core、模型专属映射",
+      "license": "Live2D Open Software；Core/SDK 另受 Proprietary/SDK 条款",
+      "implemented": "未将该项目新增为生产依赖；具体可移植点和限制见决定。",
+      "commit": "9e7a356fb55148ea20f6e43f8f0b63f36bcc2be4"
+    },
+    {
+      "repo": "mrxz/wlipsync",
+      "evidence": [
+        {
+          "path": "src/main.c",
+          "line": 130,
+          "finding": "实际音频频谱/MFCC 提取及模板分类，非单一响度"
+        },
+        {
+          "path": "www/audio-node.ts",
+          "line": 70,
+          "finding": "按真实音频时间更新分类权重和平滑"
+        },
+        {
+          "path": "README.md",
+          "line": 55,
+          "finding": "官方未提供校准创建器，指向 Unity uLipSync 流程"
+        }
+      ],
+      "advantage": [
+        "浏览器 WASM/AudioWorklet 可直接分析实际播放 PCM",
+        "兼容 uLipSync 声学校准模板和多个元音类别",
+        "MIT，单文件内嵌 WASM 无额外运行服务"
+      ],
+      "gap": [
+        "AIRI 通用模板对当前 VITS 有元音混淆",
+        "本地声线模板改善 U 收唇，但 E/O 仍会混淆；不提供辅音或字级时间对齐"
+      ],
+      "decision": "直接固定依赖1.3.1；使用原版 WASM MFCC 导出生成本地声线模板，保留 AIRI 样例供其他声音选择。",
+      "dependencies": "WebAudio AudioWorklet、WASM、声音专属 profile、localhost/HTTPS",
+      "license": "MIT",
+      "implemented": "直接依赖 WASM 频谱分类；新增声线模板校准工具与选择界面。",
+      "commit": "177f3ac4095dbad81be0a800a8c6f975abe4ae04"
+    }
+  ]
+}

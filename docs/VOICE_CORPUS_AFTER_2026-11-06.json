@@ -1,0 +1,639 @@
+{
+  "provenance": "Independent local sherpa VITS synthetic Chinese utterances and seeded noise; regression fixtures, not human microphone acceptance or speaker accuracy evidence.",
+  "service_health": {
+    "status": "ok",
+    "asr": {
+      "ready": true,
+      "device": "CPU",
+      "detail": "sherpa-onnx SenseVoice int8"
+    },
+    "tts": {
+      "ready": true,
+      "device": "CPU",
+      "detail": "sherpa-onnx VITS: sherpa-onnx-vits-zh-ll"
+    },
+    "devices": [
+      "CPU",
+      "GPU",
+      "NPU"
+    ],
+    "speaker": {
+      "enabled": true,
+      "ready": false,
+      "enrolled": false,
+      "detail": "声纹模型尚未加载",
+      "threshold": 0.65,
+      "not_authentication": true
+    }
+  },
+  "owner_only": false,
+  "repeats": 1,
+  "unique_cases": 12,
+  "results": [
+    {
+      "id": "greeting",
+      "repeat": 0,
+      "kind": "speech",
+      "audio_sha256": "2f3413f8ea50ea8f3a71dd634ff7c84dab7b4cdd67ba0e6402f7912f804e3369",
+      "audio_seconds": 1.65425,
+      "expected": "你好，今天过得怎么样？",
+      "text": "你好，晴天过得怎么样？",
+      "reference_characters": 9,
+      "character_edits": 1,
+      "http_seconds": 0.125,
+      "speaker": null,
+      "noise_false_text": null,
+      "online": {
+        "text": "你好晴天过得怎么样",
+        "tokens": [
+          "你",
+          "好",
+          "晴",
+          "天",
+          "过",
+          "得",
+          "怎",
+          "么",
+          "样"
+        ],
+        "timestamps": [
+          0.0,
+          0.44,
+          0.96,
+          1.0,
+          1.12,
+          1.2,
+          1.32,
+          1.44,
+          1.56
+        ],
+        "first_partial": {
+          "wall_seconds": 1.9369999999762513,
+          "input_seconds": 0.5
+        },
+        "endpoint": {
+          "wall_seconds": 4.420999999972992,
+          "input_seconds": 3.0
+        },
+        "wall_seconds": 4.420999999972992,
+        "paced": true,
+        "identity_verified": false,
+        "character_edits": 1
+      }
+    },
+    {
+      "id": "stop",
+      "repeat": 0,
+      "kind": "speech",
+      "audio_sha256": "9f90355b60d7eea52db32f846a0517fa1a553e4b011b55af2dc7d00b96c512f1",
+      "audio_seconds": 1.7411875,
+      "expected": "等一下，先别说了。",
+      "text": "等一下先别说了。",
+      "reference_characters": 7,
+      "character_edits": 0,
+      "http_seconds": 0.15700000000651926,
+      "speaker": null,
+      "noise_false_text": null,
+      "online": {
+        "text": "等一下先别说了",
+        "tokens": [
+          "等",
+          "一",
+          "下",
+          "先",
+          "别",
+          "说",
+          "了"
+        ],
+        "timestamps": [
+          0.32,
+          0.52,
+          0.76,
+          1.08,
+          1.28,
+          1.4,
+          1.56
+        ],
+        "first_partial": {
+          "wall_seconds": 0.7179999999934807,
+          "input_seconds": 0.8
+        },
+        "endpoint": {
+          "wall_seconds": 2.922000000020489,
+          "input_seconds": 3.0
+        },
+        "wall_seconds": 2.922000000020489,
+        "paced": true,
+        "identity_verified": false,
+        "character_edits": 0
+      }
+    },
+    {
+      "id": "topic-change",
+      "repeat": 0,
+      "kind": "speech",
+      "audio_sha256": "c31f4b3f73289319a758a88d029b5afa5a84926b4c9a6f6636aca76b511948e0",
+      "audio_seconds": 2.7576875,
+      "expected": "换一个问题，我们聊聊明天的计划。",
+      "text": "换一个问题，我们聊聊明天的计划。",
+      "reference_characters": 14,
+      "character_edits": 0,
+      "http_seconds": 0.14000000001396984,
+      "speaker": null,
+      "noise_false_text": null,
+      "online": {
+        "text": "换一个问题我们聊一聊明天的计划",
+        "tokens": [
+          "换",
+          "一",
+          "个",
+          "问",
+          "题",
+          "我",
+          "们",
+          "聊",
+          "一",
+          "聊",
+          "明",
+          "天",
+          "的",
+          "计",
+          "划"
+        ],
+        "timestamps": [
+          0.32,
+          0.4,
+          0.56,
+          0.76,
+          0.92,
+          1.32,
+          1.44,
+          1.6,
+          1.72,
+          1.8,
+          1.92,
+          2.08,
+          2.16,
+          2.36,
+          2.52
+        ],
+        "first_partial": {
+          "wall_seconds": 0.75,
+          "input_seconds": 0.8
+        },
+        "endpoint": {
+          "wall_seconds": 3.937999999965541,
+          "input_seconds": 4.0
+        },
+        "wall_seconds": 3.937999999965541,
+        "paced": true,
+        "identity_verified": false,
+        "character_edits": 1
+      }
+    },
+    {
+      "id": "backchannel-en",
+      "repeat": 0,
+      "kind": "speech",
+      "audio_sha256": "c13142896b8b739fb9e577cc778f53f8aa5279c95f85e31279bf2b250b0c67b6",
+      "audio_seconds": 0.20775,
+      "expected": "嗯。",
+      "text": "",
+      "reference_characters": 1,
+      "character_edits": 1,
+      "http_seconds": 0.07800000003771856,
+      "speaker": null,
+      "noise_false_text": null,
+      "online": {
+        "text": "",
+        "tokens": [],
+        "timestamps": [],
+        "first_partial": null,
+        "endpoint": null,
+        "wall_seconds": 3.2189999999827705,
+        "paced": true,
+        "identity_verified": false,
+        "character_edits": 1
+      }
+    },
+    {
+      "id": "backchannel-ok",
+      "repeat": 0,
+      "kind": "speech",
+      "audio_sha256": "306728521d84c8f6dadd4be7c162f54ecc48b72ac138d2fc13c4ccb2281ba4b8",
+      "audio_seconds": 0.4435,
+      "expected": "好的。",
+      "text": "好的。",
+      "reference_characters": 2,
+      "character_edits": 0,
+      "http_seconds": 0.09299999999348074,
+      "speaker": null,
+      "noise_false_text": null,
+      "online": {
+        "text": "好的",
+        "tokens": [
+          "好",
+          "的"
+        ],
+        "timestamps": [
+          0.0,
+          0.72
+        ],
+        "first_partial": {
+          "wall_seconds": 0.4380000000237487,
+          "input_seconds": 0.5
+        },
+        "endpoint": {
+          "wall_seconds": 2.327999999979511,
+          "input_seconds": 2.4
+        },
+        "wall_seconds": 2.327999999979511,
+        "paced": true,
+        "identity_verified": false,
+        "character_edits": 0
+      }
+    },
+    {
+      "id": "short-command",
+      "repeat": 0,
+      "kind": "speech",
+      "audio_sha256": "4b6168a35a22fef875cf51fc441349d923b84a348f70abe331ad7a42f1e91066",
+      "audio_seconds": 0.545,
+      "expected": "暂停。",
+      "text": "暂晴。",
+      "reference_characters": 2,
+      "character_edits": 1,
+      "http_seconds": 0.11000000004423782,
+      "speaker": null,
+      "noise_false_text": null,
+      "online": {
+        "text": "大清",
+        "tokens": [
+          "大",
+          "清"
+        ],
+        "timestamps": [
+          0.32,
+          0.72
+        ],
+        "first_partial": {
+          "wall_seconds": 0.7189999999827705,
+          "input_seconds": 0.8
+        },
+        "endpoint": {
+          "wall_seconds": 2.327999999979511,
+          "input_seconds": 2.4
+        },
+        "wall_seconds": 2.327999999979511,
+        "paced": true,
+        "identity_verified": false,
+        "character_edits": 2
+      }
+    },
+    {
+      "id": "digits",
+      "repeat": 0,
+      "kind": "speech",
+      "audio_sha256": "ce37c21da78599e7d9df040bf11e3449172e27b41713504ec86ecc48f0d91ed1",
+      "audio_seconds": 3.127125,
+      "expected": "请记住我的编号是一二三四五六七八九零。",
+      "text": "请记住我的编号是1234567890。",
+      "reference_characters": 18,
+      "character_edits": 10,
+      "http_seconds": 0.14100000000325963,
+      "speaker": null,
+      "noise_false_text": null,
+      "online": {
+        "text": "请记住我的编号十一二三四五六七八九零",
+        "tokens": [
+          "请",
+          "记",
+          "住",
+          "我",
+          "的",
+          "编",
+          "号",
+          "十",
+          "一",
+          "二",
+          "三",
+          "四",
+          "五",
+          "六",
+          "七",
+          "八",
+          "九",
+          "零"
+        ],
+        "timestamps": [
+          0.32,
+          0.64,
+          0.68,
+          0.8,
+          0.96,
+          1.08,
+          1.2,
+          1.6,
+          1.64,
+          1.76,
+          1.84,
+          2.0,
+          2.12,
+          2.28,
+          2.4,
+          2.52,
+          2.76,
+          3.12
+        ],
+        "first_partial": {
+          "wall_seconds": 0.7179999999934807,
+          "input_seconds": 0.8
+        },
+        "endpoint": {
+          "wall_seconds": 4.545999999972992,
+          "input_seconds": 4.6
+        },
+        "wall_seconds": 4.561999999976251,
+        "paced": true,
+        "identity_verified": false,
+        "character_edits": 1
+      }
+    },
+    {
+      "id": "date",
+      "repeat": 0,
+      "kind": "speech",
+      "audio_sha256": "39b65226503bc98a3147cf213c5fcabfd6fe2ac52b8ac38cba09cdaa8fb7719f",
+      "audio_seconds": 2.10525,
+      "expected": "明天下午三点半提醒我开会。",
+      "text": "明天下午3点半提醒我开会。",
+      "reference_characters": 12,
+      "character_edits": 1,
+      "http_seconds": 0.14100000000325963,
+      "speaker": null,
+      "noise_false_text": null,
+      "online": {
+        "text": "明天下午三点半提醒我开会",
+        "tokens": [
+          "明",
+          "天",
+          "下",
+          "午",
+          "三",
+          "点",
+          "半",
+          "提",
+          "醒",
+          "我",
+          "开",
+          "会"
+        ],
+        "timestamps": [
+          0.0,
+          0.24,
+          0.48,
+          0.6,
+          0.76,
+          0.88,
+          1.12,
+          1.36,
+          1.48,
+          1.52,
+          1.76,
+          1.88
+        ],
+        "first_partial": {
+          "wall_seconds": 0.4220000000204891,
+          "input_seconds": 0.5
+        },
+        "endpoint": {
+          "wall_seconds": 3.2179999999934807,
+          "input_seconds": 3.3
+        },
+        "wall_seconds": 3.2179999999934807,
+        "paced": true,
+        "identity_verified": false,
+        "character_edits": 0
+      }
+    },
+    {
+      "id": "hesitation",
+      "repeat": 0,
+      "kind": "speech",
+      "audio_sha256": "caa3a879fb00a053b40d11bc2a2d32072f65fd5da04db1303520afc3b1765cac",
+      "audio_seconds": 2.3714375,
+      "expected": "我想一下，这个问题应该怎么说呢？",
+      "text": "我想一下这个问题应该怎么说呢？",
+      "reference_characters": 14,
+      "character_edits": 0,
+      "http_seconds": 0.14100000000325963,
+      "speaker": null,
+      "noise_false_text": null,
+      "online": {
+        "text": "我想一下这个问题应该怎么说呢",
+        "tokens": [
+          "我",
+          "想",
+          "一",
+          "下",
+          "这",
+          "个",
+          "问",
+          "题",
+          "应",
+          "该",
+          "怎",
+          "么",
+          "说",
+          "呢"
+        ],
+        "timestamps": [
+          0.0,
+          0.36,
+          0.68,
+          0.8,
+          1.0,
+          1.12,
+          1.2,
+          1.48,
+          1.6,
+          1.72,
+          1.84,
+          1.88,
+          2.04,
+          2.2
+        ],
+        "first_partial": {
+          "wall_seconds": 0.4220000000204891,
+          "input_seconds": 0.5
+        },
+        "endpoint": {
+          "wall_seconds": 3.625,
+          "input_seconds": 3.7
+        },
+        "wall_seconds": 3.625,
+        "paced": true,
+        "identity_verified": false,
+        "character_edits": 0
+      }
+    },
+    {
+      "id": "long-question",
+      "repeat": 0,
+      "kind": "speech",
+      "audio_sha256": "5bf68a9d47e5f0209106af68870713a78b33ea27bd37b4ce186e09cc1c1f639d",
+      "audio_seconds": 4.2360625,
+      "expected": "如果我在你说话的时候打断你，你能先听完我的新问题再回答吗？",
+      "text": "如果我在你说话的时候打断你，你能先听完我的新问题再回答啊。",
+      "reference_characters": 27,
+      "character_edits": 1,
+      "http_seconds": 0.23399999999674037,
+      "speaker": null,
+      "noise_false_text": null,
+      "online": {
+        "text": "如果我在你说话的时候打断你你能先听完我的新问题再回答啊",
+        "tokens": [
+          "如",
+          "果",
+          "我",
+          "在",
+          "你",
+          "说",
+          "话",
+          "的",
+          "时",
+          "候",
+          "打",
+          "断",
+          "你",
+          "你",
+          "能",
+          "先",
+          "听",
+          "完",
+          "我",
+          "的",
+          "新",
+          "问",
+          "题",
+          "再",
+          "回",
+          "答",
+          "啊"
+        ],
+        "timestamps": [
+          0.32,
+          0.4,
+          0.52,
+          0.64,
+          0.76,
+          0.96,
+          1.08,
+          1.2,
+          1.36,
+          1.48,
+          1.64,
+          1.8,
+          1.88,
+          2.12,
+          2.28,
+          2.44,
+          2.64,
+          2.76,
+          2.92,
+          3.0,
+          3.2,
+          3.32,
+          3.44,
+          3.6,
+          3.76,
+          3.92,
+          4.12
+        ],
+        "first_partial": {
+          "wall_seconds": 0.7190000000409782,
+          "input_seconds": 0.8
+        },
+        "endpoint": {
+          "wall_seconds": 5.547000000020489,
+          "input_seconds": 5.6
+        },
+        "wall_seconds": 5.547000000020489,
+        "paced": true,
+        "identity_verified": false,
+        "character_edits": 1
+      }
+    },
+    {
+      "id": "silence",
+      "repeat": 0,
+      "kind": "silence",
+      "audio_sha256": "20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa",
+      "audio_seconds": 2.0,
+      "expected": "",
+      "text": "",
+      "reference_characters": 0,
+      "character_edits": 0,
+      "http_seconds": 0.125,
+      "speaker": null,
+      "noise_false_text": false,
+      "online": {
+        "text": "",
+        "tokens": [],
+        "timestamps": [],
+        "first_partial": null,
+        "endpoint": null,
+        "wall_seconds": 5.032000000006519,
+        "paced": true,
+        "identity_verified": false,
+        "character_edits": 0
+      }
+    },
+    {
+      "id": "noise",
+      "repeat": 0,
+      "kind": "noise",
+      "audio_sha256": "4ba6454b37925f0442415be8035f1b151b1067f83c065c5cfafcf54195aad79e",
+      "audio_seconds": 2.0,
+      "expected": "",
+      "text": "",
+      "reference_characters": 0,
+      "character_edits": 0,
+      "http_seconds": 0.09299999999348074,
+      "speaker": null,
+      "noise_false_text": false,
+      "online": {
+        "text": "",
+        "tokens": [],
+        "timestamps": [],
+        "first_partial": null,
+        "endpoint": null,
+        "wall_seconds": 5.01600000000326,
+        "paced": true,
+        "identity_verified": false,
+        "character_edits": 0
+      }
+    }
+  ],
+  "summary": {
+    "final_cer": 0.14150943396226415,
+    "reference_characters": 106,
+    "final_http_latency": {
+      "n": 12,
+      "p50": 0.13250000000698492,
+      "p95": 0.1916500000021187,
+      "max": 0.23399999999674037,
+      "unit": "seconds"
+    },
+    "non_speech_false_transcription_count": 0,
+    "non_speech_cases": 2,
+    "online_first_partial_wall": {
+      "n": 9,
+      "p50": 0.7179999999934807,
+      "p95": 1.4621999999857502,
+      "max": 1.9369999999762513,
+      "unit": "seconds"
+    }
+  },
+  "limitations": "Fixed local WAV corpus. HTTP latency excludes utterance duration and device capture; online first-partial uses paced input unless unpaced requested. Preview is identity-unverified, even when final owner filtering is enabled. CER preserves number formatting differences. No physical AEC, human FAR/FRR, NPU qualification or human long-session acceptance inferred."
+}

@@ -1,0 +1,155 @@
+{
+  "method": "Actual model WebSocket PCM; no microphone; actual device from worker",
+  "text": "你好，我是大肥鱼。我们可以慢慢聊。",
+  "cold": {
+    "ready": {
+      "type": "ready",
+      "sample_rate": 24000,
+      "channels": 1,
+      "format": "pcm_s16le",
+      "device": "cuda",
+      "text_ack": true,
+      "reserved_bytes": 3651141632,
+      "model_name": "Fun-CosyVoice3-0.5B-2512",
+      "model_version": "3",
+      "precision_requested": "auto",
+      "precision": "fp16"
+    },
+    "ready_seconds": 17.687000000000126,
+    "first_audio_seconds": 36.09400000000005,
+    "total_seconds": 36.5,
+    "audio_seconds": 3.28,
+    "text_ack": [
+      1,
+      2
+    ],
+    "wav": "artifacts\\rtx5080-cosyvoice3-acceptance.wav"
+  },
+  "warm": {
+    "ready": {
+      "type": "ready",
+      "sample_rate": 24000,
+      "channels": 1,
+      "format": "pcm_s16le",
+      "device": "cuda",
+      "text_ack": true,
+      "reserved_bytes": 3665821696,
+      "model_name": "Fun-CosyVoice3-0.5B-2512",
+      "model_version": "3",
+      "precision_requested": "auto",
+      "precision": "fp16"
+    },
+    "ready_seconds": 0.015000000000100044,
+    "first_audio_seconds": 1.4370000000001255,
+    "total_seconds": 1.8900000000001,
+    "audio_seconds": 3.84,
+    "text_ack": [
+      1,
+      2
+    ],
+    "wav": "artifacts\\rtx5080-cosyvoice3-acceptance-warm.wav"
+  },
+  "asr_readback": {
+    "text": "你好，我是大肥鱼，我们可以慢慢聊。",
+    "audio": {
+      "sample_rate": 16000,
+      "channels": 1,
+      "sample_format": "pcm_s16le",
+      "duration_s": 3.28
+    },
+    "quality": {
+      "speech_detected": true,
+      "vad_segments": [
+        {
+          "start_s": 0.102,
+          "end_s": 3.264
+        }
+      ],
+      "vad_model": "silero_vad_v5",
+      "vad_device": "CPU"
+    },
+    "alignment": {
+      "tokens": null,
+      "words": null,
+      "reason": "not_available_for_current_asr"
+    }
+  },
+  "readback_similarity": 1.0,
+  "cancel_release_seconds": 0.3280000000002019,
+  "cancel_reaped": true,
+  "passed": true,
+  "environment": {
+    "gpu": "NVIDIA GeForce RTX 5080",
+    "torch": "2.7.1+cu128",
+    "torchaudio": "2.7.1+cu128",
+    "runtime_volume": "E: NTFS",
+    "asr": "SenseVoice INT8 CPU",
+    "speech_tokenizer": "ONNX Runtime CPU",
+    "llm": "Cloud DeepSeek (separate from this speech-only test)"
+  },
+  "first_load_probe": {
+    "ready": {
+      "type": "ready",
+      "sample_rate": 24000,
+      "channels": 1,
+      "format": "pcm_s16le",
+      "device": "cuda",
+      "text_ack": true,
+      "reserved_bytes": 3651141632,
+      "model_name": "Fun-CosyVoice3-0.5B-2512",
+      "model_version": "3",
+      "precision_requested": "auto",
+      "precision": "fp16"
+    },
+    "first_audio_seconds": 69.20299999999997,
+    "total_seconds": 69.57799999999997,
+    "audio_seconds": 3.28,
+    "wav": "artifacts\\rtx5080-cosyvoice3.wav"
+  },
+  "browser": {
+    "passed": true,
+    "model": "deepseek-chat",
+    "assistant": "嗨，大肥鱼来啦，今天过得咋样？",
+    "observed": {
+      "first_mouth_ms": 41132.80000000005,
+      "max_open": 0.4899950623512268,
+      "max_form": 0.2958085834980011,
+      "player_worklet_events": 181,
+      "mic_calls": 0
+    },
+    "playback_contexts": 1,
+    "all_contexts_confirmed": true,
+    "voice_policy": {
+      "requested": "gpu",
+      "predicted": "gpu",
+      "reason": "explicit_mode",
+      "prediction_only": true
+    },
+    "cosyvoice": {
+      "configured": true,
+      "ready": true,
+      "loaded": true,
+      "device": "cuda",
+      "device_requested": "cuda",
+      "model_name": "Fun-CosyVoice3-0.5B-2512",
+      "model_version": "3",
+      "precision_requested": "auto",
+      "precision": "fp16",
+      "gpu_eligible": true,
+      "hardware": {
+        "cuda_available": true,
+        "total_gib": 15.894287109375,
+        "free_gib": 14.6337890625,
+        "effective_free_gib": 15.894287109375,
+        "min_free_gib": 6,
+        "min_total_gib": 7.5,
+        "reason": "eligible"
+      },
+      "effective_device": "cuda",
+      "detail": "模型已在隔离进程中加载。",
+      "busy": false
+    },
+    "errors": [],
+    "limitation": "One real cloud text turn, local TTS and actual browser/model; no microphone ASR or physical sound measurement. First mouth includes click/network/model/TTS/render and is not speaker latency."
+  }
+}

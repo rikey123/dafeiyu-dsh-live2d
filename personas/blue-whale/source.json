@@ -1,0 +1,10 @@
+{
+  "name": "蓝色大肥鱼",
+  "repository": "https://github.com/YUsaltyfish/dsh-onebot-qq",
+  "commit": "8ff9182908cee9ed1c68b37821cdb9a746b5f8ad",
+  "path": "examples/personas/蓝色大肥鱼.md",
+  "license": "MIT",
+  "sha256": "9643c63dcd000340ad55e4a7d82f67683ff892ef5dc580d301ffa8a4527e6a15",
+  "characters": 3586,
+  "adaptation": "Unmodified upstream persona. Voice environment is added separately at runtime."
+}

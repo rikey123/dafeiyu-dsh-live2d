@@ -1,0 +1,13 @@
+{
+  "default": {
+    "ParamMouthOpenY": { "open": 1 },
+    "ParamMouthForm": { "I": 0.5, "E": 0.5, "O": -0.5, "U": -0.5 }
+  },
+  "deepseek": {
+    "ParamMouthOpenY": { "open": 1 },
+    "ParamMouthForm": { "I": 0.5, "E": 0.5, "O": -0.5, "U": -0.5 },
+    "Mouthpucker": { "U": 0.7 },
+    "MouthFunnel": { "O": 0.7 },
+    "MouthPuckerWiden": { "A": 0.35 }
+  }
+}

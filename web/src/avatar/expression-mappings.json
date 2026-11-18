@@ -1,0 +1,4 @@
+{
+  "deepseek": { "happy": "脸红", "sad": "流泪", "surprised": "圈圈眼" },
+  "default": { "happy": "F01", "sad": "F08", "surprised": "F06" }
+}

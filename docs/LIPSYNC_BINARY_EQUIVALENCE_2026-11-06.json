@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "frames": 328,
+  "json_bytes": 70311,
+  "binary_bytes": 413,
+  "classification_identical": true,
+  "limitation": "Identical behavior proves initialization/size optimization, not accurate phonemes. Fixed independent synthetic audio sequence, no microphone or physical timing."
+}

@@ -1,0 +1,233 @@
+{
+  "date": "2026-11-06",
+  "motionsync": {
+    "component_commit": "9e7a356fb55148ea20f6e43f8f0b63f36bcc2be4",
+    "component_source": "artifacts/upstream-archives/Live2D__CubismWebMotionSyncComponents",
+    "core_included": false,
+    "download_page": "https://www.live2d.com/en/sdk/download/motionsync/",
+    "core_script_response": "https://cubism.live2d.com/motion-sync-plugin/js/download.js returned HTTP403 via urllib",
+    "status": "Core not acquired; no bypass, no Chinese A/B claim. Character mapping mechanism implemented independently using actual moc parameter bounds."
+  },
+  "zipvoice": {
+    "provenance": {
+      "model": "sherpa-onnx-zipvoice-distill-int8-zh-en-emilia",
+      "source": "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/sherpa-onnx-zipvoice-distill-int8-zh-en-emilia.tar.bz2",
+      "archive_sha256": "77219c8b40f4ee8d73a7f902305ff6c1128ef9b54461c41b4ca6ed890b6c2803",
+      "vocoder_source": "https://github.com/k2-fsa/sherpa-onnx/releases/download/vocoder-models/vocos_24khz.onnx",
+      "vocoder_sha256": "bcb3b970e384161c4d634f0bb9e999ff1c471b34c9bc0b1049a5014065ed3cc0",
+      "english_lexicon_source": "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/lexicon-en-us.txt",
+      "english_lexicon_sha256": "8b67ae549a465eee78f92ecb74644ad90c3c58ce65f19c68baf85878a10ef73a",
+      "runtime": "sherpa-onnx 2.0.1 CPU",
+      "code_license": "sherpa-onnx Apache-2.0; ZipVoice upstream code Apache-2.0",
+      "weights_license": "Not established: official k2-fsa/ZipVoice model card has no license field; verify model, training data, vocoder and lexicon terms before redistribution or commercial use.",
+      "reference": "Local synthetic VITS greeting fixture, not a person's voice"
+    },
+    "measurement": [
+      {
+        "speed": 1.0,
+        "elapsed_s": 1.1677138999802992,
+        "duration_s": 2.1546666666666665,
+        "rtf": 0.5419464263522429,
+        "sample_rate": 24000,
+        "callbacks": [
+          {
+            "seconds": 1.1675867000012659,
+            "samples": 51712,
+            "progress": 1.0
+          }
+        ],
+        "sensevoice_transcription": "你好，我们今天一起聊聊天吧。"
+      },
+      {
+        "speed": 1.2,
+        "elapsed_s": 0.9802016000030562,
+        "duration_s": 1.5146666666666666,
+        "rtf": 0.6471401408470882,
+        "sample_rate": 24000,
+        "callbacks": [
+          {
+            "seconds": 0.9801004000473768,
+            "samples": 36352,
+            "progress": 1.0
+          }
+        ],
+        "sensevoice_transcription": "你好，我们今天一起聊聊天吧。"
+      },
+      {
+        "cancel_after_first_callback": [
+          {
+            "seconds": 1.3262092000222765,
+            "samples": 71680
+          }
+        ],
+        "elapsed_s": 1.3263866999768652
+      },
+      {
+        "http_stream_status": 200,
+        "pcm_bytes": 50688,
+        "sample_rate": "24000"
+      },
+      {
+        "http_wav_status": 200,
+        "wav_bytes": 50732
+      }
+    ],
+    "production_default": false,
+    "result": "Actual CPU WAV/PCM synthesis and transcription recovery, single-callback short output. Neither cloning similarity nor physical sound quality was evaluated."
+  },
+  "alternatives": {
+    "cosyvoice": "Actual generator input exists only CosyVoice2/3 non-vLLM; not deployed or benchmarked on this Windows host. ZipVoice reference synthesis is not a substitute for true incremental text input.",
+    "hf_phonemes": "Pinned upstream defaults to English with 0.5s buffering. No validated Chinese viseme model, no production substitution.",
+    "omni_duplex": "Moshi, GLM-4-Voice, Qwen3-Omni, MiniCPM-o and vLLM-Omni are alternative inference architectures, not features to run simultaneously. No compatible model/hardware real-time validation completed."
+  },
+  "kokoro": {
+    "provenance": {
+      "repo": "csukuangfj/kokoro-int8-multi-lang-v1_0",
+      "revision": "57adb37fc0e8d4bd430cfc1b8f8c2294945b9af2",
+      "model_sha256": "75635ea3b85a32d00094dcdd61a258aba87c160f7c264c304a7b3ae9d734195e",
+      "voices_sha256": "1c5a5b983d3d50d8586d437a51f3faa2da7919ce76a013c081e65671a3447c29",
+      "license": "Kokoro-82M official model card states Apache-2.0; converted repository contains Apache-2.0 LICENSE. Verify individual lexicon and bundled resource terms separately.",
+      "upstream_model_card": "https://huggingface.co/hexgrad/Kokoro-82M",
+      "voice": "45 zf_xiaobei",
+      "runtime": "sherpa-onnx 2.0.1 CPU"
+    },
+    "measurement": [
+      {
+        "text": "你好，今天怎么样？",
+        "transcription": "你好，今天怎么样了？",
+        "elapsed_s": 1.7761114000459202,
+        "duration_s": 2.040375,
+        "rtf": 0.8704828279340416,
+        "callbacks": [
+          {
+            "seconds": 1.7760876000393182,
+            "samples": 48969,
+            "progress": 1.0
+          }
+        ],
+        "sample_rate": 24000
+      },
+      {
+        "text": "你好，今天我们一起聊聊最近发生的事情，再想想明天的计划。",
+        "transcription": "你好，今天我们一起聊聊最近发生的事情呃，再想想明天的计划。",
+        "elapsed_s": 5.013687499973457,
+        "duration_s": 6.246083333333333,
+        "rtf": 0.8026930209555521,
+        "callbacks": [
+          {
+            "seconds": 3.120746499975212,
+            "samples": 97537,
+            "progress": 0.5
+          },
+          {
+            "seconds": 5.013658599986229,
+            "samples": 52369,
+            "progress": 1.0
+          }
+        ],
+        "sample_rate": 24000
+      },
+      {
+        "cancel_callback": [
+          {
+            "seconds": 2.880775800033007,
+            "samples": 94994,
+            "progress": 0.5
+          }
+        ],
+        "elapsed_s": 2.8808061000308953
+      }
+    ],
+    "production_default": false,
+    "result": "Real Chinese CPU synthesis via maintained sherpa; slower first callback than current VITS; no exposed phoneme timestamps; quality not human accepted."
+  },
+  "diarization": {
+    "measurement": {
+      "source": "synthetic VITS then Kokoro with one second silence; two speakers explicitly supplied",
+      "duration_s": 10.00375,
+      "expected_second_start_s": 3.7576875,
+      "elapsed_s": 0.9136429000063799,
+      "segments": [
+        {
+          "start_s": 0.03096874989569187,
+          "end_s": 1.144718885421753,
+          "speaker": 1
+        },
+        {
+          "start_s": 1.144718885421753,
+          "end_s": 2.663468837738037,
+          "speaker": 0
+        },
+        {
+          "start_s": 3.8278439044952393,
+          "end_s": 9.970343589782715,
+          "speaker": 0
+        }
+      ]
+    },
+    "production_enabled": false,
+    "result": "Real CPU pyannote segmentation3 ONNX plus ERes2Net on synthetic VITS/Kokoro; supplied 2-cluster count, split VITS into 2 and mixed Kokoro with VITS. Offline labels are neither online owner verification nor overlapping target-voice extraction. Quality failed this experiment."
+  },
+  "npu": {
+    "status": "failed_existing_Chinese_quality_gate",
+    "device": "NPU",
+    "runtime": "OpenVINO 2026.4.1",
+    "model": "whisper-base-openvino",
+    "recorded_utc": "2026-11-05T05:41:45.265321+00:00",
+    "reason": "OpenVINO NPU 初始化失败: 中文语音自检失败 (exit 1): unexpected Chinese transcription: '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'",
+    "fresh_probe_this_round": false,
+    "production_speech_device": "CPU",
+    "result": "Existing measured rejection retained; no driver/model change or new NPU success inferred."
+  },
+  "forced_alignment": {
+    "qwen": {
+      "engine": "Qwen3-ForcedAligner-0.6B CPU",
+      "implementation": "speech/forced_alignment.py",
+      "unit": "word/character, not phoneme",
+      "audio_duration_s": 1.65425,
+      "inference_s": 1.32,
+      "load_s": 1.93,
+      "interval_count": 9
+    },
+    "mfa": {
+      "engine": "Montreal Forced Aligner 3.3.9",
+      "models": "mandarin_mfa acoustic v3.0.0 / mandarin_china_mfa dictionary v3.0.0",
+      "implementation": "speech/mfa_alignment.py",
+      "provenance": "speech/prepare_mfa.py pins model, dictionary, tokenizer and micromamba resources by SHA256",
+      "unit": "phoneme, native IPA TextGrid via maintained praatio",
+      "audio_sha256": "2f3413f8ea50ea8f3a71dd634ff7c84dab7b4cdd67ba0e6402f7912f804e3369",
+      "audio_duration_s": 1.65425,
+      "phones": 23,
+      "cached_elapsed_s": [
+        32.286084157999994,
+        32.23123054400003,
+        32.08369941299998
+      ],
+      "scope": "Offline only: new process/temp corpus/model initialization included. No human annotation accuracy and no realtime latency claim.",
+      "production_realtime_enabled": false
+    }
+  },
+  "cosyvoice2": {
+    "measurement": {
+      "model": "FunAudioLLM/CosyVoice2-0.5B",
+      "model_revision": "eec1ae6c79877dbd9379285cf8789c9e0879293d",
+      "source_commit": "074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc",
+      "matcha_commit": "dd9105b34bf2be2230f4aa1e4769fb586a3c824e",
+      "device": "WSL2 CPU, OMP_NUM_THREADS=4",
+      "torch": "2.3.1+cpu",
+      "model_load_seconds": 52.004941251,
+      "first_pcm_seconds_after_load": 12.450244164,
+      "generation_seconds": 26.502620898,
+      "audio_seconds": 4.28,
+      "chunks": 3,
+      "real_time_factor": 6.192201144,
+      "input": "Two incrementally yielded Chinese text fragments and the upstream public zero_shot_prompt.wav",
+      "cancellation": "Not measured. Upstream generator cleanup is not protected by finally; do not use as a persistent cancellation-safe bridge.",
+      "limitations": "One exploratory CPU run; no NPU, browser, live LLM, or user audio; not realtime."
+    },
+    "model_files": "server/cosyvoice_prepare.py pins and verifies12 files",
+    "reproduction": "server/COSYVOICE_PROBE.md",
+    "production_enabled": false,
+    "decision": "True generator text-input/PCM output actually ran, but CPU first PCM12.45s and RTF6.19 fail realtime; unsafe cancellation has no production bridge."
+  }
+}

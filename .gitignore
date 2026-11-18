@@ -1,0 +1,17 @@
+.venv/
+.venv-*/
+node_modules/
+dist/
+dist-dsh/
+.env
+data/
+models/
+.cache/
+.worktrees/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.log
+artifacts/
+.runtime/
+/DeepSeek免费公皮.zip

@@ -1,0 +1,35 @@
+name: Build distributable DSH plugin
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install pinned frontend dependencies
+        run: npm --prefix web ci --no-audit
+      - name: Test distribution tooling
+        run: npm run test:release
+      - name: Test plugin and offline automatic installer
+        run: npm run test:plugin
+      - name: Test original frontend
+        run: npm --prefix web test
+      - name: Build and audit package
+        run: npm run release -- --out artifacts/release
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dafeiyu-dsh-plugin
+          path: |
+            artifacts/release/*.tgz
+            artifacts/release/SHA256SUMS
+            artifacts/release/release-report.json
+          if-no-files-found: error

@@ -1,0 +1,5 @@
+# Optional physical duplex AEC diagnostics; install in a separate environment.
+# Not imported by the production browser or gateway.
+livekit==1.2.0
+numpy==2.5.4
+sounddevice==0.5.3

@@ -1,0 +1,181 @@
+{
+  "date": "2026-11-07",
+  "model": "FunAudioLLM/Fun-CosyVoice3-0.5B-2512",
+  "revision": "29e01c4e8d000f4bcd70751be16fa94bf3d85a18",
+  "source_revision": "074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc",
+  "weight_verification": "All 12 required model/config/tokenizer files match pinned SHA256 or Git blob digest",
+  "device_qualification": {
+    "actual": "CPU",
+    "precision": "fp32",
+    "gpu_8gb": "not tested",
+    "npu": "not tested"
+  },
+  "actual_model_probe": {
+    "method": "Actual model WebSocket PCM; no microphone; actual device from worker",
+    "text": "你好，我是大肥鱼。我们可以慢慢聊。",
+    "cold": {
+      "ready": {
+        "type": "ready",
+        "sample_rate": 24000,
+        "channels": 1,
+        "format": "pcm_s16le",
+        "device": "cpu",
+        "text_ack": true,
+        "model_name": "Fun-CosyVoice3-0.5B-2512",
+        "model_version": "3",
+        "precision_requested": "auto",
+        "precision": "fp32"
+      },
+      "ready_seconds": 51.59400000004098,
+      "first_audio_seconds": 63.35999999998603,
+      "total_seconds": 73.71900000004098,
+      "audio_seconds": 3.24,
+      "text_ack": [
+        1,
+        2
+      ],
+      "wav": "artifacts\\cosyvoice3-acceptance.wav"
+    },
+    "warm": {
+      "ready": {
+        "type": "ready",
+        "sample_rate": 24000,
+        "channels": 1,
+        "format": "pcm_s16le",
+        "device": "cpu",
+        "text_ack": true,
+        "model_name": "Fun-CosyVoice3-0.5B-2512",
+        "model_version": "3",
+        "precision_requested": "auto",
+        "precision": "fp32"
+      },
+      "ready_seconds": 0.015999999945051968,
+      "first_audio_seconds": 14.125,
+      "total_seconds": 24.57799999997951,
+      "audio_seconds": 3.56,
+      "text_ack": [
+        1,
+        2
+      ],
+      "wav": "artifacts\\cosyvoice3-acceptance-warm.wav"
+    },
+    "asr_readback": {
+      "text": "你好，我是大肥鱼，我们可以慢慢聊。",
+      "audio": {
+        "sample_rate": 16000,
+        "channels": 1,
+        "sample_format": "pcm_s16le",
+        "duration_s": 3.24
+      },
+      "quality": {
+        "speech_detected": true,
+        "vad_segments": [
+          {
+            "start_s": 0.134,
+            "end_s": 3.232
+          }
+        ],
+        "vad_model": "silero_vad_v5",
+        "vad_device": "CPU"
+      },
+      "alignment": {
+        "tokens": null,
+        "words": null,
+        "reason": "not_available_for_current_asr"
+      }
+    },
+    "readback_similarity": 1.0,
+    "cancel_release_seconds": 0.25,
+    "cancel_reaped": true,
+    "passed": true
+  },
+  "tests": {
+    "framework": {
+      "passed": 96,
+      "seconds": 141.99
+    },
+    "latest_cosy_targeted": {
+      "passed": 20,
+      "seconds": 2.24
+    },
+    "frontend": {
+      "passed": 49,
+      "production_build": true
+    }
+  },
+  "observations": [
+    "Initial ASR probe rejected 24kHz WAV; probe now uses maintained soxr resampler to the documented 16kHz input.",
+    "One reload attempt exceeded 300 seconds; retry cold load/synthesis, warm synthesis and cancellation completed. Cause not established; startup robustness is not a GPU performance acceptance."
+  ],
+  "browser": {
+    "passed": true,
+    "model": "Fun-CosyVoice3-0.5B-2512",
+    "model_version": "3",
+    "device": "cpu",
+    "precision": "fp32",
+    "epoch": "021ff6cd-eb22-4513-b361-3b9c265b9899",
+    "cancelled_epochs": [
+      "5597c351-4429-43b4-9323-2aaf626b76e2"
+    ],
+    "audio_sha256": null,
+    "samples": 61440,
+    "expected_reply": "你好，我们慢慢聊。",
+    "no_late_consumption": true
+  },
+  "production_switch": {
+    "selected_tts_engine": "cosyvoice",
+    "selected_model_version": "3",
+    "alignment": "off",
+    "normal_supervisor": true,
+    "prewarm": {
+      "ready": {
+        "type": "ready",
+        "sample_rate": 24000,
+        "channels": 1,
+        "format": "pcm_s16le",
+        "device": "cpu",
+        "text_ack": true,
+        "model_name": "Fun-CosyVoice3-0.5B-2512",
+        "model_version": "3",
+        "precision_requested": "auto",
+        "precision": "fp32"
+      },
+      "ready_seconds": 54.82799999997951,
+      "first_audio_seconds": 66.03099999995902,
+      "total_seconds": 75.35900000005495,
+      "audio_seconds": 2.56,
+      "text_ack": [
+        1,
+        2
+      ],
+      "wav": "artifacts\\cosyvoice3-production.wav"
+    },
+    "primary_browser": {
+      "engine": "pipecat",
+      "version": "1.15.0",
+      "normal_autoplay_handshake": true,
+      "missing_key_error": false,
+      "cloud_called": false,
+      "errors": []
+    },
+    "actual_health": {
+      "configured": true,
+      "ready": true,
+      "loaded": true,
+      "device": "cpu",
+      "device_requested": "cpu",
+      "model_name": "Fun-CosyVoice3-0.5B-2512",
+      "model_version": "3",
+      "precision_requested": "auto",
+      "precision": "fp32",
+      "detail": "模型已在隔离进程中加载。",
+      "busy": false
+    },
+    "qa_services_stopped": true
+  },
+  "limitations": [
+    "No human voice-quality acceptance, physical AEC or double-talk test inferred.",
+    "No 8GB GPU memory or latency measurement.",
+    "Existing MFCC reference profiles were not recalibrated for this reference voice; precise viseme quality remains independently evaluated."
+  ]
+}
