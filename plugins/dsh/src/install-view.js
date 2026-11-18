@@ -1,3 +1,5 @@
+import {DEFAULT_AVATAR} from './avatar-presets.mjs';
+
 const API = '/dafeiyu/install';
 
 export async function mountInstallView(host, {onReady, fetch: fetchImpl = globalThis.fetch, signal} = {}) {
@@ -29,7 +31,7 @@ export async function mountInstallView(host, {onReady, fetch: fetchImpl = global
   style.textContent = `
     :host{display:block;height:100%;color-scheme:light dark;--bg:#f3f1ea;--panel:#fffdf8;--ink:#1c2b3e;--muted:#657384;--line:#d8dce0;--accent:#a97927;font:14px/1.5 system-ui,"Microsoft YaHei",sans-serif;color:var(--ink)}
     @media(prefers-color-scheme:dark){:host{--bg:#101a2a;--panel:#18263a;--ink:#edf2f6;--muted:#a4b2c2;--line:#34455a;--accent:#e2bd72}}
-    *{box-sizing:border-box}.shell{height:100%;min-height:320px;overflow:auto;background:radial-gradient(circle at 90% 0%,color-mix(in srgb,var(--accent) 13%,transparent),transparent 38%),var(--bg);padding:24px}.card{max-width:650px;margin:auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;box-shadow:0 16px 48px #0915261a}.eyebrow{color:var(--accent);font-size:11px;font-weight:700;letter-spacing:.18em}h1{font-size:22px;margin:4px 0 8px}p{margin:8px 0;color:var(--muted)}.status{margin:18px 0;padding:12px 14px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px}.status strong,.status span{display:block}.status span{color:var(--muted);overflow-wrap:anywhere}.field{display:block;margin:14px 0}.field>span{display:block;font-weight:600;margin-bottom:5px}input[type=text],select{width:100%;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--ink);padding:9px;font:inherit}input[type=checkbox]{accent-color:var(--accent);margin-right:8px}.check{display:block;margin:9px 0}details{margin:15px 0;border-top:1px solid var(--line);padding-top:12px}summary{cursor:pointer;font-weight:600}button{border:0;border-radius:8px;padding:10px 16px;font:inherit;font-weight:700;cursor:pointer;background:var(--accent);color:#172030;margin:8px 8px 0 0}button.secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}button:disabled{opacity:.5;cursor:default}.note{font-size:12px}.error{color:#c55c50}.assets{font-size:13px;color:var(--muted)}[hidden]{display:none!important}
+    *{box-sizing:border-box}.shell{height:100%;min-height:320px;overflow:auto;background:radial-gradient(circle at 90% 0%,color-mix(in srgb,var(--accent) 13%,transparent),transparent 38%),var(--bg);padding:24px}.card{max-width:650px;margin:auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;box-shadow:0 16px 48px #0915261a}.eyebrow{color:var(--accent);font-size:11px;font-weight:700;letter-spacing:.18em}h1{font-size:22px;margin:4px 0 8px}p{margin:8px 0;color:var(--muted)}.status{margin:18px 0;padding:12px 14px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px}.status strong,.status span{display:block}.status span{color:var(--muted);overflow-wrap:anywhere}.field{display:block;margin:14px 0}.field>span{display:block;font-weight:600;margin-bottom:5px}input[type=text],select{width:100%;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--ink);padding:9px;font:inherit}input[type=checkbox]{accent-color:var(--accent);margin-right:8px}.check{display:block;margin:9px 0}details{margin:15px 0;border-top:1px solid var(--line);padding-top:12px}summary{cursor:pointer;font-weight:600}button{border:0;border-radius:8px;padding:10px 16px;font:inherit;font-weight:700;cursor:pointer;background:var(--accent);color:#172030;margin:8px 8px 0 0}button.secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}button:disabled{opacity:.5;cursor:default}.note{font-size:12px}.error{color:#c55c50}a{color:var(--accent);text-underline-offset:3px}.assets{font-size:13px;color:var(--muted)}[hidden]{display:none!important}
   `;
   const shell = el('main', null, root, 'shell');
   const card = el('section', null, shell, 'card');
@@ -63,20 +65,22 @@ export async function mountInstallView(host, {onReady, fetch: fetchImpl = global
     el('span', '　', links);
   }
   const avatarSources = el('section', null, form);
-  el('strong', '获取大肥鱼 Live2D 素材', avatarSources);
+  el('strong', '自动安装大肥鱼 Live2D 形象', avatarSources);
   const avatarLinks = el('p', null, avatarSources, 'note');
   for (const [label, href] of [
-    ['作者原发布页', 'https://www.bilibili.com/video/BV1KmxY66EZ3/'],
-    ['完整素材仓库（社区）', 'https://github.com/YJackie-Li/DeepSeek-chan'],
-    ['固定版本 ZIP 下载', 'https://github.com/YJackie-Li/DeepSeek-chan/archive/824e03aa38c18c9eb2a9ee1344e3c8bed6671b1f.zip'],
-    ['使用须知', 'https://github.com/YJackie-Li/DeepSeek-chan/blob/824e03aa38c18c9eb2a9ee1344e3c8bed6671b1f/README.md'],
+    ['作者原发布页', DEFAULT_AVATAR.authorReleaseUrl],
+    ['完整素材仓库（社区）', DEFAULT_AVATAR.repositoryUrl],
+    ['固定版本 ZIP 下载', DEFAULT_AVATAR.url],
+    ['使用须知', DEFAULT_AVATAR.licenseUrl],
   ]) {
     const link = el('a', label, avatarLinks); link.href = href; link.target = '_blank'; link.rel = 'noopener noreferrer';
     el('span', '　', avatarLinks);
   }
-  el('p', '原画及拆分：神宫凉子 · Live2D 建模：霓虹猫_NeonNeko。社区仓库未核实为作者本人维护。请先阅读使用须知，再下载 ZIP；不用解压，填写下面的本地路径。原配布包也可直接导入，不会自动下载角色。', avatarSources, 'note');
-  const archive = field(form, '本地角色 ZIP 路径（可选，支持原配布包 / 上述素材仓库 ZIP）');
-  const advanced = el('details', null, form); el('summary', '高级选项', advanced);
+  el('p', '原画及拆分：神宫凉子 · Live2D 建模：霓虹猫_NeonNeko。社区仓库未核实为作者本人维护。阅读使用须知并勾选下项后，安装器会从固定版本自动下载、校验并导入，不用手填地址或 ZIP 路径。', avatarSources, 'note');
+  const autoAvatar = checkbox(avatarSources, '我已阅读角色使用须知，自动下载安装大肥鱼（约 48 MB）');
+  const avatarHint = el('p', '下载到所选资源目录；保留原使用须知、表情和动作，已安装的角色不会被自动覆盖。', avatarSources, 'note');
+  const advanced = el('details', null, form); el('summary', '高级选项 / 手动导入', advanced);
+  const archive = field(advanced, '本地角色 ZIP 路径（可选，支持原配布包 / 上述素材仓库 ZIP）');
   el('p', '仅填写你有权下载和使用的角色资源。远端角色须提供 SHA256 校验值。', advanced, 'note');
   const url = field(advanced, '授权角色下载地址（可选）');
   const sha = field(advanced, '角色 SHA256');
@@ -101,7 +105,8 @@ export async function mountInstallView(host, {onReady, fetch: fetchImpl = global
     assets.textContent = data.assets ? Object.entries(names).map(([key, name]) => `${name}：${data.assets[key] ? '已安装' : '缺失'}`).join(' · ') : '';
     continueButton.hidden = data.stage !== 'complete';
     submit.textContent = data.stage === 'failed' ? '重试安装' : data.stage === 'complete' ? '继续补充资源' : '开始安装';
-    for (const node of [home, source, core, archive, url, sha, avatarLicense, ...models.map(x => x[1]), submit, continueButton]) node.disabled = running || busy || (node === home && !!data.homeConfigured);
+    avatarHint.textContent = data.assets?.avatar ? '角色已安装，保留现有形象；需要主动替换时可在高级选项中手动导入。' : '下载到所选资源目录；保留原使用须知、表情和动作，已安装的角色不会被自动覆盖。';
+    for (const node of [home, source, core, autoAvatar, archive, url, sha, avatarLicense, ...models.map(x => x[1]), submit, continueButton]) node.disabled = running || busy || (node === home && !!data.homeConfigured);
   }
   function schedule() { if (!disposed) { clearTimeout(timer); timer = setTimeout(poll, 1500); } }
   async function poll() {
@@ -141,6 +146,10 @@ export async function mountInstallView(host, {onReady, fetch: fetchImpl = global
   listen(form, 'submit', event => {
     event.preventDefault();
     const body = {homeDir:home.value.trim(), source:source.value, acceptCoreLicense:core.checked, acceptAvatarLicense:avatarLicense.checked};
+    if (autoAvatar.checked) {
+      if (archive.value.trim() || url.value.trim() || sha.value.trim()) { error.textContent = '自动安装与手动导入只能选择一种；请取消勾选自动安装，或清空手动路径和地址。'; return; }
+      body.avatarPreset = DEFAULT_AVATAR.id; body.acceptAvatarLicense = true;
+    }
     if (archive.value.trim()) body.avatarArchive = archive.value.trim();
     if (url.value.trim()) body.avatarUrl = url.value.trim();
     if (sha.value.trim()) body.avatarSha256 = sha.value.trim();

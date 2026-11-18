@@ -83,7 +83,7 @@ export async function apply(ctx, config = {}) {
       if (!path || path === '/') return json(res,200,{plugin:'@dafeiyu/dsh-live2d', ui:'DSH 侧栏 → 大肥鱼', harness:'dsh', memory_owner:'dsh'});
       let resource;
       try { resource = decodeURIComponent(path.slice(1)); } catch { return json(res,400,{detail:'Bad asset path'}); }
-      if(['panel-entry.js','install-view.js'].includes(resource))return serveStatic(req,res,[{directory:join(layout.packageRoot,'src')}],resource);
+      if(['panel-entry.js','install-view.js','avatar-presets.mjs'].includes(resource))return serveStatic(req,res,[{directory:join(layout.packageRoot,'src')}],resource);
       return serveStatic(req,res,staticRoots(layout),resource);
     }}));
     registrations.push(ctx.webServer.registerUpgrade({path:'/dafeiyu/ws/voice', handler:async (req,socket,head) => {

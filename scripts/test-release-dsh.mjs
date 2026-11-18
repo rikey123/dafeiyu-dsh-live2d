@@ -14,7 +14,7 @@ async function fixture(t){
   await put('plugins/dsh/package.json',JSON.stringify({name:'@dafeiyu/dsh-live2d',version:'0.2.0',type:'module',main:'src/index.mjs',
     engines:{dsh:'0.2.2-rc.1'},files:['src','app','bin','cordis.patch.yml','icon.svg','docs','README.md','THIRD_PARTY_NOTICES.md'],
     dsh:{bundle:{patch:'./cordis.patch.yml'}},bin:{dafeiyu:'./bin/cli.mjs'}}));
-  for(const name of ['src/index.mjs','src/client.js','bin/cli.mjs','cordis.patch.yml','icon.svg','README.md'])await put(`plugins/dsh/${name}`);
+  for(const name of ['src/index.mjs','src/client.js','src/avatar-presets.mjs','bin/cli.mjs','cordis.patch.yml','icon.svg','README.md'])await put(`plugins/dsh/${name}`);
   for(const name of ['main.py','__init__.py'])await put(`server/${name}`);
   await put('speech/server.py');await put('speech/test_excluded.py');
   for(const name of ['run.py','voice_services.py','voice_mode.py','optional_voice.py','native_voice_service.py','wsl_voice_service.py',

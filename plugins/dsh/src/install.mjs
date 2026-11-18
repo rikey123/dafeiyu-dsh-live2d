@@ -2,6 +2,7 @@
 import {mkdir,writeFile,rename,unlink,open,access,appendFile} from 'node:fs/promises';
 import {resolve,join,relative,isAbsolute,dirname} from 'node:path';
 import {randomUUID} from 'node:crypto';
+import {DEFAULT_AVATAR} from './avatar-presets.mjs';
 import {provision,perform,doctor,verifyPayload,run} from '../bin/cli.mjs';
 
 const exists=path=>access(path).then(()=>true,()=>false);
@@ -10,7 +11,7 @@ const within=(root,target)=>{const r=relative(root,target);return !r||(!isAbsolu
 const fail=(code,message)=>Object.assign(Error(message),{code});
 
 export function installationOptions(value={},layout){
-  const allowed=new Set(['homeDir','source','acceptCoreLicense','avatarArchive','avatarUrl','avatarSha256','acceptAvatarLicense','models']);
+  const allowed=new Set(['homeDir','source','acceptCoreLicense','avatarArchive','avatarUrl','avatarSha256','acceptAvatarLicense','avatarPreset','models']);
   if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).some(key=>!allowed.has(key)))throw fail('invalid_options','安装选项无效。');
   const home=value.homeDir??layout.homeDir;
   if(typeof home!=='string'||!isAbsolute(home)||/[\u0000-\u001f]/u.test(home)||home.length>500)throw fail('invalid_home','请选择有效的绝对安装路径，例如 E:/DafeiyuCompanion。');
@@ -25,12 +26,18 @@ export function installationOptions(value={},layout){
   const avatarArchive=value.avatarArchive?.trim()||undefined,avatarUrl=value.avatarUrl?.trim()||undefined;
   if(avatarArchive&&(typeof avatarArchive!=='string'||!isAbsolute(avatarArchive)||/[\u0000-\u001f]/u.test(avatarArchive)))throw fail('invalid_avatar','角色文件必须为本机绝对路径。');
   if(avatarArchive&&avatarUrl)throw fail('invalid_avatar','角色文件和远端下载只能选择一种。');
+  const avatarPreset=value.avatarPreset;
+  if(avatarPreset!==undefined){
+    if(avatarPreset!==DEFAULT_AVATAR.id)throw fail('invalid_avatar','预设角色无效。');
+    if(avatarArchive||avatarUrl||value.avatarSha256)throw fail('invalid_avatar','自动角色与手动导入只能选择一种。');
+    if(value.acceptAvatarLicense!==true)throw fail('avatar_authorization','请先阅读角色使用须知，并确认自动下载。');
+  }
   if(avatarUrl){
     let url;try{url=new URL(avatarUrl);}catch{throw fail('invalid_avatar','角色下载地址无效。');}
     if(url.protocol!=='https:'||url.username||url.password||url.hash||url.search||!/^\w[\w.-]*$/u.test(url.hostname))throw fail('invalid_avatar','角色下载请使用不含凭证、查询参数的 HTTPS 地址。');
     if(value.acceptAvatarLicense!==true||!/^[a-f0-9]{64}$/iu.test(value.avatarSha256??''))throw fail('avatar_authorization','请确认角色下载授权，并提供发布者公布的 SHA-256。');
   }
-  return {homeDir,source,models,acceptCoreLicense:value.acceptCoreLicense===true,avatarArchive,avatarUrl,
+  return {homeDir,source,models,acceptCoreLicense:value.acceptCoreLicense===true,avatarArchive,avatarUrl,avatarPreset,
     avatarSha256:value.avatarSha256?.toLowerCase(),acceptAvatarLicense:value.acceptAvatarLicense===true};
 }
 
@@ -42,17 +49,19 @@ async function atomicJson(file,value){
 export async function install(options,layout,dependencies={}){
   const selected=installationOptions({homeDir:layout.homeDir,source:options.source,
     acceptCoreLicense:options['accept-live2d-license'],avatarArchive:options.archive,
-    avatarUrl:options['avatar-url'],avatarSha256:options['avatar-sha256'],acceptAvatarLicense:options['accept-avatar-license'],
+    avatarUrl:options['avatar-url'],avatarSha256:options['avatar-sha256'],acceptAvatarLicense:options['accept-avatar-license'],avatarPreset:options['avatar-preset'],
     models:typeof options.models==='string'?options.models.split(',').filter(Boolean):options.models},layout);
   const {signal,onProgress=()=>{}}=dependencies;
   const home=selected.homeDir;
+  const preset=selected.avatarPreset?DEFAULT_AVATAR:undefined;
   const jobs=[{step:'uv',message:'准备下载管理器'},
     {step:'dependencies',message:'安装独立 Python 与语音依赖'},
     {step:'sensevoice',message:'下载语音识别与人声检测模型'},
     ...selected.models.map(kind=>({step:kind,message:`准备可选模型 ${kind}`})),
     ...(selected.acceptCoreLicense?[{step:'core',message:'从官方获取 Cubism Core'}]:[]),
-    ...(selected.avatarArchive||selected.avatarUrl?[{step:'avatar',message:'导入已授权角色资源'}]:[])];
+    ...(preset||selected.avatarArchive||selected.avatarUrl?[{step:'avatar',message:preset?'检查并自动安装大肥鱼形象':'导入已授权角色资源'}]:[])];
   if(options.plan)return {command:'install',homeDir:home,source:selected.source,steps:jobs,
+    ...(preset?{avatar:{id:preset.id,revision:preset.revision,url:preset.url,sha256:preset.sha256}}:{}),
     note:'No downloads, inference, paid requests, microphone or screen capture are performed by --plan.'};
   signal?.throwIfAborted();
   await (dependencies.verifyPayload??verifyPayload)(layout);
@@ -102,21 +111,32 @@ export async function install(options,layout,dependencies={}){
       await execute({...sourceOptions,command:'core',download:true,'accept-live2d-license':true,file:undefined,plan:false},layout,{runStep,signal});
     }
     let archive=selected.avatarArchive;
-    if(selected.avatarUrl){
-      await update({stage:'running',step:'avatar',message:'下载并校验你指定的已授权角色'});
+    // An opt-in default must not overwrite an existing/customized character.
+    // Local ZIP and custom URL imports remain explicit replacement operations.
+    const downloadUrl=preset?(before.checks.avatar?undefined:preset.url):selected.avatarUrl;
+    const archiveSha256=preset?.sha256??selected.avatarSha256;
+    if(preset&&before.checks.avatar)await update({stage:'running',step:'avatar',message:'已有角色，保留现有形象；无需重复下载'});
+    if(downloadUrl){
+      await update({stage:'running',step:'avatar',message:preset?'自动下载大肥鱼并校验完整性':'下载并校验你指定的已授权角色'});
       const downloadFile=dependencies.downloadFile??(await import('./install-download.mjs')).downloadFile;
-      const result=await downloadFile({url:selected.avatarUrl,destination:join(home,'cache/downloads',`${selected.avatarSha256}.zip`),
-        sha256:selected.avatarSha256,maxBytes:512*1024*1024,signal,offline:!!options.offline,
-        onProgress:progress=>onProgress({stage:'running',step:'avatar',message:'下载已授权角色',progress})});
+      const result=await downloadFile({url:downloadUrl,destination:join(home,'cache/downloads',`${archiveSha256}.zip`),
+        sha256:archiveSha256,maxBytes:preset?.maxBytes??512*1024*1024,signal,offline:!!options.offline,
+        onProgress:progress=>onProgress({stage:'running',step:'avatar',message:preset?'自动下载大肥鱼':'下载已授权角色',progress})});
       archive=result.path;
     }
     if(archive){
-      await update({stage:'running',step:'avatar',message:'导入角色纹理、表情与动作'});
+      await update({stage:'running',step:'avatar',message:'自动导入角色纹理、表情与动作'});
       await execute({...sourceOptions,command:'avatar',archive,plan:false},layout,{runStep});
     }
     const state=await (dependencies.doctor??doctor)(layout);
     if(!state.ready||!state.checks.sensevoiceModel||!state.checks.vadModel)throw fail('incomplete_installation','依赖或 ASR/VAD 模型未完整准备，请重试安装。');
-    await update({stage:'complete',step:'complete',message:'环境和识别模型准备完成；尚未启动推理或调用付费接口。'});
+    if((preset||selected.avatarUrl||selected.avatarArchive)&&!state.checks.avatar)throw fail('incomplete_installation','角色导入未完成，请重试安装。');
+    if(preset&&archive)await atomicJson(join(home,'.runtime/avatar-installation.json'),{
+      schemaVersion:1,preset:preset.id,revision:preset.revision,sha256:preset.sha256,
+      repositoryUrl:preset.repositoryUrl,licenseUrl:preset.licenseUrl,
+      licenseAccepted:true,installedAt:new Date().toISOString(),
+    });
+    await update({stage:'complete',step:'complete',message:'环境和所选资源准备完成；尚未启动推理或调用付费接口。'});
     await logging;
     return {ok:true,homeDir:home,checks:state.checks};
   }catch(error){
@@ -161,7 +181,7 @@ export function createInstallationController({layout,homeConfigured=false,select
     if(disposed||aborter.signal.aborted)throw fail('disposed','安装已停止。');
     state={stage:'running',step:'starting',message:'正在开始自动安装'};
     const command={source:selected.source,'accept-live2d-license':selected.acceptCoreLicense,archive:selected.avatarArchive,
-      'avatar-url':selected.avatarUrl,'avatar-sha256':selected.avatarSha256,'accept-avatar-license':selected.acceptAvatarLicense,models:selected.models};
+      'avatar-url':selected.avatarUrl,'avatar-sha256':selected.avatarSha256,'accept-avatar-license':selected.acceptAvatarLicense,'avatar-preset':selected.avatarPreset,models:selected.models};
     job=Promise.resolve().then(()=>(dependencies.install??install)(command,layout,{...dependencies,signal:aborter.signal,
       onProgress:value=>{state={...state,progress:undefined,...value};},onLine:line=>{
         // Show fixed, concise steps only; child output can contain URLs or

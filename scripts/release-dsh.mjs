@@ -191,7 +191,7 @@ export async function packRelease(staged) {
   const packed = JSON.parse(stdout)[0];
   const archive = join(staged.out,packed.filename);
   const declared = new Set(packed.files.map(file=>file.path));
-  for (const needed of ['src/index.mjs','src/client.js','bin/cli.mjs','cordis.patch.yml',
+  for (const needed of ['src/index.mjs','src/client.js','src/avatar-presets.mjs','bin/cli.mjs','cordis.patch.yml',
     'app/server/main.py','app/speech/server.py','app/scripts/run.py','app/web/dist-dsh/entry.js','app/release-manifest.json']) {
     if (!declared.has(needed)) throw Error(`npm files allowlist omitted ${needed}`);
   }

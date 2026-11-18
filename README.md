@@ -131,10 +131,10 @@
 
 ### 1 · 下载并添加插件
 
-从 [Releases](https://github.com/rikey123/dafeiyu-dsh-live2d/releases/latest) 下载 `dafeiyu-dsh-live2d-0.3.1.tgz`，按实际下载位置执行：
+从 [Releases](https://github.com/rikey123/dafeiyu-dsh-live2d/releases/latest) 下载 `dafeiyu-dsh-live2d-0.3.2.tgz`，按实际下载位置执行：
 
 ```powershell
-dsh plugin --profile web add "E:/Downloads/dafeiyu-dsh-live2d-0.3.1.tgz"
+dsh plugin --profile web add "E:/Downloads/dafeiyu-dsh-live2d-0.3.2.tgz"
 ```
 
 ### 2 · 打开大肥鱼，选一个资源目录
@@ -148,9 +148,20 @@ dsh plugin --profile web add "E:/Downloads/dafeiyu-dsh-live2d-0.3.1.tgz"
 
 安装器自动准备经校验的 uv、Python 3.12、两套隔离依赖与基础 ASR / VAD 模型。支持显示进度与失败重试，TTS 和声纹模型按需勾选。目录由 DSH 插件存储记住，下次无需重复设置。
 
-### 3 · 导入形象，选择声音
+### 3 · 自动安装形象，选择声音
 
-#### 🐟 大肥鱼 Live2D 素材，直接从这里获取
+#### 🐟 形象也能自动安装，不用自己下载
+
+在首次安装向导中：
+
+1. 选择资源目录，例如 **E:/DafeiyuCompanion**。
+2. 阅读并勾选 **Cubism Core 许可**和 **「自动下载安装大肥鱼」**。
+3. 点击 **开始安装**。安装器自动准备依赖、下载固定版本角色（约 48 MB）、校验 SHA-256、导入纹理/表情/动作，准备完成后进入原应用。
+
+**不需要手填下载地址、SHA-256 或 ZIP 路径**。已有角色会保留，不会自动覆盖；失败可重试并复用已经校验的下载缓存。本地 ZIP 和自定义下载仍在高级选项中。
+
+<details>
+<summary><b>想查看素材来源，或手动下载？</b></summary>
 
 | 入口 | 用途 |
 | --- | --- |
@@ -158,12 +169,14 @@ dsh plugin --profile web add "E:/Downloads/dafeiyu-dsh-live2d-0.3.1.tgz"
 | **[完整素材仓库 · YJackie-Li/DeepSeek-chan](https://github.com/YJackie-Li/DeepSeek-chan)** | 包含模型、贴图、物理、表情和动作；[固定版本 ZIP 直接下载](https://github.com/YJackie-Li/DeepSeek-chan/archive/824e03aa38c18c9eb2a9ee1344e3c8bed6671b1f.zip)，无需 Git。 |
 | [素材使用须知](https://github.com/YJackie-Li/DeepSeek-chan/blob/824e03aa38c18c9eb2a9ee1344e3c8bed6671b1f/README.md) | 下载、使用前阅读；公开仓库不等于素材可任意转售或再分发。 |
 
-**下载 ZIP 后不用解压**，在安装向导的「本地角色 ZIP 路径」选择它即可；v0.3.1 同时支持原配布包和上面的 GitHub ZIP，自动注册原有表情、动作并保留使用须知。[详细步骤](docs/DEEPSEEK_SKIN.md)
+**需要手动导入时**，下载 ZIP 后不用解压，在高级选项中填写「本地角色 ZIP 路径」即可。原配布包和上面的 GitHub ZIP 都支持，自动注册原有表情、动作并保留使用须知。[详细步骤](docs/DEEPSEEK_SKIN.md)
 
-> 素材仓库为社区公开存放，尚未核实仓库维护者就是模型作者，因此不标作“作者官方仓库”。该仓库的使用须知仍禁止擅自重新上传完整模型：本项目直接引用来源，不复制模型进自己的仓库或 Release；也不静默下载第三方角色。
+> 素材仓库为社区公开存放，尚未核实仓库维护者就是模型作者，因此不标作“作者官方仓库”。该仓库的使用须知仍禁止擅自重新上传完整模型：本项目直接引用来源，不复制模型进自己的仓库或 Release；只有用户确认使用须知并勾选后才自动下载角色。
+
+</details>
 
 
-- **形象**：确认 Cubism Core 官方许可，导入有权使用的角色 ZIP；也支持用户授权的 HTTPS 地址与 SHA-256。
+- **形象**：勾选角色与 Core 的许可确认后自动下载安装；高级选项保留本地 ZIP / 自定义 HTTPS 导入。
 - **声音**：在设置中选择本地 GPU / CPU 或 TTS API，按模式补齐模型或密钥。
 - **陪伴**：填写共同兴趣，按需开启屏幕陪玩、空闲搭话与 System One 判断。
 
@@ -175,7 +188,7 @@ dsh plugin --profile web add "E:/Downloads/dafeiyu-dsh-live2d-0.3.1.tgz"
 也可以直接使用插件内 CLI；首次安装无需自己寻找 uv：
 
 ```powershell
-node <插件目录>/bin/cli.mjs install --home "E:/DafeiyuCompanion" --source china
+node <插件目录>/bin/cli.mjs install --home "E:/DafeiyuCompanion" --source china --accept-live2d-license --avatar-preset deepseek-chan --accept-avatar-license
 ```
 
 命令行通过 `DAFEIYU_HOME` 或插件配置 `homeDir` 指定同一目录。依赖、模型、缓存、配置与日志都与包代码分离。
@@ -193,7 +206,7 @@ node <插件目录>/bin/cli.mjs install --home "E:/DafeiyuCompanion" --source ch
 | [安装 / 升级 / 卸载](docs/DSH_RELEASE.md) | [屏幕与主动陪伴](docs/COMPANION_PRESENCE.md) | [协议约定](docs/PROTOCOL.md) |
 | [DSH 原生集成](docs/DSH_PLUGIN.md) | [System One 判断](docs/SYSTEMONE.md) | [功能矩阵](docs/DSH_FEATURE_PARITY.md) |
 | [语音与音色模式](docs/TTS_MODES.md) | [实时近似口型](docs/REALTIME_LIPSYNC.md) | [第三方与素材声明](THIRD_PARTY_NOTICES.md) |
-| [完整聊天能力](docs/DSH_NATIVE_CONVERSATION.md) | [屏幕工具与请求](docs/SCREEN_COMPANION.md) | [发行验收记录](https://github.com/rikey123/dafeiyu-dsh-live2d/releases/download/v0.3.1/VALIDATION.json) |
+| [完整聊天能力](docs/DSH_NATIVE_CONVERSATION.md) | [屏幕工具与请求](docs/SCREEN_COMPANION.md) | [发行验收记录](https://github.com/rikey123/dafeiyu-dsh-live2d/releases/download/v0.3.2/VALIDATION.json) |
 
 <details>
 <summary><b>本地开发与构建</b></summary>
@@ -203,7 +216,7 @@ npm --prefix web ci --no-audit
 npm --prefix web test
 npm run test:release
 npm run test:plugin
-npm run release -- --out "E:/DafeiyuReleases/0.3.1"
+npm run release -- --out "E:/DafeiyuReleases/0.3.2"
 ```
 
 构建保留原前端，按白名单收集发行代码与第三方许可证，输出 `.tgz`、`SHA256SUMS` 和审计报告。GitHub Actions 在 Windows 上执行测试、打包与审计，**只生成 artifact，不自动发布 npm 或公开 Release**。

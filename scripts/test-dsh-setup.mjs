@@ -106,3 +106,11 @@ test('payload verification does not mistake source mode for validated installed 
   await writeFile(join(layout.codeRoot,'release-manifest.json'),JSON.stringify({schemaVersion:1,files:[{path:'../outside',size:0,sha256:''}]}));
   await assert.rejects(verifyPayload({...layout,packaged:true}),/escapes/);
 });
+
+test('CLI accepts automatic avatar installation only with explicit consent',()=>{
+  const args=['install','--home','E:/AvatarTest','--avatar-preset','deepseek-chan'];
+  assert.throws(()=>parseArgs(args),/accept-avatar-license/);
+  const selected=parseArgs([...args,'--accept-avatar-license','--plan']);
+  assert.equal(selected['avatar-preset'],'deepseek-chan');assert(selected.plan);
+  assert.throws(()=>parseArgs(['setup',...args.slice(1),'--accept-avatar-license']),/requires install/);
+});

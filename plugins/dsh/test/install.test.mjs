@@ -4,6 +4,7 @@ import {mkdtemp,mkdir,access,rm,readFile} from 'node:fs/promises';
 import {join,resolve,relative,isAbsolute} from 'node:path';
 import {tmpdir} from 'node:os';
 import {installationOptions,install,createInstallationController} from '../src/install.mjs';
+import {DEFAULT_AVATAR} from '../src/avatar-presets.mjs';
 const tick=()=>new Promise(done=>setImmediate(done));
 const gate=()=>{let done;return {promise:new Promise(resolve=>{done=resolve;}),done:()=>done()};};
 const check=(ready=false,assets=false)=>({ready,checks:{sensevoiceModel:ready,vadModel:ready,avatar:assets,cubismCore:assets}});
@@ -33,7 +34,7 @@ test('installation plan makes no downloads, files, inference or license assumpti
 test('first-run provisioning orders verified uv, dependency install, ASR and authorized resources',async t=>{
   const {layout}=await fixture(t),calls=[],progress=[];let ready=false;
   const result=await install({source:'china',models:['speaker'],'accept-live2d-license':true,'avatar-url':'https://example.com/a.zip','avatar-sha256':'a'.repeat(64),'accept-avatar-license':true},layout,{
-    verifyPayload:async()=>calls.push('verify'),doctor:async()=>check(ready),
+    verifyPayload:async()=>calls.push('verify'),doctor:async()=>check(ready,ready),
     ensureUv:async()=>{calls.push('uv');return join(layout.homeDir,'uv.exe');},
     provision:async(options,_layout,{runStep})=>{calls.push('provision');assert.equal(options['index-url'],'https://pypi.tuna.tsinghua.edu.cn/simple');await runStep({exe:'fixture',args:[]},{},'fixture');},
     runStep:async(_step,env,_cwd,{onLine})=>{assert.equal(env.HF_ENDPOINT,'https://hf-mirror.com');assert.equal(env.UV_DEFAULT_INDEX,env.PIP_INDEX_URL);onLine('fetch https://private:secret@example.com/a?token=secret Bearer secret-canary');},
@@ -90,4 +91,105 @@ test('configured HOME auto-starts once; disabling it preserves manual installati
   const deps={doctor:async()=>check(),install:async(_o,_l,{signal})=>{calls++;await new Promise(done=>signal.addEventListener('abort',done,{once:true}));}};
   const disabled=createInstallationController({layout,homeConfigured:true,config:{autoInstall:false},dependencies:deps});await disabled.autoStart();assert.equal(calls,0);await disabled.dispose();
   const c=createInstallationController({layout,homeConfigured:true,dependencies:deps});await Promise.all([c.autoStart(),c.autoStart()]);await tick();assert.equal(calls,1);await c.dispose();
+});
+
+const defaultAvatar={'avatar-preset':DEFAULT_AVATAR.id,'accept-avatar-license':true};
+
+test('default avatar metadata is pinned, immutable and requires explicit license acceptance',async t=>{
+  const {layout}=await fixture(t);
+  assert(Object.isFrozen(DEFAULT_AVATAR));
+  assert.match(DEFAULT_AVATAR.sha256,/^[a-f0-9]{64}$/);
+  assert(DEFAULT_AVATAR.url.includes(DEFAULT_AVATAR.revision));
+  assert(DEFAULT_AVATAR.bytes<=DEFAULT_AVATAR.maxBytes);
+  assert.equal(installationOptions({avatarPreset:DEFAULT_AVATAR.id,acceptAvatarLicense:true},layout).avatarPreset,DEFAULT_AVATAR.id);
+  for(const value of [
+    {avatarPreset:DEFAULT_AVATAR.id},
+    {avatarPreset:'unknown',acceptAvatarLicense:true},
+    {avatarPreset:42,acceptAvatarLicense:true},
+    {avatarPreset:DEFAULT_AVATAR.id,acceptAvatarLicense:true,avatarArchive:join(layout.homeDir,'avatar.zip')},
+    {avatarPreset:DEFAULT_AVATAR.id,acceptAvatarLicense:true,avatarUrl:DEFAULT_AVATAR.url},
+    {avatarPreset:DEFAULT_AVATAR.id,acceptAvatarLicense:true,avatarSha256:'b'.repeat(64)},
+  ])assert.throws(()=>installationOptions(value,layout));
+  await assert.rejects(access(layout.homeDir));
+});
+
+test('automatic avatar plan discloses the pinned resource without starting a download',async t=>{
+  const {layout}=await fixture(t);
+  const result=await install({...defaultAvatar,plan:true},layout,{downloadFile:()=>{throw Error('no network');}});
+  assert.equal(result.avatar.sha256,DEFAULT_AVATAR.sha256);
+  assert.equal(result.avatar.url,DEFAULT_AVATAR.url);
+  assert.equal(result.steps.at(-1).step,'avatar');
+  await assert.rejects(access(layout.homeDir));
+});
+
+test('automatic avatar download verifies the fixed source and records provenance only after import',async t=>{
+  const {layout}=await fixture(t),calls=[];let avatar=false;
+  const signal=new AbortController().signal;
+  const result=await install(defaultAvatar,layout,{
+    signal,verifyPayload:async()=>{},doctor:async()=>({...check(true),checks:{...check(true).checks,avatar}}),
+    ensureUv:async()=>'uv',provision:async()=>{},
+    downloadFile:async options=>{
+      assert.equal(options.url,DEFAULT_AVATAR.url);assert.equal(options.sha256,DEFAULT_AVATAR.sha256);
+      assert.equal(options.maxBytes,DEFAULT_AVATAR.maxBytes);assert.equal(options.signal,signal);
+      assert.equal(options.offline,false);
+      assert.equal(options.destination,join(layout.homeDir,'cache/downloads',DEFAULT_AVATAR.sha256+'.zip'));
+      calls.push('download');return {path:options.destination};
+    },
+    perform:async options=>{assert.equal(options.command,'avatar');assert(options.archive.endsWith(DEFAULT_AVATAR.sha256+'.zip'));calls.push('import');avatar=true;},
+  });
+  assert(result.checks.avatar);assert.deepEqual(calls,['download','import']);
+  const marker=JSON.parse(await readFile(join(layout.homeDir,'.runtime/avatar-installation.json'),'utf8'));
+  assert.equal(marker.revision,DEFAULT_AVATAR.revision);assert.equal(marker.sha256,DEFAULT_AVATAR.sha256);
+  assert.equal(marker.licenseAccepted,true);assert.equal(marker.repositoryUrl,DEFAULT_AVATAR.repositoryUrl);
+  assert.equal(JSON.parse(await readFile(join(layout.homeDir,'.runtime/bootstrap.json'),'utf8')).stage,'complete');
+});
+
+test('automatic avatar is opt-in and does not overwrite an existing character even offline',async t=>{
+  const {layout}=await fixture(t);let downloads=0,imports=0;
+  const deps={verifyPayload:async()=>{},doctor:async()=>check(true,true),ensureUv:async()=>'uv',provision:async()=>{},
+    downloadFile:async()=>{downloads++;throw Error('must not download');},perform:async()=>{imports++;}};
+  await install({},layout,deps);
+  await install({...defaultAvatar,offline:true},layout,deps);
+  assert.equal(downloads,0);assert.equal(imports,0);
+  await assert.rejects(access(join(layout.homeDir,'.runtime/avatar-installation.json')));
+});
+
+test('download failure never imports or writes success and the same installation can retry',async t=>{
+  const {layout}=await fixture(t);let fail=true,avatar=false,imports=0;
+  const deps={verifyPayload:async()=>{},doctor:async()=>({...check(true),checks:{...check(true).checks,avatar}}),ensureUv:async()=>'uv',provision:async()=>{},
+    downloadFile:async options=>{if(fail)throw Error('Download SHA-256 mismatch');return {path:options.destination};},
+    perform:async()=>{imports++;avatar=true;}};
+  await assert.rejects(install(defaultAvatar,layout,deps),/SHA-256 mismatch/);
+  assert.equal(imports,0);
+  await assert.rejects(access(join(layout.homeDir,'.runtime/avatar-installation.json')));
+  await assert.rejects(access(join(layout.homeDir,'.runtime/bootstrap.lock')));
+  assert.equal(JSON.parse(await readFile(join(layout.homeDir,'.runtime/bootstrap.json'),'utf8')).stage,'failed');
+  fail=false;assert((await install(defaultAvatar,layout,deps)).checks.avatar);assert.equal(imports,1);
+});
+
+test('cancelled default download cannot continue importing or retain its installation lock',async t=>{
+  const {layout}=await fixture(t),controller=new AbortController();let imports=0;
+  await assert.rejects(install(defaultAvatar,layout,{
+    signal:controller.signal,verifyPayload:async()=>{},doctor:async()=>check(true),ensureUv:async()=>'uv',provision:async()=>{},
+    downloadFile:async options=>{controller.abort();options.signal.throwIfAborted();},perform:async()=>imports++,
+  }),{name:'AbortError'});
+  assert.equal(imports,0);await assert.rejects(access(join(layout.homeDir,'.runtime/bootstrap.lock')));
+  await assert.rejects(access(join(layout.homeDir,'.runtime/avatar-installation.json')));
+});
+
+test('an importer without the requested character never reports successful automatic installation',async t=>{
+  const {layout}=await fixture(t);
+  await assert.rejects(install(defaultAvatar,layout,{
+    verifyPayload:async()=>{},doctor:async()=>check(true),ensureUv:async()=>'uv',provision:async()=>{},
+    downloadFile:async options=>({path:options.destination}),perform:async()=>{},
+  }),{code:'incomplete_installation'});
+  await assert.rejects(access(join(layout.homeDir,'.runtime/avatar-installation.json')));
+});
+
+test('authenticated install controller forwards the preset without requiring a user URL or hash',async t=>{
+  const {layout}=await fixture(t);let command;
+  const c=createInstallationController({layout,dependencies:{doctor:async()=>check(),install:async options=>{command=options;}}});
+  await c.start({homeDir:layout.homeDir,avatarPreset:DEFAULT_AVATAR.id,acceptAvatarLicense:true});await tick();
+  assert.equal(command['avatar-preset'],DEFAULT_AVATAR.id);assert.equal(command['accept-avatar-license'],true);
+  assert.equal(command['avatar-url'],undefined);assert.equal(command['avatar-sha256'],undefined);await c.dispose();
 });

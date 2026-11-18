@@ -47,7 +47,7 @@ test('authenticated first-run routes and installer assets work before Python is 
   // This test runs from source, so installation is unavailable but original UI
   // is allowed. The packaged controller itself is exercised by install.test.
   assert.equal((await status.json()).available,false);
-  for(const name of ['panel-entry.js','install-view.js']){const response=await fetch(`${origin}/dafeiyu/${name}`,{headers});assert.equal(response.status,200);assert.match(response.headers.get('content-type'),/javascript/);}
+  for(const name of ['panel-entry.js','install-view.js','avatar-presets.mjs']){const response=await fetch(`${origin}/dafeiyu/${name}`,{headers});assert.equal(response.status,200);assert.match(response.headers.get('content-type'),/javascript/);}
   assert.equal((await fetch(`${origin}/dafeiyu/install`,{method:'POST',headers:{...headers,'content-type':'text/plain'},body:'{}'})).status,415);
   assert.equal((await fetch(`${origin}/dafeiyu/install`,{method:'POST',headers:{...headers,'content-type':'application/json'},body:'{"pad":"'+ 'x'.repeat(17000)+'"}'})).status,413);
   assert.equal((await fetch(`${origin}/dafeiyu/install/continue`,{method:'POST',headers:{...headers,'content-type':'application/json'},body:'{"unknown":true}'})).status,400);

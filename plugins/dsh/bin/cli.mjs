@@ -13,7 +13,7 @@ const voicePy=home=>join(home,'.venv-voice',process.platform==='win32'?'Scripts/
 const exists=async path=>access(path).then(()=>true,()=>false);
 const requirementNames=['requirements.txt','requirements-speech.txt','requirements-lock.txt','requirements-voice-lock.txt'];
 const commands=new Set(['install','setup','models','avatar','core','doctor','verify']);
-const valueFlags=new Set(['home','uv','kind','archive','file','index-url','source','models','avatar-url','avatar-sha256']);
+const valueFlags=new Set(['home','uv','kind','archive','file','index-url','source','models','avatar-url','avatar-sha256','avatar-preset']);
 const booleanFlags=new Set(['plan','offline','download','accept-live2d-license','accept-avatar-license','help','json']);
 
 export function parseArgs(args) {
@@ -42,6 +42,7 @@ export function parseArgs(args) {
   }
   if(options.source&&!['official','china'].includes(options.source))throw Error('--source must be official or china');
   if(options['avatar-url']&&(!options['avatar-sha256']||!options['accept-avatar-license']))throw Error('Remote character import requires --avatar-sha256 and --accept-avatar-license');
+  if(options['avatar-preset']&&(command!=='install'||!options['accept-avatar-license']))throw Error('--avatar-preset requires install and --accept-avatar-license');
   return options;
 }
 
@@ -225,7 +226,7 @@ export async function main(args=process.argv.slice(2)) {
   if(options.help){
     console.log('Dafeiyu DSH plugin — explicit installation, no automatic GPU use\n\n'+
       'dafeiyu setup --home <directory> [--uv <uv.exe>] [--offline] [--plan]\n'+
-      'dafeiyu install --home <directory> [--source china|official] [--uv <uv.exe>] [--accept-live2d-license] [--archive <character.zip>] [--models speaker,streaming-asr,moss] [--plan]\n'+
+      'dafeiyu install --home <directory> [--source china|official] [--uv <uv.exe>] [--accept-live2d-license] [--avatar-preset deepseek-chan --accept-avatar-license | --archive <character.zip>] [--models speaker,streaming-asr,moss] [--plan]\n'+
       'dafeiyu models --home <directory> --kind sensevoice|speaker|streaming-asr|moss|index|gpt-sovits [--uv <uv.exe>] [--plan]\n'+
       'dafeiyu avatar --home <directory> --archive <character.zip> [--plan]\n'+
       'dafeiyu core --home <directory> --file <core.js>\n'+

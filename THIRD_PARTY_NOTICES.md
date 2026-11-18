@@ -28,8 +28,15 @@ model; public availability is not treated as a redistribution license. Version
 and preserves the full supplied usage notice. See `docs/DEEPSEEK_SKIN.md`.
 
 The first-run installer can alternatively download a user-authorized archive
-from a supplied HTTPS location after SHA-256 verification. It supplies no default
-character URL and does not host or redistribute the original character.
+from a supplied HTTPS location after SHA-256 verification. Since v0.3.2 a
+separate, unchecked license-acknowledgement option can install the pinned
+DeepSeek-chan preset from the public community repository above; no manual URL,
+hash or ZIP path is required. Its downloaded bytes are checked against a hash
+verified by this project (not falsely described as an author-published hash).
+Existing characters are preserved by the automatic preset; local/custom imports
+remain intentional replacements. The package does not host or redistribute the
+complete original character. Source/consent metadata is recorded in the external
+installation home only after successful import.
 
 uv is downloaded separately from Astral's official 0.13.7 release, not bundled.
 Both the archive and extracted executable are verified against pinned SHA-256

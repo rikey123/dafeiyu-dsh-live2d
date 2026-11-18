@@ -3,14 +3,14 @@
 本项目的发行物是官方 `dsh.bundle` 格式的 **npm `.tgz` 插件包**，不是 `.dshb`。
 包内包含原前端的预编译文件、Node 插件及完整语音后端代码；不需要原开发目录、Git、前端构建工具或预先创建的 Python 环境。
 
-当前发行版 **0.3.1** 声明 **Windows x64 + Node.js ≥22 + DSH 0.2.2-rc.1**。这不是对其他 DSH 版本或操作系统的兼容承诺。Python 3.12 和依赖通过 uv 安装，无需预装 Python 或 uv。
+当前发行版 **0.3.2** 声明 **Windows x64 + Node.js ≥22 + DSH 0.2.2-rc.1**。这不是对其他 DSH 版本或操作系统的兼容承诺。Python 3.12 和依赖通过 uv 安装，无需预装 Python 或 uv。
 
 ## 安装发行包
 
 推荐流程：
 
 ```powershell
-dsh plugin --profile web add "E:/Downloads/dafeiyu-dsh-live2d-0.3.1.tgz"
+dsh plugin --profile web add "E:/Downloads/dafeiyu-dsh-live2d-0.3.2.tgz"
 dsh web
 ```
 
@@ -19,7 +19,7 @@ dsh web
 1. 选择资源目录，建议 `E:/DafeiyuCompanion`。未选择目录时不向默认系统盘下载。安装向导记录目录到 DSH 的 `dafeiyu_installation` storage domain；只存目录和跳过素材偏好，不存聊天/记忆，也不修改 npm 包目录。
 2. 点击「开始安装」，自动拉取固定版本、双重 SHA256 校验的官方 uv 0.13.7 Windows x64 归档与可执行文件，随后准备 managed Python 3.12、两套独立环境、基础 SenseVoice ASR 与 Silero VAD。可选中国镜像（Python 清华源 / Hugging Face 镜像）或官方源；部分可选 TTS 上游准备脚本仍有自己的镜像配置，并非所有权重都会切换到同一来源。
 3. 按需勾选声纹、流式 ASR 或本地 TTS，不默认拉取大型 TTS。下载期间不执行推理，不调用付费 API，也不自动开麦或共享屏幕。面板切换不取消后台安装；停止插件会取消其拥有的安装进程树。
-4. Core 下载先确认 Live2D 官方许可。角色可填写合法取得的本地 ZIP，或提供有权使用的 HTTPS 下载地址、发布者公布的 SHA256 并确认授权；安装向导已直接提供[作者原发布页](https://www.bilibili.com/video/BV1KmxY66EZ3/)与[完整素材仓库](https://github.com/YJackie-Li/DeepSeek-chan)，无需自行搜索。v0.3.1 同时支持原配布 ZIP 和 GitHub 素材仓库 ZIP，不是任意 Live2D ZIP；使用须知原样保留。本项目不重新托管或静默下载原角色，详见[素材直达与导入](DEEPSEEK_SKIN.md)。缺角色/Core 时可暂时进入原设置界面，稍后用随包 CLI 补充素材，缺素材不等于数字人已经显示正常。
+4. 阅读并勾选 Core 官方许可，以及「自动下载安装大肥鱼」即可自动获取完整形象，不需要手填 ZIP、URL 或 SHA256。预设从[素材仓库](https://github.com/YJackie-Li/DeepSeek-chan)固定提交直接下载，SHA256 内置校验（由本项目核验下载字节，不冒充作者公布的校验值）；角色不在插件包中重新托管。现有角色不自动覆盖，下载失败可重试并复用已校验缓存。高级选项仍支持原配布 ZIP、GitHub 素材 ZIP 或自定义 HTTPS + SHA256；不能和自动角色同时选择。缺角色/Core 时可暂时进入原设置，缺素材不等于数字人已显示正常。来源、许可和手动步骤见[角色说明](DEEPSEEK_SKIN.md)。
 5. 安装完成自动进入原应用；原前端样式、输入框和功能不变。TTS/System One 密钥仍由用户在原设置里配置；DSH 继续负责模型、Agent、会话、工具、人格和记忆。
 
 若已显式设置插件 `homeDir` 或 `DAFEIYU_HOME`，首次打开面板会检查并补齐基础环境；插件配置 `autoInstall:false` 可禁止这种自动补齐，仍可手动点击安装。`homeDir` 优先于环境变量，再优先于向导保存的目录。已就绪的安装不重新下载。改变目录需关闭插件后修改配置并重新安装环境，不移动现有 Windows venv。
@@ -31,12 +31,13 @@ dsh web
 ```powershell
 $plugin = Join-Path $HOME '.dsh/profiles/web/node_modules/@dafeiyu/dsh-live2d'
 $cli = Join-Path $plugin 'bin/cli.mjs'
-node $cli install --home "E:/DafeiyuCompanion" --source china
-# 可选 --accept-live2d-license --archive E:/Assets/角色.zip --models speaker,streaming-asr,moss
+node $cli install --home "E:/DafeiyuCompanion" --source china --accept-live2d-license --avatar-preset deepseek-chan --accept-avatar-license
+# 不安装形象时去掉两个许可参数和 --avatar-preset；手动导入改用 --archive E:/Assets/角色.zip
+# 可选语音模型：--models speaker,streaming-asr,moss
 # 远端角色：--avatar-url https://your-host/character.zip --avatar-sha256 <64位SHA256> --accept-avatar-license
 ```
 
-CLI 不修改 DSH 的目录指针，启动 DSH 时用相同 `DAFEIYU_HOME` 或 `homeDir`。`install --plan` 不下载、不写目录。`install --offline` 仅在 uv、Python/依赖、基础 ASR/VAD 和所需 Core 已完整缓存时可用；不允许离线准备未缓存模型或联网补齐。uv 官方归档或模型源不可达时会明确失败，不绕过校验或静默换用未知镜像。需要联网代理时请确保所用 Node/下载进程的网络可访问远端；浏览器能打开不代表后台一定能下载。
+CLI 不修改 DSH 的目录指针，启动 DSH 时用相同 `DAFEIYU_HOME` 或 `homeDir`。`install --plan` 不下载、不写目录。`install --offline` 仅在 uv、Python/依赖、基础 ASR/VAD 和所需 Core 已完整缓存时可用；不允许离线准备未缓存模型或联网补齐。uv 官方归档、角色仓库或模型源不可达时会明确失败，不绕过校验或静默换用未知镜像。需要联网代理时请确保所用 Node/下载进程的网络可访问远端；浏览器能打开不代表后台一定能下载。
 
 uv/角色下载器在 Node 22.21+ / 24.5+ 可使用 `HTTPS_PROXY` / `HTTP_PROXY` 和 `NO_PROXY` 环境变量（旧 Node 直接连接），不读取或自动开启 Windows 系统代理，也不改变内部回环网关的网络路径。下载超时按响应头等待和传输停滞判断，不把持续有进度的慢速下载强制截成 30 秒。
 
@@ -47,7 +48,7 @@ uv/角色下载器在 Node 22.21+ / 24.5+ 可使用 `HTTPS_PROXY` / `HTTP_PROXY`
 1. 下载发行包并对照 `SHA256SUMS` 校验哈希。安装到你要使用的 DSH profile：
 
    ```powershell
-   dsh plugin --profile web add "E:/Downloads/dafeiyu-dsh-live2d-0.3.1.tgz"
+   dsh plugin --profile web add "E:/Downloads/dafeiyu-dsh-live2d-0.3.2.tgz"
    ```
 
    名称不同的 profile 替换 `web`。安装由 DSH 自己记录 bundle，不用修改 DSH 安装源码或手工插入绝对路径 patch。不要同时保留旧源码版插件的 managed block，否则会注册两份插件；旧版可用原 `scripts/dsh_plugin.ps1 -Action Uninstall` 移除，只移除它自己管理的块。
@@ -145,12 +146,12 @@ DSH profile/node_modules/@dafeiyu/dsh-live2d/   # 可替换的插件代码
 ```powershell
 npm --prefix web ci --no-audit
 npm run test:release
-npm run release -- --out "E:/DafeiyuReleases/0.3.1"
+npm run release -- --out "E:/DafeiyuReleases/0.3.2"
 ```
 
 构建脚本重新编译 DSH 前端，只从白名单收集运行代码、依赖清单、人格和第三方声明，再实际执行 `npm pack`，生成 `.tgz`、`SHA256SUMS` 和 `release-report.json`。没有构建输入时直接失败，不把空壳包称为发行版。`--skip-build` 仅适合已经构建且确认版本一致的开发流程。
 
-严禁把开发机的 `web/public` 整体复制到发行物：里面可能是禁止再分发的角色、Core、用户参考声线。打包审计拒绝数据库、密钥文件、权重、虚拟环境和机器专用运行路径。第三方许可证从实际前端依赖收集，不能借应用许可证覆盖其条款。
+严禁把开发机的 `web/public` 整体复制到发行物：里面可能是禁止再分发的角色、Core、用户参考声线。打包审计拒绝数据库、密钥文件、权重、虚拟环境和机器专用运行路径。第三方许可证从实际前端依赖收集，不能借应用许可证覆盖其条款。自动角色预设及 SHA256 位于 `plugins/dsh/src/avatar-presets.mjs`；只有用户明确确认后才下载，成功导入后在外部 home 的 `.runtime/avatar-installation.json` 记录版本、来源与校验值，不写 npm 包。
 
 GitHub Actions 的 tag/workflow_dispatch 构建上传包和哈希作为 artifact，**不自动发布 npm 或创建公开 release**。正式公开上架前需由项目所有者确认包名权限、项目代码许可证、版本兼容范围和第三方授权。目前代码许可证记为 `UNLICENSED`，没有擅自选择开源协议或发布到任何账号。
 
@@ -186,3 +187,13 @@ GitHub Actions 的 tag/workflow_dispatch 构建上传包和哈希作为 artifact
 - 真实下载固定提交 `824e03aa38c18c9eb2a9ee1344e3c8bed6671b1f` 的 GitHub ZIP（49,738,232 字节），导入 23 个表情、8 个动作组；另验证原始配布 ZIP，原 model3 与完整使用须知均保留。
 - 隔离浏览器加载实际导入的 GitHub 素材，moc3、5 张纹理、物理和待机动作均为 200，角色画面正常，安装门 4 个素材入口可见，390px 小屏无水平溢出，无页面脚本异常。
 - 本轮没有重跑真实 DSH 宿主、麦克风、GPU 推理或付费 API 验收；离线界面和资源加载不作为这些能力的新可用性证明。未修改、停止或启动生产语音实例。
+
+
+### 0.3.2 角色自动安装验证（2026-11-18）
+
+- 首次安装向导支持显式勾选角色使用须知，自动从社区素材仓库下载固定版本，校验 SHA256 后导入；无须手填 ZIP、URL 或 hash。不捆绑或重新托管角色及 Cubism Core，不默认勾选授权。
+- 原前端 207 项、插件/安装器/发行工具 141 项（0 跳过）、角色导入专项 13 项通过。主应用 6 个编译文件与原版本逐字节相同，完整蓝色大肥鱼人格原文哈希未变。
+- 在隔离 loopback 页面使用实际解包发行物的安装 UI 与真实安装控制器，从浏览器勾选并启动；E 盘目录原已有基础 Python/依赖和 ASR/VAD，但无角色与 Core。本次真实更新依赖、从官方获取 Core、从社区仓库下载约 50 MB 角色，校验后成功导入。不是全新机器全冷启动依赖验收。
+- 浏览器进入原前端后真实渲染新下载的角色，moc3、5 张纹理、物理与待机动作请求均返回 200；390px 小屏无水平溢出，页面无脚本异常。非安装相关 API/语音状态使用离线夹具，不等同完整 DSH 宿主语音验收。
+- 再次执行真实离线安装，现有角色、完整使用须知与来源记录的哈希不变；已有形象不重复下载或覆盖。测试同时覆盖授权缺失、无效预设、自动/手动冲突、校验失败、取消与重试、导入后缺失资源不标成功。
+- 未修改或重启生产实例，不读取生产密钥或聊天数据库，不采集真实屏幕/麦克风，不加载 GPU 模型，不进行 TTS 推理或付费 API 调用。

@@ -91,3 +91,29 @@ test('character sources are direct links, but never trigger automatic downloads'
   assert.equal(body.acceptAvatarLicense,false);
   view.dispose();
 });
+
+test('one explicit checkbox installs the pinned avatar without a ZIP path or URL', async()=>{
+  const host=makeHost(),requests=[];
+  const view=await mountInstallView(host,{fetch:async(path,options)=>{requests.push([path,options]);return response(base);}});
+  const label=find(host,n=>n.tag==='label'&&n.children.some(c=>c.textContent.includes('自动下载安装大肥鱼')));
+  assert.ok(label);const checkbox=label.children[0];assert.equal(checkbox.checked,false);
+  assert.equal(requests.length,1);checkbox.checked=true;
+  find(host,n=>n.tag==='form').dispatch('submit');await flush();
+  const body=JSON.parse(requests[1][1].body);
+  assert.equal(body.avatarPreset,'deepseek-chan');assert.equal(body.acceptAvatarLicense,true);
+  assert.equal(body.avatarUrl,undefined);assert.equal(body.avatarSha256,undefined);assert.equal(body.avatarArchive,undefined);
+  view.dispose();
+});
+
+test('automatic/manual conflicts are visible and a manual import still works after opting out', async()=>{
+  const host=makeHost(),requests=[];
+  const view=await mountInstallView(host,{fetch:async(path,options)=>{requests.push([path,options]);return response(base);}});
+  const auto=find(host,n=>n.tag==='label'&&n.children.some(c=>c.textContent.includes('自动下载安装大肥鱼'))).children[0];
+  const archive=find(host,n=>n.tag==='label'&&n.children.some(c=>c.textContent.includes('本地角色 ZIP 路径'))).children[1];
+  auto.checked=true;archive.value='E:/Assets/character.zip';
+  find(host,n=>n.tag==='form').dispatch('submit');await flush();assert.equal(requests.length,1);
+  assert.ok(find(host,n=>n.textContent.includes('自动安装与手动导入只能选择一种')));
+  auto.checked=false;find(host,n=>n.tag==='form').dispatch('submit');await flush();
+  assert.equal(JSON.parse(requests[1][1].body).avatarArchive,archive.value);
+  assert.equal(JSON.parse(requests[1][1].body).avatarPreset,undefined);view.dispose();
+});
